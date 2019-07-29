@@ -15,13 +15,13 @@ public class UserBusiness {
 	public Response add(String username, String password){
 		String [] pass;
 		User user=new User();
-		Response response=checkIfUsernameValid(username);
-		if(response==Response.ok().entity("Success").build()) {
+		boolean checkIfExist=checkIfUsernameExists(username);
+		if(checkIfExist==false) {
 			user.setUsername(username);
 			user.setPassword(passwordToHashcode(password));
 			userRepository.addEntity(user);
 		}
-		return response;
+		return Response.status(Status.FORBIDDEN).entity("Este username já existe").build();
 	}
 	
 	public Response get(String username, String password){
@@ -35,6 +35,12 @@ public class UserBusiness {
 		if(userRepository.getUser(username)==null)
 			return Response.status(Status.NOT_FOUND).entity("Não existe na base de dados").build();
 		return Response.ok().entity("Success").build();
+	}
+	
+	public boolean checkIfUsernameExists(String username) {
+		if(userRepository.getUser(username)==null)
+			return false;
+		else return true;
 	}
 	
 	public Response checkIfUserValid(String username, String password) {
