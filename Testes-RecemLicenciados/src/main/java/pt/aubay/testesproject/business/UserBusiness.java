@@ -3,6 +3,7 @@ package pt.aubay.testesproject.business;
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import pt.aubay.testesproject.models.User;
 import pt.aubay.testesproject.repositories.UserRepositories;
@@ -11,6 +12,10 @@ import pt.aubay.testesproject.utils.PasswordUtils;;
 public class UserBusiness {
 	@Inject
 	UserRepositories userRepository;
+	
+	public String healthCheck(UriInfo context) {
+		return "URI " + context.getRequestUri().toString() + " is OK!";
+	}
 	
 	public Response add(String username, String password){
 		String [] pass;
