@@ -26,7 +26,7 @@ public class UserBusiness {
 	
 	public Response checkIfUsernameValid(String username) {
 		//if(getUser(username))
-		return none;
+		return null;
 	}
 	
 }
