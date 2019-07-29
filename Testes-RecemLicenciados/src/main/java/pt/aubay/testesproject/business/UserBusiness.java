@@ -26,9 +26,10 @@ public class UserBusiness {
 		User user=new User();
 		boolean checkIfExist=checkIfUsernameExists(username);
 		if(checkIfExist==false) {
+			String[] hashCode=passwordToHashcode(password);
 			user.setUsername(username);
-			user.setHashPass(passwordToHashcode(password)[0]);
-			user.setSalt(passwordToHashcode(password)[1]);
+			user.setHashPass(hashCode[0]);
+			user.setSalt(hashCode[1]);
 			userRepository.addEntity(user);
 			return Response.ok().entity("Success").build();
 		}
