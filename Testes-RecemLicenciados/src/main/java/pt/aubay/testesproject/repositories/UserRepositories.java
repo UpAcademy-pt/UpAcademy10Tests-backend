@@ -14,6 +14,11 @@ public class UserRepositories extends Repositories<User> {
 		return User.class;
 	}
 	
+	public User getUser(String username) {
+		return em.find(getEntityClass(),username);	
+	}
+	
+	
 //Metodos que podem ser uteis - falta fazer a query correspondente 	
 	
 //	public List<User> getAll() {
