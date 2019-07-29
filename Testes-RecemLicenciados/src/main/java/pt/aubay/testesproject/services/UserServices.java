@@ -12,6 +12,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import pt.aubay.testesproject.business.UserBusiness;
+
+@Path("user")
 public class UserServices {
 
 	@Inject
@@ -23,21 +26,22 @@ public class UserServices {
 	@GET
 	@Path("Status")
 	@Produces (MediaType.TEXT_PLAIN)
-	public String healthCheck(UriInfo context) {
-		return userBusiness.healthcheck(context);
+	public String healthCheck() {
+		return "URI " + context.getRequestUri().toString() + " is OK!";
+		//return userBusiness.healthCheck(context);
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String addUser(String username, String password) {
+	public Response addUser(String username, String password) {
 		return userBusiness.add(username, password);
 	}
 	
 	@GET
 	@Path("/{username}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public String getUser(@PathParam("username") String username, String password) {
+	public Response getUser(@PathParam("username") String username, String password) {
 		return userBusiness.get(username, password);
 	}
 }
