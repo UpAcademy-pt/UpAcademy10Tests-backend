@@ -12,6 +12,9 @@ import javax.persistence.NamedQuery;
 	 @NamedQuery(name="User.getUserByUsername", query="SELECT u FROM User u WHERE u.username=:username")
 })
 public class User extends Models{
+	
+	private static final long serialVersionUID = 1L;
+	
 	public String getUsername() {
 		return username;
 	}
