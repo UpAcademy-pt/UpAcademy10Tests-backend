@@ -9,7 +9,8 @@ import javax.persistence.NamedQuery;
 	 @NamedQuery(name="User.getAll",query="SELECT u FROM User u"),
 	 @NamedQuery(name = "User.count", query = "SELECT COUNT(u.id) FROM User u"),
 	 @NamedQuery(name="User.checkIfExists", query = "SELECT COUNT(u.id) FROM User u WHERE u.id =:id"),
-	 @NamedQuery(name="User.getUserByUsername", query="SELECT u FROM User u WHERE u.username=:username")
+	 @NamedQuery(name="User.getUserByUsername", query="SELECT u FROM User u WHERE u.username=:username"),
+	 @NamedQuery(name="User.checkIfExistsByUsername", query = "SELECT COUNT(u.username) FROM User u WHERE u.username =:username"),
 })
 public class User extends Models{
 	public String getUsername() {
@@ -18,14 +19,23 @@ public class User extends Models{
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String[] getPassword() {
-		return password;
+
+	public String getHashPass() {
+		return hashPass;
 	}
-	public void setPassword(String[] password) {
-		this.password = password;
+	public void setHashPass(String hashPass) {
+		this.hashPass = hashPass;
 	}
+	public String getSalt() {
+		return salt;
+	}
+	public void setSalt(String salt) {
+		this.salt = salt;
+	}
+
 	protected String username;
-	protected String [] password; /*vai conter o hash-code e a password*/
+	protected String hashPass; /*vai conter o hash-code e a password*/
+	protected String salt;
 	
 	
 }

@@ -5,6 +5,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
+
+import pt.aubay.testesproject.auxiliary.TempUser;
 import pt.aubay.testesproject.models.User;
 import pt.aubay.testesproject.repositories.UserRepositories;
 import pt.aubay.testesproject.utils.PasswordUtils;;
@@ -16,17 +18,25 @@ public class UserBusiness {
 	public String healthCheck(UriInfo context) {
 		return "URI " + context.getRequestUri().toString() + " is OK!";
 	}
-	
-	public Response add(String username, String password){
+		
+	public Response add(TempUser tempUser){
+		String username=tempUser.getUsername();
+		String password=tempUser.getPassword();
 		String [] pass;
 		User user=new User();
 		boolean checkIfExist=checkIfUsernameExists(username);
 		if(checkIfExist==false) {
 			user.setUsername(username);
-			user.setPassword(passwordToHashcode(password));
+			user.setHashPass(passwordToHashcode(password)[0]);
+			user.setSalt(passwordToHashcode(password)[1]);
 			userRepository.addEntity(user);
+			return Response.ok().entity("Success").build();
 		}
 		return Response.status(Status.FORBIDDEN).entity("Este username já existe").build();
+	}
+	
+	public Response getAllUsers() {
+		return Response.ok(userRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
 	public Response get(String username, String password){
@@ -43,16 +53,13 @@ public class UserBusiness {
 	}
 	
 	public boolean checkIfUsernameExists(String username) {
-		if(userRepository.getUser(username)==null)
-			return false;
-		else return true;
+		return userRepository.userExists(username);
 	}
 	
 	public Response checkIfUserValid(String username, String password) {
 		User myUser=userRepository.getUser(username);
-		String[] hashCode=myUser.getPassword();
-		String key=hashCode[0];
-		String salt=hashCode[1];
+		String key=myUser.getHashPass();
+		String salt=myUser.getSalt();
 		Response response=checkIfUsernameValid(username);
 		if(response!=Response.ok().entity("Success").build())
 			return response;
@@ -62,7 +69,7 @@ public class UserBusiness {
 	}
 	
 	public String[] passwordToHashcode(String password) {
-		String salt = PasswordUtils.generateSalt(512).get();
+		String salt = PasswordUtils.generateSalt(50).get();
 		String key = PasswordUtils.hashPassword(password, salt).get();
 		String[] result= {key, salt};
 		return result;
