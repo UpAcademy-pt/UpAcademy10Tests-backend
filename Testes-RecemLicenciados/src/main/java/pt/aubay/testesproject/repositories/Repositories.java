@@ -17,13 +17,13 @@ public abstract class Repositories<T extends Models> {
 		em.merge(entity);
 	}
 	
-	public T getEntity(long id ) {
+	public T getEntity(long id) {
 		return em.find(getEntityClass(),id);	
 	}
 	
 	
 	public void updateEntity(long id, T entity) {
-		entity.setId(id);
+		entity.setID(id);
 		em.merge(entity);
 	}
 	

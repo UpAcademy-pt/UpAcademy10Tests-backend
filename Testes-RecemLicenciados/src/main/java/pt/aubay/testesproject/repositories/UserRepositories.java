@@ -5,6 +5,8 @@ import java.util.List;
 import javax.faces.bean.RequestScoped;
 import javax.persistence.Query;
 
+import pt.aubay.testesproject.models.User;
+
 @RequestScoped
 public class UserRepositories extends Repositories<User> {
 
@@ -15,7 +17,8 @@ public class UserRepositories extends Repositories<User> {
 	}
 	
 	public User getUser(String username) {
-		return em.find(getEntityClass(),username);	
+		Query query = em.createNamedQuery("User.getUserByUsername",getEntityClass());
+		return query;
 	}
 	
 	
