@@ -42,10 +42,10 @@ public class UserServices {
 	}
 	
 	@GET
-	@Path("/{username}")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUser(@PathParam("username") String username, String password) {
-		return userBusiness.get(username, password);
+	public Response getUser(TempUser user) {
+		return userBusiness.get(user);
 	}
 	
 	@GET

@@ -39,15 +39,15 @@ public class UserBusiness {
 		return Response.ok(userRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
-	public Response get(String username, String password){
-		Response response=checkIfUserValid(username, password);
-		if(response!=Response.ok().entity("Success").build())
+	public Response get(TempUser tempUser){
+		Response response=checkIfUserValid(tempUser);
+		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
-		return Response.ok(userRepository.getUser(username), MediaType.APPLICATION_JSON).build();
+		return Response.ok(userRepository.getUser(tempUser.getUsername()), MediaType.APPLICATION_JSON).build();
 	}
 	
 	public Response checkIfUsernameValid(String username) {
-		if(userRepository.getUser(username)==null)
+		if(checkIfUsernameExists(username)==false)
 			return Response.status(Status.NOT_FOUND).entity("Não existe na base de dados").build();
 		return Response.ok().entity("Success").build();
 	}
@@ -56,14 +56,16 @@ public class UserBusiness {
 		return userRepository.userExists(username);
 	}
 	
-	public Response checkIfUserValid(String username, String password) {
-		User myUser=userRepository.getUser(username);
+	public Response checkIfUserValid(TempUser tempUser) {
+		Response response=checkIfUsernameValid(tempUser.getUsername());
+		if(response.getStatus()!=Response.Status.OK.getStatusCode())
+			return response;
+		
+		User myUser=userRepository.getUser(tempUser.getUsername());
 		String key=myUser.getHashPass();
 		String salt=myUser.getSalt();
-		Response response=checkIfUsernameValid(username);
-		if(response!=Response.ok().entity("Success").build())
-			return response;
-		if(!PasswordUtils.verifyPassword(password, key, salt))
+		
+		if(!PasswordUtils.verifyPassword(tempUser.getPassword(), key, salt))
 			return Response.status(Status.FORBIDDEN).entity("Palavra-passe inválida").build();
 		return Response.ok().entity("Success").build();
 	}
