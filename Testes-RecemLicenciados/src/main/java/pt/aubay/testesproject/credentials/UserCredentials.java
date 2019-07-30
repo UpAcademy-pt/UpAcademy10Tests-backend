@@ -1,6 +1,6 @@
-package pt.aubay.testesproject.auxiliary;
+package pt.aubay.testesproject.credentials;
 
-public class TempUser {
+public class UserCredentials {
 	private String username;
 	private String password;
 	
@@ -16,5 +16,4 @@ public class TempUser {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
 }

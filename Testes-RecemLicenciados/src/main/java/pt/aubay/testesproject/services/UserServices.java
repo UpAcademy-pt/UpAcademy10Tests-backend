@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import pt.aubay.testesproject.auxiliary.TempUser;
+import pt.aubay.testesproject.credentials.UserCredentials;
 import pt.aubay.testesproject.business.UserBusiness;
 
 @Transactional
@@ -31,20 +31,19 @@ public class UserServices {
 	@Produces (MediaType.TEXT_PLAIN)
 	public String healthCheck() {
 		return "URI " + context.getRequestUri().toString() + " is OK!";
-		//return userBusiness.healthCheck(context);
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addUser(TempUser user) {
+	public Response addUser(UserCredentials user) {
 		return userBusiness.add(user);
 	}
 	
 	@GET
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUser(TempUser user) {
+	public Response getUser(UserCredentials user) {
 		return userBusiness.get(user);
 	}
 	
