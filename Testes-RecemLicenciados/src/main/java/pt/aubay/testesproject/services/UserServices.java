@@ -41,9 +41,10 @@ public class UserServices {
 	}
 	
 	@GET
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("login/{username}/{password}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUser(UserCredentials user) {
+	public Response getUser(@PathParam("username") String username, @PathParam("password") String password) {
+		UserCredentials user = new UserCredentials(username, password);
 		return userBusiness.get(user);
 	}
 	
