@@ -34,6 +34,7 @@ public class UserServices {
 	}
 	
 	@POST
+	@Path("adduser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response addUser(UserCredentials user) {
