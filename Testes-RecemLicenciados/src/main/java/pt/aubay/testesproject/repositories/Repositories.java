@@ -23,7 +23,7 @@ public abstract class Repositories<T extends Models> {
 	
 	
 	public void updateEntity(long id, T entity) {
-		entity.setID(id);
+		entity.setId(id);
 		em.merge(entity);
 	}
 	

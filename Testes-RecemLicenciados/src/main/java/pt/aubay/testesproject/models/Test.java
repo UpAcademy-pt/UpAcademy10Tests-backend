@@ -1,9 +1,12 @@
 package pt.aubay.testesproject.models;
 
 import java.util.Date;
+import java.util.ArrayList;
+import pt.aubay.testesproject.models.Questions;
+
 
 public class Test extends Models{
-	private ArrayList <Questions>;
+	private ArrayList <Questions> questions;
 	private String author;
 	private Date date;
 	private int timer;
@@ -11,6 +14,14 @@ public class Test extends Models{
 	private String availability;
 	
 	public Test() {
+	}
+	
+	public ArrayList<Questions> getQuestions() {
+		return questions;
+	}
+
+	public void setQuestions(ArrayList<Questions> questions) {
+		this.questions = questions;
 	}
 
 	public String getAuthor() {
