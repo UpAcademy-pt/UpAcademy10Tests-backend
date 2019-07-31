@@ -37,5 +37,11 @@ public class UserRepositories extends Repositories<User> {
 		query.setParameter("id", id);
 		return (long) query.getSingleResult() == 1;
 	}
+	
+	public boolean userExists(String username) {
+		Query query = em.createNamedQuery("User.checkIfExistsByUsername");
+		query.setParameter("username", username);
+		return (long) query.getSingleResult() == 1;
+	}
 
 }

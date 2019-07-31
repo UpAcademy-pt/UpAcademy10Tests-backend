@@ -1,6 +1,7 @@
 package pt.aubay.testesproject.services;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -12,8 +13,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import pt.aubay.testesproject.credentials.UserCredentials;
 import pt.aubay.testesproject.business.UserBusiness;
 
+@Transactional
 @Path("user")
 public class UserServices {
 
@@ -28,20 +31,26 @@ public class UserServices {
 	@Produces (MediaType.TEXT_PLAIN)
 	public String healthCheck() {
 		return "URI " + context.getRequestUri().toString() + " is OK!";
-		//return userBusiness.healthCheck(context);
 	}
 	
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addUser(String username, String password) {
-		return userBusiness.add(username, password);
+	public Response addUser(UserCredentials user) {
+		return userBusiness.add(user);
 	}
 	
 	@GET
-	@Path("/{username}")
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUser(@PathParam("username") String username, String password) {
-		return userBusiness.get(username, password);
+	public Response getUser(UserCredentials user) {
+		return userBusiness.get(user);
+	}
+	
+	@GET
+	@Path("all")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllUsers() {
+		return userBusiness.getAllUsers();
 	}
 }
