@@ -27,6 +27,11 @@ public abstract class Repositories<T extends Models> {
 		em.merge(entity);
 	}
 	
+	//check if correct
+	public void editEntity(T myEntity) {
+		em.merge(myEntity);
+	}
+	
 	public void deleteEntity(long id) {
 		T temp = em.find(getEntityClass(), id);
 		em.remove(temp);

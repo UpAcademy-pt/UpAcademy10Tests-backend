@@ -24,4 +24,5 @@ public class UserCredentials {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
 }
