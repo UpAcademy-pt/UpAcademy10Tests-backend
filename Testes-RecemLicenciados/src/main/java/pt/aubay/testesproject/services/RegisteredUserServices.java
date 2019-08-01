@@ -19,7 +19,7 @@ import pt.aubay.testesproject.models.dto.RegisteredUserDTO;
 import pt.aubay.testesproject.repositories.RegisteredUserRepository;
 
 @Transactional
-@Path("registeredUser")
+@Path("user")
 public class RegisteredUserServices {
 	@Inject
 	protected RegisteredUserBusiness userBusiness;

@@ -17,7 +17,7 @@ import pt.aubay.testesproject.credentials.UserCredentials;
 import pt.aubay.testesproject.business.UserBusiness;
 
 @Transactional
-@Path("user")
+@Path("usertest")
 public class UserServices {
 
 	@Inject
