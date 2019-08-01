@@ -1,4 +1,4 @@
-package pt.aubay.testesproject.models;
+package pt.aubay.testesproject.models.entities;
 
 public class Answer extends Models{
 	private long questionId;

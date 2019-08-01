@@ -6,7 +6,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import pt.aubay.testesproject.credentials.UserCredentials;
-import pt.aubay.testesproject.models.User;
+import pt.aubay.testesproject.models.entities.User;
 import pt.aubay.testesproject.repositories.UserRepositories;
 import pt.aubay.testesproject.utils.PasswordUtils;
 

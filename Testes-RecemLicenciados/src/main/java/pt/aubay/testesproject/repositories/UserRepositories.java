@@ -5,7 +5,7 @@ import java.util.List;
 import javax.faces.bean.RequestScoped;
 import javax.persistence.Query;
 
-import pt.aubay.testesproject.models.User;
+import pt.aubay.testesproject.models.entities.User;
 
 @RequestScoped
 public class UserRepositories extends Repositories<User> {

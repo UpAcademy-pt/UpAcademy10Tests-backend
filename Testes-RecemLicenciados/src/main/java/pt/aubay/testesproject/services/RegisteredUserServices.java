@@ -15,8 +15,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import pt.aubay.testesproject.business.RegisteredUserBusiness;
-import pt.aubay.testesproject.credentials.AddUserCredentials;
-import pt.aubay.testesproject.credentials.UserCredentials;
+import pt.aubay.testesproject.models.dto.RegisteredUserDTO;
+import pt.aubay.testesproject.repositories.RegisteredUserRepository;
 
 @Transactional
 @Path("registeredUser")
@@ -38,16 +38,15 @@ public class RegisteredUserServices {
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addUser(AddUserCredentials user) {
+	public Response addUser(RegisteredUserDTO user) {
 		return userBusiness.add(user);
 	}
 	
 	@GET
 	@Path("login/{username}/{password}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUser(@PathParam("username") String username, @PathParam("password") String password) {
-		UserCredentials user = new UserCredentials(username, password);
-		return userBusiness.get(user);
+	public Response getUser(@PathParam("username") String usernameOrEmail, @PathParam("password") String password) {
+		return userBusiness.get(usernameOrEmail, password);
 	}
 	
 	@GET

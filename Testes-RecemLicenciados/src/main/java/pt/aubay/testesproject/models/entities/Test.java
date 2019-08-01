@@ -1,8 +1,8 @@
-package pt.aubay.testesproject.models;
+package pt.aubay.testesproject.models.entities;
 
 import java.util.Date;
 import java.util.ArrayList;
-import pt.aubay.testesproject.models.Questions;
+import pt.aubay.testesproject.models.entities.Questions;
 
 
 public class Test extends Models{

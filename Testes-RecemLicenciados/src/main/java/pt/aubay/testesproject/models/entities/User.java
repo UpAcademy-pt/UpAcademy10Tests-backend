@@ -1,4 +1,4 @@
-package pt.aubay.testesproject.models;
+package pt.aubay.testesproject.models.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;

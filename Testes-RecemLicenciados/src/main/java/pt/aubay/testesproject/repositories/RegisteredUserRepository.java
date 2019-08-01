@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import pt.aubay.testesproject.models.RegisteredUser;
+import pt.aubay.testesproject.models.entities.RegisteredUser;
 
 
 public class RegisteredUserRepository extends Repositories<RegisteredUser>{
@@ -26,8 +26,7 @@ public class RegisteredUserRepository extends Repositories<RegisteredUser>{
 		query.setParameter("username", username);
 		return (RegisteredUser) query.getSingleResult();
 	}
-
-	public List<RegisteredUser> getAll() {
+public List<RegisteredUser> getAll() {
 		Query query = em.createNamedQuery("RegisteredUser.getAll", getEntityClass());
 		return query.getResultList();
 	}
@@ -55,5 +54,22 @@ public class RegisteredUserRepository extends Repositories<RegisteredUser>{
 		Query query = em.createNamedQuery("RegisteredUser.checkIfExistsByUsername");
 		query.setParameter("username", username);
 		return (long) query.getSingleResult() == 1;
+	}
+	
+	public String isUsernameOrEmail(String usernameOrEmail) {
+		Query query=em.createNamedQuery("RegisteredUser.checkIfUsername");
+		query.setParameter("username", usernameOrEmail);
+		if((long) query.getSingleResult() == 1) return "username";
+		//return "email"; //porque a verificacao complementar faz-se a seguir.
+		Query query2=em.createNamedQuery("RegisteredUser.checkIfEmail");
+		query2.setParameter("email", usernameOrEmail);
+		if((long) query2.getSingleResult() == 1) return "email";
+		return "none";
+	}
+	
+	public String getUsernameByEmail(String email) {
+		Query query = em.createNamedQuery("RegisteredUser.getUsernameByEmail",String.class);
+		query.setParameter("email", email);
+		return (String) query.getSingleResult();
 	}
 }

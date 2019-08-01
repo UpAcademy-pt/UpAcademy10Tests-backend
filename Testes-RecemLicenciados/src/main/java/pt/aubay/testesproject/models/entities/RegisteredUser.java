@@ -1,4 +1,4 @@
-package pt.aubay.testesproject.models;
+package pt.aubay.testesproject.models.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
@@ -12,6 +12,10 @@ import javax.persistence.NamedQuery;
 	 @NamedQuery(name="RegisteredUser.getUserByUsername", query="SELECT u FROM RegisteredUser u WHERE u.username=:username"),
 	 @NamedQuery(name="RegisteredUser.checkIfExistsByUsername", query = "SELECT COUNT(u.username) FROM RegisteredUser u WHERE u.username =:username"),
 	 @NamedQuery(name="RegisteredUser.getIDByUsername", query="SELECT u.id FROM RegisteredUser u WHERE u.username=:username"),
+	 @NamedQuery(name="RegisteredUser.checkIfUsername", query="SELECT COUNT(u.id) FROM RegisteredUser u WHERE u.username=:username"),
+	 @NamedQuery(name="RegisteredUser.checkIfEmail", query="SELECT COUNT(u.id) FROM RegisteredUser u WHERE u.email=:email"),
+	 @NamedQuery(name="RegisteredUser.getUsernameByEmail", query="SELECT u.username FROM RegisteredUser u WHERE u.email=:email")
+	 
 })
 
 public class RegisteredUser extends Models{
@@ -21,9 +25,10 @@ public class RegisteredUser extends Models{
 	private String salt;
 	private String accesstype;
 
-	public RegisteredUser() {
-		
+	public RegisteredUser() {	
 	}
+	
+	
 	
 	public String getUsername() {
 		return username;

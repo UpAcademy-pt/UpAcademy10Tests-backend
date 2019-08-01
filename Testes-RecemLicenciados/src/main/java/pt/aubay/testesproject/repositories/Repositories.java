@@ -3,7 +3,7 @@ package pt.aubay.testesproject.repositories;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import pt.aubay.testesproject.models.Models;
+import pt.aubay.testesproject.models.entities.Models;
 
 public abstract class Repositories<T extends Models> {
 	
