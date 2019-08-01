@@ -5,7 +5,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import pt.aubay.testesproject.credentials.UserCredentials;
+//import pt.aubay.testesproject.credentials.UserCredentials;
 import pt.aubay.testesproject.models.entities.User;
 import pt.aubay.testesproject.repositories.UserRepositories;
 import pt.aubay.testesproject.utils.PasswordUtils;
@@ -18,7 +18,7 @@ public class UserBusiness {
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		
-	public Response add(UserCredentials userCredentials){
+	/*public Response add(UserCredentials userCredentials){
 		String username=userCredentials.getUsername();
 		String password=userCredentials.getPassword();
 		User user=new User();
@@ -31,18 +31,18 @@ public class UserBusiness {
 			return Response.ok().entity("Success").build();
 		}
 		return Response.status(Status.FORBIDDEN).entity("This username exists already").build();
-	}
+	}*/
 	
 	public Response getAllUsers() {
 		return Response.ok(userRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
-	public Response get(UserCredentials userCredentials){
+	/*public Response get(UserCredentials userCredentials){
 		Response response=checkIfUserValid(userCredentials);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
 		return Response.ok(userRepository.getUser(userCredentials.getUsername()), MediaType.APPLICATION_JSON).build();
-	}
+	}*/
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
@@ -54,26 +54,26 @@ public class UserBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response checkIfPasswordValid(UserCredentials userCredentials) {
-		User myUser=userRepository.getUser(userCredentials.getUsername());
-		String key=myUser.getHashPass();
-		String salt=myUser.getSalt();
-		
-		if(!PasswordUtils.verifyPassword(userCredentials.getPassword(), key, salt))
-			return Response.status(Status.FORBIDDEN).entity("Invalid Password").build();
-		return Response.ok().entity("Success").build();
-	}
+//	public Response checkIfPasswordValid(UserCredentials userCredentials) {
+//		User myUser=userRepository.getUser(userCredentials.getUsername());
+//		String key=myUser.getHashPass();
+//		String salt=myUser.getSalt();
+//		
+//		if(!PasswordUtils.verifyPassword(userCredentials.getPassword(), key, salt))
+//			return Response.status(Status.FORBIDDEN).entity("Invalid Password").build();
+//		return Response.ok().entity("Success").build();
+//	}
 	
 	public boolean checkIfUsernameExists(String username) {
 		return userRepository.userExists(username);
 	}
 	
-	public Response checkIfUserValid(UserCredentials userCredentials) {
-		Response response=checkIfUsernameValid(userCredentials.getUsername());
-		if(response.getStatus()!=Response.Status.OK.getStatusCode())
-			return response;
-		return checkIfPasswordValid(userCredentials);
-	}
+//	public Response checkIfUserValid(UserCredentials userCredentials) {
+//		Response response=checkIfUsernameValid(userCredentials.getUsername());
+//		if(response.getStatus()!=Response.Status.OK.getStatusCode())
+//			return response;
+//		return checkIfPasswordValid(userCredentials);
+//	}
 
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////

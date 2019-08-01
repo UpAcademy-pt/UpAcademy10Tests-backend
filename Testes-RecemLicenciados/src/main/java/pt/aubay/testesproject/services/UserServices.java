@@ -13,7 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import pt.aubay.testesproject.credentials.UserCredentials;
+//import pt.aubay.testesproject.credentials.UserCredentials;
 import pt.aubay.testesproject.business.UserBusiness;
 
 @Transactional
@@ -33,7 +33,7 @@ public class UserServices {
 		return "URI " + context.getRequestUri().toString() + " is OK!";
 	}
 	
-	@POST
+	/*@POST
 	@Path("adduser")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
@@ -47,7 +47,7 @@ public class UserServices {
 	public Response getUser(@PathParam("username") String username, @PathParam("password") String password) {
 		UserCredentials user = new UserCredentials(username, password);
 		return userBusiness.get(user);
-	}
+	}*/
 	
 	@GET
 	@Path("all")
