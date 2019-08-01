@@ -62,7 +62,8 @@ public class RegisteredUserBusiness {
 		Response response=checkIfUserValid(userDTO);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
-		return Response.ok(userRepository.getUser(userDTO.getUsername()), MediaType.APPLICATION_JSON).build();
+		RegisteredUser user = userRepository.getUser(userDTO.getUsername());
+		return Response.ok(convertEntityToDTO(user), MediaType.APPLICATION_JSON).build();
 	}
 	
 	public Response changePassword(String username, String oldPassword, String newPassword) {
