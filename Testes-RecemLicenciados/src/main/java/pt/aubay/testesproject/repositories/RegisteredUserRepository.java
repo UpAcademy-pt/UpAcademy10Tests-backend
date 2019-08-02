@@ -67,6 +67,12 @@ public List<RegisteredUser> getAll() {
 		return "none";
 	}
 	
+	public boolean emailExists(String email) {
+		Query query=em.createNamedQuery("RegisteredUser.checkIfEmail");
+		query.setParameter("email", email);
+		return (long) query.getSingleResult() == 1;
+	}
+	
 	public String getUsernameByEmail(String email) {
 		Query query = em.createNamedQuery("RegisteredUser.getUsernameByEmail",String.class);
 		query.setParameter("email", email);
