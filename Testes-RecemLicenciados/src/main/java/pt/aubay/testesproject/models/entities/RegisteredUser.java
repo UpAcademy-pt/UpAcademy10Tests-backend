@@ -23,7 +23,7 @@ public class RegisteredUser extends Models{
 	private String email;
 	private String hashcode;
 	private String salt;
-	private String accesstype;
+	private String accessType;
 
 	public RegisteredUser() {	
 	}
@@ -62,12 +62,12 @@ public class RegisteredUser extends Models{
 		this.email = email;
 	}
 
-	public String getAccesstype() {
-		return accesstype;
+	public String getAccessType() {
+		return accessType;
 	}
 
-	public void setAccesstype(String accesstype) {
-		this.accesstype = accesstype;
+	public void setAccessType(String accessType) {
+		this.accessType = accessType;
 	}
 	
 	

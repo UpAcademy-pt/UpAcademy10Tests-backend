@@ -20,7 +20,7 @@ public class SolvedTest extends Models{
 	
 	private ArrayList<Answer> answer;
 	private Date timeSpent;
-	private TestUser user;
+	private Candidate candidate;
 	private int score;
 	private long testID;
 	
@@ -36,11 +36,11 @@ public class SolvedTest extends Models{
 	public void setTimeSpent(Date timeSpent) {
 		this.timeSpent = timeSpent;
 	}
-	public TestUser getUser() {
-		return user;
+	public Candidate getCandidate() {
+		return candidate;
 	}
-	public void setUser(TestUser user) {
-		this.user = user;
+	public void setUser(Candidate candidate) {
+		this.candidate = candidate;
 	}
 	public int getScore() {
 		return score;

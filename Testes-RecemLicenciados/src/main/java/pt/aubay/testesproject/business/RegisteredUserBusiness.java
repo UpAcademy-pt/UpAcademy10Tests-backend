@@ -41,7 +41,7 @@ public class RegisteredUserBusiness {
 			//set Atributos para um Entity
 			user.setUsername(username); user.setHashcode(hashCode[0]);
 			user.setSalt(hashCode[1]); user.setEmail(email);
-			user.setAccesstype(accessType);
+			user.setAccessType(accessType);
 			
 			//Adicionar entity ao repositório
 			userRepository.addEntity(user);
@@ -194,7 +194,7 @@ public class RegisteredUserBusiness {
 	public RegisteredUserDTO convertEntityToDTO(RegisteredUser user) {
 		RegisteredUserDTO userDTO=new RegisteredUserDTO();
 		userDTO.setEmail(user.getEmail());
-		userDTO.setAccessType(user.getAccesstype());
+		userDTO.setAccessType(user.getAccessType());
 		userDTO.setId(user.getId());
 		userDTO.setUsername(user.getUsername());
 		return userDTO;
@@ -202,7 +202,7 @@ public class RegisteredUserBusiness {
 	
 	public RegisteredUser convertDTOToEntity(RegisteredUserDTO userDTO) {
 		RegisteredUser user=userRepository.getEntity(userDTO.getId());
-		user.setAccesstype(userDTO.getAccessType());
+		user.setAccessType(userDTO.getAccessType());
 		user.setEmail(userDTO.getEmail());
 		user.setUsername(userDTO.getUsername());
 		return user;

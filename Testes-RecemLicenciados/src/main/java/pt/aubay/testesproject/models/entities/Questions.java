@@ -15,17 +15,19 @@ import javax.persistence.NamedQuery;
 
 public class Questions extends Models{
 	private String enunciado;
-	private String[][] resposta;
+	private String[][] solution;
+	
+	
 	public String getEnunciado() {
 		return enunciado;
 	}
 	public void setEnunciado(String enunciado) {
 		this.enunciado = enunciado;
 	}
-	public String[][] getResposta() {
-		return resposta;
+	public String[][] getSolution() {
+		return solution;
 	}
-	public void setResposta(String[][] resposta) {
-		this.resposta = resposta;
+	public void setSolution(String[][] solution) {
+		this.solution = solution;
 	}
 }

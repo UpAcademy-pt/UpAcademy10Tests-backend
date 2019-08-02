@@ -23,7 +23,7 @@ public class Test extends Models{
 	private Date date;
 	private int timer;
 	private int averageScore;
-	private String availability;
+	private String testName;
 	
 	public Test() {
 	}
@@ -68,12 +68,12 @@ public class Test extends Models{
 		this.averageScore = averageScore;
 	}
 
-	public String getAvailability() {
-		return availability;
+	public String getTestName() {
+		return testName;
 	}
 
-	public void setAvailability(String availability) {
-		this.availability = availability;
+	public void setTestName(String testName) {
+		this.testName = testName;
 	}
 	
 }
