@@ -25,6 +25,19 @@
 			<artifactId>commons-lang3</artifactId>
 			<version>3.8.1</version>
 		</dependency>
+		<!-- 2 Dependencies related to email matters -->
+		<dependency>
+		    <groupId>com.sendgrid</groupId>
+		    <artifactId>java-http-client</artifactId>
+		    <version>4.2.0</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.sendgrid/sendgrid-java -->
+		<dependency>
+	    	<groupId>com.sendgrid</groupId>
+	    	<artifactId>sendgrid-java</artifactId>
+	    	<version>4.4.1</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
