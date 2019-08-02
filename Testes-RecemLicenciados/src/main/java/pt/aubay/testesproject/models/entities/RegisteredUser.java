@@ -15,10 +15,10 @@ import javax.persistence.NamedQuery;
 	 @NamedQuery(name="RegisteredUser.checkIfUsername", query="SELECT COUNT(u.id) FROM RegisteredUser u WHERE u.username=:username"),
 	 @NamedQuery(name="RegisteredUser.checkIfEmail", query="SELECT COUNT(u.id) FROM RegisteredUser u WHERE u.email=:email"),
 	 @NamedQuery(name="RegisteredUser.getUsernameByEmail", query="SELECT u.username FROM RegisteredUser u WHERE u.email=:email")
-	 
 })
 
 public class RegisteredUser extends Models{
+	private static final long serialVersionUID = 1L;
 	private String username;
 	private String email;
 	private String hashcode;

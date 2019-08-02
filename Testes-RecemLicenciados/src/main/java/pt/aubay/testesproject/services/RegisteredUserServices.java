@@ -3,6 +3,7 @@ package pt.aubay.testesproject.services;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -16,7 +17,6 @@ import javax.ws.rs.core.UriInfo;
 
 import pt.aubay.testesproject.business.RegisteredUserBusiness;
 import pt.aubay.testesproject.models.dto.RegisteredUserDTO;
-import pt.aubay.testesproject.repositories.RegisteredUserRepository;
 
 @Transactional
 @Path("user")
@@ -63,4 +63,19 @@ public class RegisteredUserServices {
 		return userBusiness.changePassword(username, oldPassword,newPassword);
 	}
 	
+	@PUT
+	@Path("edit")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response editUser(RegisteredUserDTO user) {
+		return userBusiness.edit(user);
+	}
+	
+	@DELETE
+	@Path("remove")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces (MediaType.TEXT_PLAIN)
+	public Response deleteUser(RegisteredUserDTO user) {
+		return userBusiness.remove(user);
+	}
 }
