@@ -17,11 +17,13 @@ import javax.persistence.NamedQuery;
 
 public class SolvedTest extends Models{
 	private static final long serialVersionUID = 1L;
+	
 	private ArrayList<Answer> answer;
 	private Date timeSpent;
 	private TestUser user;
 	private int score;
 	private long testID;
+	
 	public ArrayList<Answer> getAnswer() {
 		return answer;
 	}

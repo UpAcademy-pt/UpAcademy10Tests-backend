@@ -15,7 +15,7 @@ import javax.persistence.NamedQuery;
 
 public class Answer extends Models{
 	private long questionId;
-	private String givenAnswer;
+	private String[][] givenAnswer;
 	
 	public Answer() {
 		
@@ -29,11 +29,11 @@ public class Answer extends Models{
 		this.questionId = questionId;
 	}
 
-	public String getGivenAnswer() {
+	public String[][] getGivenAnswer() {
 		return givenAnswer;
 	}
 
-	public void setGivenAnswer(String givenAnswer) {
+	public void setGivenAnswer(String[][] givenAnswer) {
 		this.givenAnswer = givenAnswer;
 	}
 }
