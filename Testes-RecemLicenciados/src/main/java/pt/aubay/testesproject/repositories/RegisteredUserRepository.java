@@ -26,7 +26,7 @@ public class RegisteredUserRepository extends Repositories<RegisteredUser>{
 		query.setParameter("username", username);
 		return (RegisteredUser) query.getSingleResult();
 	}
-public List<RegisteredUser> getAll() {
+	public List<RegisteredUser> getAll() {
 		Query query = em.createNamedQuery("RegisteredUser.getAll", getEntityClass());
 		return query.getResultList();
 	}

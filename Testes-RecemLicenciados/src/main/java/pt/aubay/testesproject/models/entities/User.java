@@ -12,6 +12,7 @@ import javax.persistence.NamedQuery;
 	 @NamedQuery(name="User.getUserByUsername", query="SELECT u FROM User u WHERE u.username=:username"),
 	 @NamedQuery(name="User.checkIfExistsByUsername", query = "SELECT COUNT(u.username) FROM User u WHERE u.username =:username"),
 })
+
 public class User extends Models{
 	
 	private static final long serialVersionUID = 1L;

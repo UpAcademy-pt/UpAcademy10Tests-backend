@@ -1,9 +1,21 @@
 package pt.aubay.testesproject.models.entities;
 
 import java.util.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
 import java.util.ArrayList;
 import pt.aubay.testesproject.models.entities.Questions;
 
+@Entity
+@NamedQueries({
+	 @NamedQuery(name="Test.getAll",query="SELECT t FROM Test t"),
+	 @NamedQuery(name="Test.count", query = "SELECT COUNT(t.id) FROM Test t"),
+	 @NamedQuery(name="Test.checkIfExists", query = "SELECT COUNT(t.id) FROM Test t WHERE t.id =:id"),
+	 @NamedQuery(name="Test.getTest", query="SELECT t FROM Test t WHERE t.id=:id"),
+})
 
 public class Test extends Models{
 	private ArrayList <Questions> questions;

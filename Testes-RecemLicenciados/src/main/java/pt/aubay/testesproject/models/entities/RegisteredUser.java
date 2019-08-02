@@ -7,7 +7,7 @@ import javax.persistence.NamedQuery;
 @Entity
 @NamedQueries({
 	 @NamedQuery(name="RegisteredUser.getAll",query="SELECT u FROM RegisteredUser u"),
-	 @NamedQuery(name = "RegisteredUser.count", query = "SELECT COUNT(u.id) FROM RegisteredUser u"),
+	 @NamedQuery(name="RegisteredUser.count", query = "SELECT COUNT(u.id) FROM RegisteredUser u"),
 	 @NamedQuery(name="RegisteredUser.checkIfExists", query = "SELECT COUNT(u.id) FROM RegisteredUser u WHERE u.id =:id"),
 	 @NamedQuery(name="RegisteredUser.getUserByUsername", query="SELECT u FROM RegisteredUser u WHERE u.username=:username"),
 	 @NamedQuery(name="RegisteredUser.checkIfExistsByUsername", query = "SELECT COUNT(u.username) FROM RegisteredUser u WHERE u.username =:username"),

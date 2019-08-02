@@ -1,5 +1,18 @@
 package pt.aubay.testesproject.models.entities;
 
+import javax.persistence.Entity;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
+@Entity
+@NamedQueries({
+	 @NamedQuery(name="Answer.getAnswer", query="SELECT a FROM Answer a WHERE a.id=:id"),
+	 @NamedQuery(name="Answer.getAll",query="SELECT a FROM Answer a"),
+	 @NamedQuery(name="Answer.count", query = "SELECT COUNT(a.id) FROM User a"),
+	 @NamedQuery(name="Answer.checkIfExists", query = "SELECT COUNT(a.id) FROM Answer a WHERE a.id =:id"),
+})
+
+
 public class Answer extends Models{
 	private long questionId;
 	private String givenAnswer;
