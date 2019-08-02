@@ -57,16 +57,19 @@ public class RegisteredUserBusiness {
 	public Response get(String usernameOrEmail, String password){
 		RegisteredUserDTO userDTO=new RegisteredUserDTO();
 		//type checks if input is username or email - login might be achieved by both username and email
-		String type=userRepository.isUsernameOrEmail(usernameOrEmail);
+		String type=isUsernameOrEmail(usernameOrEmail);
 		if(type.equals("email"))
-			userDTO.setUsername(userRepository.getUsernameByEmail(usernameOrEmail));
+			userDTO.setEmail(usernameOrEmail);
 		else
 			userDTO.setUsername(usernameOrEmail);
 		userDTO.setPassword(password);
 		//Checks if both username/email and password are valid
-		Response response=checkIfUserValid(userDTO);
+		Response response=checkIfUserValid(userDTO,type);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
+		//Sets username corresponding to email given
+		//if(type.equals("email"))
+			//userDTO.setUsername(userRepository.getUsernameByEmail(usernameOrEmail));
 		RegisteredUser user = userRepository.getUser(userDTO.getUsername());
 		return Response.ok(convertEntityToDTO(user), MediaType.APPLICATION_JSON).build();
 	}
@@ -146,12 +149,25 @@ public class RegisteredUserBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response checkIfUserValid(RegisteredUserDTO userDTO) {
+	public Response checkIfUserValid(RegisteredUserDTO userDTO, String type) {
 		//User valid if both username and password are valid
-		Response response=checkIfUsernameValid(userDTO.getUsername());
+		Response response=Response.ok().entity("Success").build();
+		if(type=="username")
+			response=checkIfUsernameValid(userDTO.getUsername());
+		if(type=="email") {
+			if(!userRepository.emailExists(userDTO.getEmail()))
+				response=Response.status(Status.NOT_FOUND).entity("No such email in database").build();
+			//our checks use username, so if e-mail exists in database the username is retrieved via the corresponding e-mail
+			else
+				userDTO.setUsername(userRepository.getUsernameByEmail(userDTO.getEmail()));
+		}
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
 		return checkIfPasswordValid(userDTO);
+	}
+	
+	public Response checkIfUserValid(RegisteredUserDTO userDTO) {
+		return checkIfUserValid(userDTO, "username");
 	}
 	
 	public Response checkParameters(RegisteredUserDTO userDTO, boolean needPassword, boolean needID) {
@@ -206,5 +222,13 @@ public class RegisteredUserBusiness {
 		user.setEmail(userDTO.getEmail());
 		user.setUsername(userDTO.getUsername());
 		return user;
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////AUXILIARY METHODS/////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////~
+	
+	public String isUsernameOrEmail(String usernameOrEmail) {
+		return usernameOrEmail.indexOf('@')!=-1 ? "email" : "username";
 	}
 }
