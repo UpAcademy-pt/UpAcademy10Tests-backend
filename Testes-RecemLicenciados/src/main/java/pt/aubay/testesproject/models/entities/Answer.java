@@ -8,7 +8,7 @@ import javax.persistence.NamedQuery;
 @NamedQueries({
 	 @NamedQuery(name="Answer.getAnswer", query="SELECT a FROM Answer a WHERE a.id=:id"),
 	 @NamedQuery(name="Answer.getAll",query="SELECT a FROM Answer a"),
-	 @NamedQuery(name="Answer.count", query = "SELECT COUNT(a.id) FROM User a"),
+	 @NamedQuery(name="Answer.count", query = "SELECT COUNT(a.id) FROM Answer a"),
 	 @NamedQuery(name="Answer.checkIfExists", query = "SELECT COUNT(a.id) FROM Answer a WHERE a.id =:id"),
 })
 
