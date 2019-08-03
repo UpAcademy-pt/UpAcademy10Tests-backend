@@ -9,13 +9,14 @@ import javax.persistence.NamedQuery;
 	 @NamedQuery(name="Questions.getQuestions", query="SELECT q FROM Questions q WHERE q.id=:id"),
 	 @NamedQuery(name="Questions.getAll",query="SELECT q FROM Questions q"),
 	 @NamedQuery(name="Questions.count", query = "SELECT COUNT(q.id) FROM Questions q"),
-	 @NamedQuery(name="Questions.checkIfExists", query = "SELECT COUNT(q.id) FROM Questions q WHERE q.id =:id"),
+	 @NamedQuery(name="Questions.checkIfExists", query = "SELECT COUNT(q.id) FROM Questions q WHERE q.question =:question"),
+	 @NamedQuery(name="Questions.checkIfIdExists", query = "SELECT COUNT(q.id) FROM Questions q WHERE q.id =:id")
 })
 public class Questions extends Models{
 	private String question;
-	private String category;
-	private String options;
-	private int[][] solution;
+	private Category category;
+	private String[] options;
+	private int[] solution;
 	
 	public String getQuestion() {
 		return question;
@@ -23,22 +24,22 @@ public class Questions extends Models{
 	public void setQuestion(String question) {
 		this.question = question;
 	}
-	public String getCategory() {
+	public Category getCategory() {
 		return category;
 	}
-	public void setCategory(String category) {
+	public void setCategory(Category category) {
 		this.category = category;
 	}
-	public String getOptions() {
+	public String[] getOptions() {
 		return options;
 	}
-	public void setOptions(String options) {
+	public void setOptions(String[] options) {
 		this.options = options;
 	}
-	public int[][] getSolution() {
+	public int[] getSolution() {
 		return solution;
 	}
-	public void setSolution(int[][] solution) {
+	public void setSolution(int[] solution) {
 		this.solution = solution;
 	}
 

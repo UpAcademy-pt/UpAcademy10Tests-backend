@@ -68,8 +68,6 @@ public class RegisteredUserBusiness {
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
 		//Sets username corresponding to email given
-		//if(type.equals("email"))
-			//userDTO.setUsername(userRepository.getUsernameByEmail(usernameOrEmail));
 		RegisteredUser user = userRepository.getUser(userDTO.getUsername());
 		return Response.ok(convertEntityToDTO(user), MediaType.APPLICATION_JSON).build();
 	}
@@ -80,7 +78,7 @@ public class RegisteredUserBusiness {
 		userDTO.setUsername(username);
 		userDTO.setPassword(oldPassword);
 		
-		//We must check if User is válid (username and old password)
+		//We must check if User is valid (username and old password)
 		Response response=checkIfUserValid(userDTO);
 		if(response.getStatus()==Response.Status.OK.getStatusCode()) {
 			//Changes password
@@ -109,7 +107,7 @@ public class RegisteredUserBusiness {
 	
 	public Response remove(RegisteredUserDTO userDTO) {
 		
-		///To do afterwards when session is achieved -> check if admin is deleting own account (must be avoided)
+		///To do afterwards: when session is achieved -> check if admin is deleting own account (must be avoided)
 		
 		if(userDTO.getId()==0 || !(userRepository.userExists(userDTO.getId())))
 			return Response.status(Status.FORBIDDEN).entity("Invalid ID").build();

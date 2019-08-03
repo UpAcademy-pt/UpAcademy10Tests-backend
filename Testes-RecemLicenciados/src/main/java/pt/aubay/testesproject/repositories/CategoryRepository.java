@@ -15,10 +15,10 @@ public class CategoryRepository extends Repositories<Category>{
 		return Category.class;
 	}
 	
-	public long getCategory(long id) {
+	public Category getCategory(String category) {
 		Query query = em.createNamedQuery("Category.getCategory", getEntityClass());
-		query.setParameter("id", id);
-		return (long) query.getSingleResult();
+		query.setParameter("category", category);
+		return (Category) query.getSingleResult();
 	}
 	
 	public List<Category> getAll() {

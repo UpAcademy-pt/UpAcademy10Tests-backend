@@ -6,7 +6,7 @@ import javax.persistence.NamedQuery;
 
 @Entity
 @NamedQueries({
-	 @NamedQuery(name="Category.getCategory", query="SELECT q FROM Category q WHERE q.id=:id"),
+	 @NamedQuery(name="Category.getCategory", query="SELECT q FROM Category q WHERE q.category=:category"),
 	 @NamedQuery(name="Category.getAll",query="SELECT q FROM Category q"),
 	 @NamedQuery(name="Category.count", query = "SELECT COUNT(q.id) FROM Category q"),
 	 @NamedQuery(name="Category.checkIfExists", query = "SELECT COUNT(q.id) FROM Category q WHERE q.category =:category"),

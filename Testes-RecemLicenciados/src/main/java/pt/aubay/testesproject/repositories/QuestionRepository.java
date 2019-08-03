@@ -9,7 +9,7 @@ import javax.persistence.Query;
 import pt.aubay.testesproject.models.entities.Questions;
 
 @RequestScoped
-public class QuestionsRepositories extends Repositories<Questions>{
+public class QuestionRepository extends Repositories<Questions>{
 	
 	@Override
 	protected Class<Questions> getEntityClass() {
@@ -32,9 +32,15 @@ public class QuestionsRepositories extends Repositories<Questions>{
 		return (long) query.getSingleResult();
 	}
 	
-	public boolean questionsExists(long id) {
-		Query query = em.createNamedQuery("Questions.checkIfExists");
+	public boolean idExists(long id) {
+		Query query = em.createNamedQuery("Questions.checkIfIdExists");
 		query.setParameter("id", id);
+		return (long) query.getSingleResult() == 1;
+	}
+	
+	public boolean questionExists(String question) {
+		Query query = em.createNamedQuery("Questions.checkIfExists");
+		query.setParameter("question", question);
 		return (long) query.getSingleResult() == 1;
 	}
 }
