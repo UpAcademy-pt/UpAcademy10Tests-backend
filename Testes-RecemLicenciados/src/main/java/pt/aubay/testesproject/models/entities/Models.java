@@ -7,17 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
-@MappedSuperclass//Classe abstract...anotação para distinguir este tipo de classe das outras
+@MappedSuperclass//Designates a class whose mapping information is applied to the entities that inherit from it. A mapped superclass has no separate table defined for it.
 public class Models implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	protected long id;
-	
-//	public Models() {
-//		//super();
-//	}
 
 	public long getId() {
 		return id;

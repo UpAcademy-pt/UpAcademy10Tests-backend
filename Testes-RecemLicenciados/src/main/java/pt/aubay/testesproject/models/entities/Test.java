@@ -24,6 +24,7 @@ public class Test extends Models{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
 	@Column(length=100000)
 	private ArrayList <Questions> questions;
 	private String author;

@@ -35,6 +35,23 @@ public class TestBusiness {
 		return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
+	public Response edit(Test newTest) {
+		Response response=checkTestValidToEdit(newTest);
+		if(response.getStatus()!=Response.Status.OK.getStatusCode())
+			return response;
+		//We also need to reset back-end-determined values (Date and Average Score)
+		resetValues(newTest);
+		testRepository.editEntity(newTest);
+		return Response.ok().entity("Success").build();
+	}
+	
+	public Response remove(Test test) {
+		if(!testRepository.idExists(test.getId()))
+			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
+		testRepository.deleteEntity(test.getId());
+		return Response.ok().entity("Success").build();
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,13 +66,31 @@ public class TestBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response checkIfParametersThere(Test test) {
+	public Response checkTestValidToEdit(Test newTest) {
+		//First, we need to check if all parameters needed were introduced
+		if(checkIfParametersThere(newTest,true).getStatus()!=Response.Status.OK.getStatusCode())
+			return checkIfParametersThere(newTest,true);
+		//We then need to check if ID exists in database
+		if(!testRepository.idExists(newTest.getId()))
+			return Response.status(Status.NOT_ACCEPTABLE).entity("There is no such ID in database").build();
+		//We also need to check if there is any change in testName, author and timer and check the changed fields accordingly
+		//To do so, first we need to retrieve the corresponding entity
+		return null;
+	}
+	
+	public Response checkIfParametersThere(Test test, boolean needID) {
+		if(needID && test.getId()==0)
+			return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present, including ID.").build();
 		if(	test.getAuthor()!=null &&
 			test.getQuestions()!=null &&
 			test.getTimer()!=0 &&
 			test.getTestName()!=null)
 			return Response.ok().entity("Success").build();
 		return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present.").build();
+	}
+	
+	public Response checkIfParametersThere(Test test) {
+		return checkIfParametersThere(test, false);
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,5 +100,10 @@ public class TestBusiness {
 	public void setDate(Test test) {
 		Date date=new Date();
 		test.setDate(date);
+	}
+	
+	public void resetValues(Test test) {
+		setDate(test);
+		test.setAverageScore(0);
 	}
 }
