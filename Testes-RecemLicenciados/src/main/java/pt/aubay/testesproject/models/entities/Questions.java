@@ -13,6 +13,10 @@ import javax.persistence.NamedQuery;
 	 @NamedQuery(name="Questions.checkIfIdExists", query = "SELECT COUNT(q.id) FROM Questions q WHERE q.id =:id")
 })
 public class Questions extends Models{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String question;
 	private Category category;
 	private String[] options;

@@ -18,12 +18,16 @@ import pt.aubay.testesproject.models.entities.Questions;
 })
 
 public class Test extends Models{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList <Questions> questions;
 	private String author;
-	private Date date;
+	private Date date; //auto
 	private int timer;
-	private int averageScore;
-	private String testName;
+	private int averageScore; //calculated
+	private String testName;//must be unique
 	
 	public Test() {
 	}

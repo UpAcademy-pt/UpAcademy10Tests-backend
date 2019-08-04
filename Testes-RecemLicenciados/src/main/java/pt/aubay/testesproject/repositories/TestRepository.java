@@ -9,7 +9,7 @@ import javax.persistence.Query;
 import pt.aubay.testesproject.models.entities.Test;
 
 @RequestScoped
-public class TestRepositories extends Repositories<Test> {
+public class TestRepository extends Repositories<Test> {
 	
 	@Override
 	protected Class<Test> getEntityClass() {
