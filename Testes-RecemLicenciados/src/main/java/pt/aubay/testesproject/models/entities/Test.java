@@ -2,6 +2,7 @@ package pt.aubay.testesproject.models.entities;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -14,7 +15,8 @@ import pt.aubay.testesproject.models.entities.Questions;
 	 @NamedQuery(name="Test.getAll",query="SELECT t FROM Test t"),
 	 @NamedQuery(name="Test.count", query = "SELECT COUNT(t.id) FROM Test t"),
 	 @NamedQuery(name="Test.checkIfExists", query = "SELECT COUNT(t.id) FROM Test t WHERE t.id =:id"),
-	 @NamedQuery(name="Test.getTest", query="SELECT t FROM Test t WHERE t.id=:id"),
+	 @NamedQuery(name="Test.checkIfTestNameExists", query = "SELECT COUNT(t.id) FROM Test t WHERE t.testName =:testName"),
+	 @NamedQuery(name="Test.getTest", query="SELECT t FROM Test t WHERE t.id=:id")
 })
 
 public class Test extends Models{
@@ -22,6 +24,7 @@ public class Test extends Models{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	@Column(length=100000)
 	private ArrayList <Questions> questions;
 	private String author;
 	private Date date; //auto

@@ -68,10 +68,10 @@ public class TestRepository extends Repositories<Test> {
 		return (long) query.getSingleResult() == 1;
 	}
 	
-//	public boolean testExists(String author) {
-//		Query query = em.createNamedQuery("Test.checkIfExistsByAuthor");
-//		query.setParameter("author", author);
-//		return (long) query.getSingleResult() == 1;
-//	}
+	public boolean testExists(String testName) {
+		Query query = em.createNamedQuery("Test.checkIfTestNameExists");
+		query.setParameter("testName", testName);
+		return (long) query.getSingleResult() == 1;
+	}
 	
 }

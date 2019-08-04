@@ -54,7 +54,7 @@ public class QuestionServices {
 	@GET
 	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAllCategories() {
+	public Response getAllQuestions() {
 		return questionBusiness.getAll();
 	}
 	
