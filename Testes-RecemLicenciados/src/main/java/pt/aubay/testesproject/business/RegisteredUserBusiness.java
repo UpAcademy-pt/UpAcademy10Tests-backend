@@ -1,5 +1,7 @@
 package pt.aubay.testesproject.business;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -51,7 +53,10 @@ public class RegisteredUserBusiness {
 	}
 	
 	public Response getAllUsers() {
-		return Response.ok(userRepository.getAll(), MediaType.APPLICATION_JSON).build();
+		ArrayList<RegisteredUserDTO> allUsers=new ArrayList<RegisteredUserDTO>();
+		for(RegisteredUser elem:userRepository.getAll())
+			allUsers.add(convertEntityToDTO(elem));
+		return Response.ok(allUsers, MediaType.APPLICATION_JSON).build();
 	}
 	
 	public Response get(String usernameOrEmail, String password){
