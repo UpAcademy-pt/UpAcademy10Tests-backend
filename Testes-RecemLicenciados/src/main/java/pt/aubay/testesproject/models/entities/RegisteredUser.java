@@ -1,5 +1,7 @@
 package pt.aubay.testesproject.models.entities;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -24,6 +26,7 @@ public class RegisteredUser extends Models{
 	private String hashcode;
 	private String salt;
 	private String accessType;
+	private Date lastLogin;
 
 	public RegisteredUser() {	
 	}
@@ -68,6 +71,18 @@ public class RegisteredUser extends Models{
 
 	public void setAccessType(String accessType) {
 		this.accessType = accessType;
+	}
+
+
+
+	public Date getLastLogin() {
+		return lastLogin;
+	}
+
+
+
+	public void setLastLogin(Date lastLogin) {
+		this.lastLogin = lastLogin;
 	}
 	
 	

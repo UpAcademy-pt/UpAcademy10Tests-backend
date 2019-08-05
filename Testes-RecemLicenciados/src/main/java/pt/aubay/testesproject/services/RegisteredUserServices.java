@@ -1,5 +1,7 @@
 package pt.aubay.testesproject.services;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -77,5 +79,20 @@ public class RegisteredUserServices {
 	@Produces (MediaType.TEXT_PLAIN)
 	public Response deleteUser(RegisteredUserDTO user) {
 		return userBusiness.remove(user);
+	}
+	
+	//temporary
+	@PUT
+	@Path("resetPassword")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response resetPassword(RegisteredUserDTO user) {
+		try {
+			return userBusiness.resetPassword(user);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

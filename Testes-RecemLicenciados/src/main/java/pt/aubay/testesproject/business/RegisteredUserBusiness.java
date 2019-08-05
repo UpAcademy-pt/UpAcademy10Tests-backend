@@ -1,20 +1,28 @@
 package pt.aubay.testesproject.business;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import pt.aubay.testesproject.auxiliary.MyEmail;
 import pt.aubay.testesproject.models.dto.RegisteredUserDTO;
 import pt.aubay.testesproject.models.entities.RegisteredUser;
+import pt.aubay.testesproject.models.entities.Test;
 import pt.aubay.testesproject.repositories.RegisteredUserRepository;
+import pt.aubay.testesproject.services.EmailServices;
 import pt.aubay.testesproject.utils.PasswordUtils;
 
 public class RegisteredUserBusiness {
 	@Inject
 	RegisteredUserRepository userRepository;
+	
+	@Inject
+	EmailServices emailService;
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
@@ -22,7 +30,7 @@ public class RegisteredUserBusiness {
 		
 	public Response add(RegisteredUserDTO userDTO){
 		
-		Response response=checkParameters(userDTO, true, false);
+		Response response=checkParameters(userDTO, false);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
 		response=checkIfEmailExists(userDTO.getEmail());
@@ -30,20 +38,28 @@ public class RegisteredUserBusiness {
 			return response;
 		
 		String username=userDTO.getUsername();
-		String password=userDTO.getPassword();
+		//String password=userDTO.getPassword();
 		String email=userDTO.getEmail();
 		String accessType=userDTO.getAccessType();
 		RegisteredUser user=new RegisteredUser();
 		
-		
 		if(!userRepository.userExists(username)) {
 			//password->(hash, salt)
+			String password;
+			try {
+				password = generatePassword(userDTO.getEmail(),false);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				password="admin";
+				e.printStackTrace();
+			}
 			String[] hashCode=passwordToHashcode(password);
 			
 			//set Atributos para um Entity
 			user.setUsername(username); user.setHashcode(hashCode[0]);
 			user.setSalt(hashCode[1]); user.setEmail(email);
 			user.setAccessType(accessType);
+			setLastLogin(user);
 			
 			//Adicionar entity ao repositório
 			userRepository.addEntity(user);
@@ -67,13 +83,15 @@ public class RegisteredUserBusiness {
 			userDTO.setEmail(usernameOrEmail);
 		else
 			userDTO.setUsername(usernameOrEmail);
-		userDTO.setPassword(password);
+		//userDTO.setPassword(password);
 		//Checks if both username/email and password are valid
-		Response response=checkIfUserValid(userDTO,type);
+		Response response=checkIfUserValid(userDTO,password,type);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
 		//Sets username corresponding to email given
 		RegisteredUser user = userRepository.getUser(userDTO.getUsername());
+		setLastLogin(user);
+		userRepository.editEntity(user);
 		return Response.ok(convertEntityToDTO(user), MediaType.APPLICATION_JSON).build();
 	}
 	
@@ -81,10 +99,10 @@ public class RegisteredUserBusiness {
 		//Creates DTO with pass e username
 		RegisteredUserDTO userDTO= new RegisteredUserDTO();
 		userDTO.setUsername(username);
-		userDTO.setPassword(oldPassword);
+		//userDTO.setPassword(oldPassword);
 		
 		//We must check if User is valid (username and old password)
-		Response response=checkIfUserValid(userDTO);
+		Response response=checkIfUserValid(userDTO, oldPassword);
 		if(response.getStatus()==Response.Status.OK.getStatusCode()) {
 			//Changes password
 			String[] newHash;
@@ -97,7 +115,7 @@ public class RegisteredUserBusiness {
 	
 	public Response edit(RegisteredUserDTO userDTO) {
 		
-		Response response=checkParameters(userDTO,false,true);
+		Response response=checkParameters(userDTO,true);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
 		
@@ -120,6 +138,24 @@ public class RegisteredUserBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
+	//Temporary
+	public Response resetPassword(RegisteredUserDTO userDTO) throws IOException {
+		//Check if ID and e-mail there
+		if(userDTO.getEmail()==null || userDTO.getId()==0 || userDTO.getUsername()==null)
+			return Response.status(Status.NOT_ACCEPTABLE).entity("ID and e-mail must be present").build();
+		RegisteredUser myUser=userRepository.getEntity(userDTO.getId());
+		//Check if emails match
+		if(!userDTO.getEmail().equals(myUser.getEmail()) || !userDTO.getUsername().equals(myUser.getUsername()))
+			return Response.status(Status.NOT_ACCEPTABLE).entity("Mismatch between sent data and database").build();
+		//Generate new random string
+		String newPassword=generatePassword(userDTO.getEmail(),true);
+		String[] hashPass;
+		
+		hashPass=passwordToHashcode(newPassword);
+		userRepository.changePassword(myUser.getUsername(), hashPass);
+		return Response.ok().entity("Success").build();
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -136,12 +172,12 @@ public class RegisteredUserBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response checkIfPasswordValid(RegisteredUserDTO userDTO) {
+	public Response checkIfPasswordValid(RegisteredUserDTO userDTO, String password) {
 		RegisteredUser myUser=userRepository.getUser(userDTO.getUsername());
 		String key=myUser.getHashcode();
 		String salt=myUser.getSalt();
 		
-		if(!PasswordUtils.verifyPassword(userDTO.getPassword(), key, salt))
+		if(!PasswordUtils.verifyPassword(password, key, salt))
 			return Response.status(Status.FORBIDDEN).entity("Invalid Password").build();
 		return Response.ok().entity("Success").build();
 	}
@@ -152,7 +188,7 @@ public class RegisteredUserBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response checkIfUserValid(RegisteredUserDTO userDTO, String type) {
+	public Response checkIfUserValid(RegisteredUserDTO userDTO, String password, String type) {
 		//User valid if both username and password are valid
 		Response response=Response.ok().entity("Success").build();
 		if(type=="username")
@@ -166,18 +202,18 @@ public class RegisteredUserBusiness {
 		}
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
-		return checkIfPasswordValid(userDTO);
+		return checkIfPasswordValid(userDTO, password);
 	}
 	
-	public Response checkIfUserValid(RegisteredUserDTO userDTO) {
-		return checkIfUserValid(userDTO, "username");
+	public Response checkIfUserValid(RegisteredUserDTO userDTO, String password) {
+		return checkIfUserValid(userDTO, password, "username");
 	}
 	
-	public Response checkParameters(RegisteredUserDTO userDTO, boolean needPassword, boolean needID) {
-		if(needPassword==true && userDTO.getPassword()==null)
-			return Response.status(Status.FORBIDDEN).entity("Invalid User parameters. A password is needed to continue operation.").build();
-		if(needPassword==false && userDTO.getPassword()!=null)
-			return Response.status(Status.FORBIDDEN).entity("Invalid User parameters. A password was inserted.").build();
+	public Response checkParameters(RegisteredUserDTO userDTO, boolean needID) {
+//		if(needPassword==true && userDTO.getPassword()==null)
+//			return Response.status(Status.FORBIDDEN).entity("Invalid User parameters. A password is needed to continue operation.").build();
+//		if(needPassword==false && userDTO.getPassword()!=null)
+//			return Response.status(Status.FORBIDDEN).entity("Invalid User parameters. A password was inserted.").build();
 		//Note: password should not be sent when editing - there is a special function to do so
 		if(userDTO.getEmail()==null || userDTO.getUsername()==null ||userDTO.getAccessType()==null)
 			return Response.status(Status.FORBIDDEN).entity("Invalid User parameters. Check if all parameters were inserted").build();
@@ -206,6 +242,18 @@ public class RegisteredUserBusiness {
 		return result;
 	}
 	
+	public String generatePassword(String sendTo, boolean reset) throws IOException {
+		String password=PasswordUtils.generateSalt(10).get();
+		MyEmail myEmail=new MyEmail();
+		if(reset)
+			myEmail.setBody("A nova password é: "+password+"\n Não se esqueça de mudá-la.");
+		else
+			myEmail.setBody("A sua password é: "+password+"\n Não se esqueça de mudá-la.");
+		myEmail.setEmailTo(sendTo);
+		emailService.sendEmail(myEmail);
+		return password;
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////DTO-ENTITY CONVERSION/////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -216,6 +264,7 @@ public class RegisteredUserBusiness {
 		userDTO.setAccessType(user.getAccessType());
 		userDTO.setId(user.getId());
 		userDTO.setUsername(user.getUsername());
+		userDTO.setLastLogin(user.getLastLogin());
 		return userDTO;
 	}
 	
@@ -224,12 +273,18 @@ public class RegisteredUserBusiness {
 		user.setAccessType(userDTO.getAccessType());
 		user.setEmail(userDTO.getEmail());
 		user.setUsername(userDTO.getUsername());
+		user.setLastLogin(userDTO.getLastLogin());
 		return user;
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////AUXILIARY METHODS/////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////~
+	
+	public void setLastLogin(RegisteredUser user) {
+		Date date=new Date();
+		user.setLastLogin(date);
+	}
 	
 	public String isUsernameOrEmail(String usernameOrEmail) {
 		return usernameOrEmail.indexOf('@')!=-1 ? "email" : "username";

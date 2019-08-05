@@ -1,18 +1,21 @@
 package pt.aubay.testesproject.models.dto;
 
+import java.util.Date;
+
 public class RegisteredUserDTO extends ModelsDTO{
 	private String username;
 	private String email;
 	private String accessType;
-	private String password;
+	//private String password;
+	private Date lastLogin;
 	
 	public RegisteredUserDTO() {	
 	}
 	
-	public RegisteredUserDTO(String email, String password) {	
-		this.email=email;
-		this.password=password;
-	}
+//	public RegisteredUserDTO(String email, String password) {	
+//		this.email=email;
+//		this.password=password;
+//	}
 	
 	public String getUsername() {
 		return username;
@@ -33,11 +36,19 @@ public class RegisteredUserDTO extends ModelsDTO{
 	public void setAccessType(String accessType) {
 		this.accessType = accessType;
 	}
-	public String getPassword() {
+	/*public String getPassword() {
 		return password;
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}*/
+
+	public Date getLastLogin() {
+		return lastLogin;
+	}
+
+	public void setLastLogin(Date lastLogin) {
+		this.lastLogin = lastLogin;
 	}
 	
 }
