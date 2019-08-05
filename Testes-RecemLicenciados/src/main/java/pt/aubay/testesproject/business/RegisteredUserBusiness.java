@@ -12,7 +12,6 @@ import javax.ws.rs.core.Response.Status;
 import pt.aubay.testesproject.auxiliary.MyEmail;
 import pt.aubay.testesproject.models.dto.RegisteredUserDTO;
 import pt.aubay.testesproject.models.entities.RegisteredUser;
-import pt.aubay.testesproject.models.entities.Test;
 import pt.aubay.testesproject.repositories.RegisteredUserRepository;
 import pt.aubay.testesproject.services.EmailServices;
 import pt.aubay.testesproject.utils.PasswordUtils;
@@ -83,7 +82,6 @@ public class RegisteredUserBusiness {
 			userDTO.setEmail(usernameOrEmail);
 		else
 			userDTO.setUsername(usernameOrEmail);
-		//userDTO.setPassword(password);
 		//Checks if both username/email and password are valid
 		Response response=checkIfUserValid(userDTO,password,type);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
@@ -210,11 +208,6 @@ public class RegisteredUserBusiness {
 	}
 	
 	public Response checkParameters(RegisteredUserDTO userDTO, boolean needID) {
-//		if(needPassword==true && userDTO.getPassword()==null)
-//			return Response.status(Status.FORBIDDEN).entity("Invalid User parameters. A password is needed to continue operation.").build();
-//		if(needPassword==false && userDTO.getPassword()!=null)
-//			return Response.status(Status.FORBIDDEN).entity("Invalid User parameters. A password was inserted.").build();
-		//Note: password should not be sent when editing - there is a special function to do so
 		if(userDTO.getEmail()==null || userDTO.getUsername()==null ||userDTO.getAccessType()==null)
 			return Response.status(Status.FORBIDDEN).entity("Invalid User parameters. Check if all parameters were inserted").build();
 		if(needID==true && !userRepository.userExists(userDTO.getId()))
@@ -228,6 +221,8 @@ public class RegisteredUserBusiness {
 			return checkIfUsernameExists(newUser.getUsername());
 		if(!newUser.getEmail().equals(oldUser.getEmail()))
 			return checkIfEmailExists(newUser.getEmail());
+		if(!newUser.getLastLogin().equals(oldUser.getLastLogin()))
+			return Response.status(Status.FORBIDDEN).entity("Last Login must not be changed in edit").build();
 		return Response.ok().entity("Success").build();
 	}
 
@@ -242,6 +237,8 @@ public class RegisteredUserBusiness {
 		return result;
 	}
 	
+	//This function generates a password and sends an e-mail with said password
+	//reset parameters checks if it adds user (reset=false) or resets password(reset=true)
 	public String generatePassword(String sendTo, boolean reset) throws IOException {
 		String password=PasswordUtils.generateSalt(10).get();
 		MyEmail myEmail=new MyEmail();

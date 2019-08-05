@@ -1,6 +1,7 @@
 package pt.aubay.testesproject.models.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
@@ -18,7 +19,10 @@ public class Questions extends Models{
 	 */
 	private static final long serialVersionUID = 1L;
 	private String question;
+	
+	@ManyToOne
 	private Category category;
+	
 	private String[] options;
 	private int[] solution;
 	

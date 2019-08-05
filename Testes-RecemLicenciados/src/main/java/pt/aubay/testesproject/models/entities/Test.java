@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
@@ -25,7 +26,8 @@ public class Test extends Models{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	@Column(length=100000)
+	//@Column(length=100000)
+	//@ManyToMany
 	private ArrayList <Questions> questions;
 	private String author;
 	private Date date; //auto

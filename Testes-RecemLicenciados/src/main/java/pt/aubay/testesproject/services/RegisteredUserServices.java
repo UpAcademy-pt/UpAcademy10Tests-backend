@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
 
 import pt.aubay.testesproject.business.RegisteredUserBusiness;
 import pt.aubay.testesproject.models.dto.RegisteredUserDTO;
@@ -93,6 +94,6 @@ public class RegisteredUserServices {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return null;
+		return Response.status(Status.EXPECTATION_FAILED).entity("Some unknown issue occured").build();
 	}
 }
