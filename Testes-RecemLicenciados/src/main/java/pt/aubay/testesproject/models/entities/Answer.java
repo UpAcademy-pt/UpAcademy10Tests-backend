@@ -1,6 +1,7 @@
 package pt.aubay.testesproject.models.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
@@ -18,19 +19,32 @@ public class Answer extends Models{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private long questionId;
+	
+	@ManyToOne
+	Questions question;
 	private String[] givenAnswer;
 	
+	@ManyToOne
+	SolvedTest test;
+	
+	public SolvedTest getTest() {
+		return test;
+	}
+
+	public void setTest(SolvedTest test) {
+		this.test = test;
+	}
+
 	public Answer() {
 		
 	}
 
-	public long getQuestionId() {
-		return questionId;
+	public Questions getQuestion() {
+		return question;
 	}
 
-	public void setQuestionId(long questionId) {
-		this.questionId = questionId;
+	public void setQuestion(Questions question) {
+		this.question = question;
 	}
 
 	public String[] getGivenAnswer() {
