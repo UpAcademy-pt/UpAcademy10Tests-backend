@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
@@ -20,9 +21,15 @@ public class SolvedTest extends Models{
 	
 	private ArrayList<Answer> answer;
 	private Date timeSpent;
-	private Candidate candidate;
+	
+	@ManyToOne
+	Candidate candidate;
+	
 	private int score;
-	private long testID;
+	
+	@ManyToOne
+	Test test;
+	
 	private Date date;
 	
 	public ArrayList<Answer> getAnswer() {
@@ -49,11 +56,11 @@ public class SolvedTest extends Models{
 	public void setScore(int score) {
 		this.score = score;
 	}
-	public long getTestID() {
-		return testID;
+	public Test getTest() {
+		return test;
 	}
-	public void setTestID(long testID) {
-		this.testID = testID;
+	public void setTest(Test test) {
+		this.test = test;
 	}
 	public Date getDate() {
 		return date;

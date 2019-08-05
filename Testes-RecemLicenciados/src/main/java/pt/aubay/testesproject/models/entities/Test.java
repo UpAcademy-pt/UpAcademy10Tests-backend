@@ -1,10 +1,15 @@
 package pt.aubay.testesproject.models.entities;
 
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinTable;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
@@ -21,15 +26,21 @@ import pt.aubay.testesproject.models.entities.Questions;
 })
 
 public class Test extends Models{
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	
 	//@Column(length=100000)
-	//@ManyToMany
-	private ArrayList <Questions> questions;
-	private String author;
+	@ManyToMany(cascade = { CascadeType.ALL })
+	@JoinTable(
+	        name = "Test-Question", 
+	        joinColumns = { @JoinColumn(name = "test_id") }, 
+	        inverseJoinColumns = { @JoinColumn(name = "question_id") }
+	    )
+	private List <Questions> questions;
+	
+	@ManyToOne
+	RegisteredUser author;
+	
 	private Date date; //auto
 	private int timer;
 	private int averageScore; //calculated
@@ -38,19 +49,19 @@ public class Test extends Models{
 	public Test() {
 	}
 	
-	public ArrayList<Questions> getQuestions() {
+	public List<Questions> getQuestions() {
 		return questions;
 	}
 
-	public void setQuestions(ArrayList<Questions> questions) {
+	public void setQuestions(List<Questions> questions) {
 		this.questions = questions;
 	}
 
-	public String getAuthor() {
+	public RegisteredUser getAuthor() {
 		return author;
 	}
 
-	public void setAuthor(String author) {
+	public void setAuthor(RegisteredUser author) {
 		this.author = author;
 	}
 

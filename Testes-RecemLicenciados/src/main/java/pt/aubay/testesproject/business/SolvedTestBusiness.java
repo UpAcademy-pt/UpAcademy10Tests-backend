@@ -62,7 +62,7 @@ public class SolvedTestBusiness {
 			return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present, including ID.").build();
 		if(	test.getAnswer()!=null &&
 			test.getCandidate()!=null &&
-			test.getTestID()!=0 &&
+			test.getTest()!=null &&
 			test.getTimeSpent()!=null)
 			return Response.ok().entity("Success").build();
 		return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present.").build();
