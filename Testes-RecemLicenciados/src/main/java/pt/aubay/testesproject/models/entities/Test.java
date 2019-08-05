@@ -2,10 +2,12 @@ package pt.aubay.testesproject.models.entities;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -30,13 +32,13 @@ public class Test extends Models{
 	private static final long serialVersionUID = 1L;
 	
 	//@Column(length=100000)
-	@ManyToMany(cascade = { CascadeType.ALL })
+	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	@JoinTable(
-	        name = "Test-Question", 
+	        name = "test_question", 
 	        joinColumns = { @JoinColumn(name = "test_id") }, 
 	        inverseJoinColumns = { @JoinColumn(name = "question_id") }
 	    )
-	private List <Questions> questions;
+	private Set <Questions> questions;
 	
 	@ManyToOne
 	RegisteredUser author;
@@ -49,11 +51,11 @@ public class Test extends Models{
 	public Test() {
 	}
 	
-	public List<Questions> getQuestions() {
+	public Set<Questions> getQuestions() {
 		return questions;
 	}
 
-	public void setQuestions(List<Questions> questions) {
+	public void setQuestions(Set<Questions> questions) {
 		this.questions = questions;
 	}
 

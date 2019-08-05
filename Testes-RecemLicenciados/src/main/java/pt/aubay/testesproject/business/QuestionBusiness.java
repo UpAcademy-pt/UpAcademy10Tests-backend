@@ -1,10 +1,13 @@
 package pt.aubay.testesproject.business;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.repositories.CategoryRepository;
 import pt.aubay.testesproject.repositories.QuestionRepository;
@@ -22,35 +25,47 @@ public class QuestionBusiness {
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Response add(Questions question){
+	public Response add(QuestionDTO question){
 		//We need to check if question object is valid
 		Response response=checkQuestionValidToAdd(question);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
-		question.setCategory(categoryRepository.getCategory(question.getCategory().getCategory()));	
-		questionRepository.addEntity(question);
+		question.setCategory(categoryRepository.getCategory(question.getCategory().getCategory()));
+		
+		
+		//converter DTO para Entity
+		Questions questionEntity=addDTOasEntity(question);
+		questionRepository.addEntity(questionEntity);
 		return Response.ok().entity("Success").build();
 	}
 	
 	public Response get(long id) {
 		if(!questionRepository.idExists(id))
 			return Response.status(Status.NOT_ACCEPTABLE).entity("There is no such ID in database").build();
-		return Response.ok(questionRepository.getEntity(id), MediaType.APPLICATION_JSON).build();
+		QuestionDTO questionDTO=convertEntityToDTO(questionRepository.getEntity(id));
+		return Response.ok(questionDTO, MediaType.APPLICATION_JSON).build();
 	}
 	
 	public Response getAll() {
-		return Response.ok(questionRepository.getAll(), MediaType.APPLICATION_JSON).build();
+		ArrayList<QuestionDTO> allUsers=new ArrayList<QuestionDTO>();
+		for(Questions elem:questionRepository.getAll())
+			allUsers.add(convertEntityToDTO(elem));
+		return Response.ok(allUsers, MediaType.APPLICATION_JSON).build();
+		//return Response.ok(questionRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
-	public Response edit(Questions newQuestions) {
+	public Response edit(QuestionDTO newQuestions) {
 		Response response=checkQuestionValidToEdit(newQuestions);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
-		questionRepository.editEntity(newQuestions);
+		
+		//converter DTO para Entity
+		Questions newQuestionEntity=convertDTOToEntity(newQuestions);
+		questionRepository.editEntity(newQuestionEntity);
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response remove(Questions question) {
+	public Response remove(QuestionDTO question) {
 	if(!questionRepository.idExists(question.getId()))
 		return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
 	questionRepository.deleteEntity(question.getId());
@@ -61,7 +76,7 @@ public class QuestionBusiness {
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Response checkQuestionValidToAdd(Questions question) {
+	public Response checkQuestionValidToAdd(QuestionDTO question) {
 		//First, we need to check if all parameters needed were introduced
 		if(checkIfParametersThere(question).getStatus()!=Response.Status.OK.getStatusCode())
 			return checkIfParametersThere(question);
@@ -74,7 +89,7 @@ public class QuestionBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response checkQuestionValidToEdit(Questions newQuestion) {
+	public Response checkQuestionValidToEdit(QuestionDTO newQuestion) {
 		//First, we need to check if all parameters needed were introduced
 		if(checkIfParametersThere(newQuestion,true).getStatus()!=Response.Status.OK.getStatusCode())
 			return checkIfParametersThere(newQuestion,true);
@@ -93,7 +108,7 @@ public class QuestionBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response checkIfParametersThere(Questions question, boolean needID) {
+	public Response checkIfParametersThere(QuestionDTO question, boolean needID) {
 		if(needID && question.getId()==0)
 			return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present, including ID.").build();
 		if(		question.getCategory()!=null && 
@@ -103,8 +118,41 @@ public class QuestionBusiness {
 			return Response.ok().entity("Success").build();
 		return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present.").build();
 	}
-	public Response checkIfParametersThere(Questions question) {
+	public Response checkIfParametersThere(QuestionDTO question) {
 		return checkIfParametersThere(question, false);
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////DTO-ENTITY CONVERSION/////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public QuestionDTO convertEntityToDTO(Questions question) {
+		QuestionDTO questionDTO=new QuestionDTO();
+		questionDTO.setCategory(question.getCategory());
+		questionDTO.setId(question.getId());
+		questionDTO.setOptions(question.getOptions());
+		questionDTO.setQuestion(question.getQuestion());
+		questionDTO.setSolution(question.getSolution());
+		return questionDTO;
+	}
+	
+	public Questions convertDTOToEntity(QuestionDTO questionDTO) {
+		Questions question=questionRepository.getEntity(questionDTO.getId());
+		question.setCategory(questionDTO.getCategory());
+		question.setId(questionDTO.getId());
+		question.setOptions(questionDTO.getOptions());
+		question.setQuestion(questionDTO.getQuestion());
+		question.setSolution(questionDTO.getSolution());
+		return question;
+	}
+	
+	public Questions addDTOasEntity(QuestionDTO questionDTO) {
+		Questions question=new Questions();
+		question.setCategory(questionDTO.getCategory());
+		question.setOptions(questionDTO.getOptions());
+		question.setQuestion(questionDTO.getQuestion());
+		question.setSolution(questionDTO.getSolution());
+		return question;
 	}
 	
 }

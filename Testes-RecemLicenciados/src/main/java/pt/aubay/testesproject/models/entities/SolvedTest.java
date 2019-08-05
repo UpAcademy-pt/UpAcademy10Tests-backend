@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -22,8 +23,10 @@ import javax.persistence.OneToMany;
 public class SolvedTest extends Models{
 	private static final long serialVersionUID = 1L;
 	
-	//@OneToMany(cascade = { CascadeType.ALL })
-	private List<Answer> answer;
+	
+	//Tentar ver o pq de se tirar isto dar errado
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	List<Answer> answer;
 	private Date timeSpent;
 	
 	@ManyToOne

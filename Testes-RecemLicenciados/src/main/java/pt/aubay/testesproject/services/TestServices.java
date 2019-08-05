@@ -39,7 +39,7 @@ public class TestServices {
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addQuestion(Test test) {
+	public Response addTest(Test test) {
 		return testBusiness.add(test);
 	}
 	

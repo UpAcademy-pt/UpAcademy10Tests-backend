@@ -2,6 +2,7 @@ package pt.aubay.testesproject.models.entities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
@@ -18,32 +19,28 @@ import javax.persistence.NamedQuery;
 	 @NamedQuery(name="Questions.checkIfIdExists", query = "SELECT COUNT(q.id) FROM Questions q WHERE q.id =:id")
 })
 public class Questions extends Models{
-	/**
-	 * 
-	 */
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	@ManyToOne
 	Category category;
 	
 	@ManyToMany(mappedBy="questions")
-	List <Test> test;
+	Set <Test> test;
 	
-
-	public List<Test> getTest() {
-		return test;
-	}
-	public void setTest(List<Test> test) {
-		this.test = test;
-	}
 	private String question;
 	
 	private String[] options;
 	private int[] solution;
+	
+
+	public Set<Test> getTest() {
+		return test;
+	}
+	public void setTest(Set<Test> test) {
+		this.test = test;
+	}
+
 	
 	public String getQuestion() {
 		return question;

@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import pt.aubay.testesproject.business.QuestionBusiness;
+import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.models.entities.Questions;
 
 @Transactional
@@ -38,7 +39,7 @@ public class QuestionServices {
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addQuestion(Questions question) {
+	public Response addQuestion(QuestionDTO question) {
 		return questionBusiness.add(question);
 	}
 	
@@ -62,7 +63,7 @@ public class QuestionServices {
 	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response editQuestion(Questions question) {
+	public Response editQuestion(QuestionDTO question) {
 		return questionBusiness.edit(question);
 	}
 	
@@ -70,7 +71,7 @@ public class QuestionServices {
 	@Path("remove")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteQuestion(Questions question) {
+	public Response deleteQuestion(QuestionDTO question) {
 		return questionBusiness.remove(question);
 	}
 }
