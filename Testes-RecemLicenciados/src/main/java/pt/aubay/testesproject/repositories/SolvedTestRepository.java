@@ -9,7 +9,7 @@ import pt.aubay.testesproject.models.entities.SolvedTest;
 
 
 @RequestScoped
-public class SolvedTestRepositories extends Repositories<SolvedTest>{
+public class SolvedTestRepository extends Repositories<SolvedTest>{
 
 	@Override
 	protected Class<SolvedTest> getEntityClass() {
@@ -32,7 +32,7 @@ public class SolvedTestRepositories extends Repositories<SolvedTest>{
 		return (long) query.getSingleResult();
 	}
 	
-	public boolean solvedTestExists(long id) {
+	public boolean idExists(long id) {
 		Query query = em.createNamedQuery("SolvedTest.checkIfExists");
 		query.setParameter("id", id);
 		return (long) query.getSingleResult() == 1;

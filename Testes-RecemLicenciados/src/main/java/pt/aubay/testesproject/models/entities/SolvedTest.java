@@ -23,6 +23,7 @@ public class SolvedTest extends Models{
 	private Candidate candidate;
 	private int score;
 	private long testID;
+	private Date date;
 	
 	public ArrayList<Answer> getAnswer() {
 		return answer;
@@ -53,5 +54,11 @@ public class SolvedTest extends Models{
 	}
 	public void setTestID(long testID) {
 		this.testID = testID;
+	}
+	public Date getDate() {
+		return date;
+	}
+	public void setDate(Date date) {
+		this.date = date;
 	}
 }
