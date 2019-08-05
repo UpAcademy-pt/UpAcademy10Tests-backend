@@ -2,11 +2,14 @@ package pt.aubay.testesproject.models.entities;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 
 @Entity
 @NamedQueries({
@@ -19,7 +22,8 @@ import javax.persistence.NamedQuery;
 public class SolvedTest extends Models{
 	private static final long serialVersionUID = 1L;
 	
-	private ArrayList<Answer> answer;
+	//@OneToMany(cascade = { CascadeType.ALL })
+	private List<Answer> answer;
 	private Date timeSpent;
 	
 	@ManyToOne
@@ -32,10 +36,10 @@ public class SolvedTest extends Models{
 	
 	private Date date;
 	
-	public ArrayList<Answer> getAnswer() {
+	public List<Answer> getAnswer() {
 		return answer;
 	}
-	public void setAnswer(ArrayList<Answer> answer) {
+	public void setAnswer(List<Answer> answer) {
 		this.answer = answer;
 	}
 	public Date getTimeSpent() {
