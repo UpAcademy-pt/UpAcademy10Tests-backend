@@ -1,5 +1,6 @@
 package pt.aubay.testesproject.business;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -109,7 +110,7 @@ public class TestBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void setDate(Test test) {
-		Date date=new Date();
+		LocalDate date=LocalDate.now();
 		test.setDate(date);
 	}
 	
