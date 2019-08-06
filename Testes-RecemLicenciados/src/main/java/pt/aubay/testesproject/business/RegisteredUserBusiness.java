@@ -1,6 +1,8 @@
 package pt.aubay.testesproject.business;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -62,7 +64,8 @@ public class RegisteredUserBusiness {
 			
 			//Adicionar entity ao repositório
 			userRepository.addEntity(user);
-			return Response.ok().entity("Success").build();
+			return Response.ok(password, MediaType.APPLICATION_JSON).build();
+			//return Response.ok().entity("Success").build();
 		}
 		return Response.status(Status.FORBIDDEN).entity("This username exists already").build();
 	}
@@ -261,7 +264,12 @@ public class RegisteredUserBusiness {
 		userDTO.setAccessType(user.getAccessType());
 		userDTO.setId(user.getId());
 		userDTO.setUsername(user.getUsername());
-		userDTO.setLastLogin(user.getLastLogin());
+		
+		
+		DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String dateTimeString=user.getLastLogin().format(formatter);
+		userDTO.setLastLogin(dateTimeString);
+		
 		return userDTO;
 	}
 	
@@ -270,7 +278,6 @@ public class RegisteredUserBusiness {
 		user.setAccessType(userDTO.getAccessType());
 		user.setEmail(userDTO.getEmail());
 		user.setUsername(userDTO.getUsername());
-		user.setLastLogin(userDTO.getLastLogin());
 		return user;
 	}
 	
@@ -279,7 +286,7 @@ public class RegisteredUserBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////~
 	
 	public void setLastLogin(RegisteredUser user) {
-		Date date=new Date();
+		LocalDateTime date=LocalDateTime.now();
 		user.setLastLogin(date);
 	}
 	

@@ -1,5 +1,6 @@
 package pt.aubay.testesproject.models.entities;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -26,7 +27,7 @@ public class RegisteredUser extends Models{
 	private String hashcode;
 	private String salt;
 	private String accessType;
-	private Date lastLogin;
+	private LocalDateTime lastLogin;
 
 	public RegisteredUser() {	
 	}
@@ -75,13 +76,13 @@ public class RegisteredUser extends Models{
 
 
 
-	public Date getLastLogin() {
+	public LocalDateTime getLastLogin() {
 		return lastLogin;
 	}
 
 
 
-	public void setLastLogin(Date lastLogin) {
+	public void setLastLogin(LocalDateTime lastLogin) {
 		this.lastLogin = lastLogin;
 	}
 	

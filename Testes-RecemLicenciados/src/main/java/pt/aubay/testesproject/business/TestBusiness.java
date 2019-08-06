@@ -1,10 +1,8 @@
 package pt.aubay.testesproject.business;
 
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,10 +12,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import pt.aubay.testesproject.models.dto.QuestionDTO;
-import pt.aubay.testesproject.models.dto.RegisteredUserDTO;
 import pt.aubay.testesproject.models.dto.TestDTO;
 import pt.aubay.testesproject.models.entities.Questions;
-import pt.aubay.testesproject.models.entities.RegisteredUser;
 import pt.aubay.testesproject.models.entities.Test;
 import pt.aubay.testesproject.repositories.TestRepository;
 
@@ -140,6 +136,8 @@ public class TestBusiness {
 	//String dateString;
 	String dateTimeString;
 	
+	
+	///We need to convert Questions Entity to DTO
 	TestDTO testDTO=new TestDTO();
 	Set <QuestionDTO> questionsDTO=new HashSet();
 	for(Questions elem: test.getQuestions())
@@ -152,9 +150,7 @@ public class TestBusiness {
 	testDTO.setTimer(test.getTimer());
 	testDTO.setId(test.getId());
 	
-	DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-	//dateAsString=test.getDate().format(formatter);
-	//testDTO.setDate(dateAsString);
+	DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	dateTimeString=test.getDateTime().format(formatter);
 	testDTO.setDateTime(dateTimeString);
 	return testDTO;
@@ -164,6 +160,7 @@ public class TestBusiness {
 		Test test=testRepository.getEntity(testDTO.getId());
 		test.setId(testDTO.getId());
 		
+		///We need to convert Questions DTO to Entity
 		Set <Questions> questions=new HashSet();
 		for(QuestionDTO elem: testDTO.getQuestions())
 			questions.add(questionBusiness.convertDTOToEntity(elem));
@@ -172,8 +169,11 @@ public class TestBusiness {
 		test.setAuthor(testDTO.getAuthor());
 		test.setTestName(testDTO.getTestName());
 		test.setTimer(testDTO.getTimer());
-		
+	
+		//Need to check if necessary, for it is expected that the averagescore will dynamically determined
 		test.setAverageScore(0);
+		
+		//We change the date for each edit (or save its "created in" date?)
 		LocalDateTime newTime=LocalDateTime.now();
 		test.setDateTime(newTime);
 		
@@ -184,6 +184,7 @@ public class TestBusiness {
 	public Test addDTOAsEntity(TestDTO testDTO) {
 		Test test=new Test();
 		
+		///We need to convert Questions DTO to Entity
 		Set <Questions> questions=new HashSet();
 		for(QuestionDTO elem: testDTO.getQuestions())
 			questions.add(questionBusiness.addDTOasEntity(elem));

@@ -7,7 +7,7 @@ public class RegisteredUserDTO extends ModelsDTO{
 	private String email;
 	private String accessType;
 	//private String password;
-	private Date lastLogin;
+	private String lastLogin;
 	
 	public RegisteredUserDTO() {	
 	}
@@ -43,11 +43,11 @@ public class RegisteredUserDTO extends ModelsDTO{
 		this.password = password;
 	}*/
 
-	public Date getLastLogin() {
+	public String getLastLogin() {
 		return lastLogin;
 	}
 
-	public void setLastLogin(Date lastLogin) {
+	public void setLastLogin(String lastLogin) {
 		this.lastLogin = lastLogin;
 	}
 	
