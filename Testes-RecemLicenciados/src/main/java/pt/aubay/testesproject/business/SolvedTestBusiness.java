@@ -55,7 +55,7 @@ public class SolvedTestBusiness {
 		return Response.ok(allSolved, MediaType.APPLICATION_JSON).build();
 	}
 	
-	public Response remove(SolvedTest test) {
+	public Response remove(SolvedTestDTO test) {
 		if(!solvedRepository.idExists(test.getId()))
 			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
 		solvedRepository.deleteEntity(test.getId());
