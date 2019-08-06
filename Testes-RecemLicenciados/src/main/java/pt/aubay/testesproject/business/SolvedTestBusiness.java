@@ -27,6 +27,9 @@ public class SolvedTestBusiness {
 	
 	@Inject
 	TestRepository testRepository;
+	
+	@Inject
+	TestBusiness testBusiness;
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,8 +46,12 @@ public class SolvedTestBusiness {
 		//Saves current time;
 		setDate(solved);
 		
-		calculateResult(solved);
+		int score=calculateResult(solved);
 		solvedRepository.addEntity(solved);
+		
+		//Update averageScore of Test
+		testBusiness.updateAverageScore(test.getTestID(), score);
+		
 		return Response.ok().entity("Success").build();
 	}
 	
