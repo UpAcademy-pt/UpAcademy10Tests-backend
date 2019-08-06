@@ -62,7 +62,7 @@ public class TestBusiness {
 			return response;
 		//We also need to reset back-end-determined values (Date and Average Score)
 		Test test=new Test();
-		test=convertDTOToEntity(newTest, false);
+		test=convertDTOToEntity(newTest);
 		//resetValues(test);
 		testRepository.editEntity(test);
 		return Response.ok().entity("Success").build();
@@ -160,7 +160,7 @@ public class TestBusiness {
 	return testDTO;
 	}
 	
-	public Test convertDTOToEntity(TestDTO testDTO, boolean toEdit) {
+	public Test convertDTOToEntity(TestDTO testDTO) {
 		Test test=testRepository.getEntity(testDTO.getId());
 		test.setId(testDTO.getId());
 		
@@ -172,17 +172,14 @@ public class TestBusiness {
 		test.setAuthor(testDTO.getAuthor());
 		test.setTestName(testDTO.getTestName());
 		test.setTimer(testDTO.getTimer());
-		if(toEdit) {
-			test.setAverageScore(0);
-			LocalDateTime newTime=LocalDateTime.now();
-			test.setDateTime(newTime);
-		}
+		
+		test.setAverageScore(0);
+		LocalDateTime newTime=LocalDateTime.now();
+		test.setDateTime(newTime);
+		
 		return test;
 	}
 	
-	public Test convertDTOToEntity(TestDTO testDTO) {
-		return convertDTOToEntity(testDTO, false);
-	}
 	
 	public Test addDTOAsEntity(TestDTO testDTO) {
 		Test test=new Test();
