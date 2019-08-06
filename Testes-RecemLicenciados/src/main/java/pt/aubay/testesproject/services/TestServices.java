@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import pt.aubay.testesproject.business.TestBusiness;
+import pt.aubay.testesproject.models.dto.TestDTO;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.models.entities.Test;
 
@@ -39,7 +40,7 @@ public class TestServices {
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addTest(Test test) {
+	public Response addTest(TestDTO test) {
 		return testBusiness.add(test);
 	}
 	
@@ -54,7 +55,7 @@ public class TestServices {
 	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response editTest(Test test) {
+	public Response editTest(TestDTO test) {
 		return testBusiness.edit(test);
 	}
 	
@@ -62,7 +63,7 @@ public class TestServices {
 	@Path("remove")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteTest(Test test) {
+	public Response deleteTest(TestDTO test) {
 		return testBusiness.remove(test);
 	}
 }

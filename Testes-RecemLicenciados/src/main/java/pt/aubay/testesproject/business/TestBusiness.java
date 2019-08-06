@@ -1,6 +1,8 @@
 package pt.aubay.testesproject.business;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -11,7 +13,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.models.dto.RegisteredUserDTO;
+import pt.aubay.testesproject.models.dto.TestDTO;
+import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.models.entities.RegisteredUser;
 import pt.aubay.testesproject.models.entities.Test;
 import pt.aubay.testesproject.repositories.TestRepository;
@@ -20,44 +25,50 @@ public class TestBusiness {
 	@Inject
 	TestRepository testRepository;
 	
+	@Inject
+	QuestionBusiness questionBusiness;
+	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Response add(Test test){
+	public Response add(TestDTO test){
 		//We need to check if test object is valid
 		Response response=checkTestValidToAdd(test);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
 		//Saves current time;
-		setDate(test);
-		
-		testRepository.addEntity(test);
+		Test testEntity=new Test();
+		testEntity=addDTOAsEntity(test);
+		setDate(testEntity);
+		testRepository.addEntity(testEntity);
 		return Response.ok().entity("Success").build();
 	}
 	
 	public Response getAll() {
-		/*Set<Test> allTest=new HashSet();
+		Set<TestDTO> allTest=new HashSet();
 		for(Test elem:testRepository.getAll())
 			allTest.add(convertEntityToDTO(elem));
-		return Response.ok(allTest, MediaType.APPLICATION_JSON).build();*/
+		return Response.ok(allTest, MediaType.APPLICATION_JSON).build();
 		
-		return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
+		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
 	
-	public Response edit(Test newTest) {
+	public Response edit(TestDTO newTest) {
 		Response response=checkTestValidToEdit(newTest);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
 		//We also need to reset back-end-determined values (Date and Average Score)
-		resetValues(newTest);
-		testRepository.editEntity(newTest);
+		Test test=new Test();
+		test=convertDTOToEntity(newTest, false);
+		//resetValues(test);
+		testRepository.editEntity(test);
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response remove(Test test) {
+	public Response remove(TestDTO test) {
 		if(!testRepository.idExists(test.getId()))
 			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
 		testRepository.deleteEntity(test.getId());
@@ -68,7 +79,7 @@ public class TestBusiness {
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Response checkTestValidToAdd(Test test) {
+	public Response checkTestValidToAdd(TestDTO test) {
 		//First, we need to check if all parameters needed were introduced
 		if(checkIfParametersThere(test).getStatus()!=Response.Status.OK.getStatusCode())
 			return checkIfParametersThere(test);
@@ -78,7 +89,7 @@ public class TestBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response checkTestValidToEdit(Test newTest) {
+	public Response checkTestValidToEdit(TestDTO newTest) {
 		//First, we need to check if all parameters needed were introduced
 		if(checkIfParametersThere(newTest,true).getStatus()!=Response.Status.OK.getStatusCode())
 			return checkIfParametersThere(newTest,true);
@@ -90,7 +101,7 @@ public class TestBusiness {
 		return null;
 	}
 	
-	public Response checkIfParametersThere(Test test, boolean needID) {
+	public Response checkIfParametersThere(TestDTO test, boolean needID) {
 		if(needID && test.getId()==0)
 			return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present, including ID.").build();
 		if(	test.getAuthor()!=null &&
@@ -101,7 +112,7 @@ public class TestBusiness {
 		return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present.").build();
 	}
 	
-	public Response checkIfParametersThere(Test test) {
+	public Response checkIfParametersThere(TestDTO test) {
 		return checkIfParametersThere(test, false);
 	}
 	
@@ -110,12 +121,83 @@ public class TestBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void setDate(Test test) {
-		LocalDate date=LocalDate.now();
-		test.setDate(date);
+		LocalDateTime dateTime=LocalDateTime.now();
+		//LocalDate date=LocalDate.now();
+		//test.setDate(date);
+		test.setDateTime(dateTime);
 	}
 	
 	public void resetValues(Test test) {
 		setDate(test);
 		test.setAverageScore(0);
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////DTO-ENTITY CONVERSION/////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public TestDTO convertEntityToDTO(Test test) {
+	//String dateString;
+	String dateTimeString;
+	
+	TestDTO testDTO=new TestDTO();
+	Set <QuestionDTO> questionsDTO=new HashSet();
+	for(Questions elem: test.getQuestions())
+		questionsDTO.add(questionBusiness.convertEntityToDTO(elem));
+	
+	testDTO.setQuestions(questionsDTO);
+	testDTO.setAuthor(test.getAuthor());
+	testDTO.setAverageScore(test.getAverageScore());
+	testDTO.setTestName(test.getTestName());
+	testDTO.setTimer(test.getTimer());
+	testDTO.setId(test.getId());
+	
+	DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
+	//dateAsString=test.getDate().format(formatter);
+	//testDTO.setDate(dateAsString);
+	dateTimeString=test.getDateTime().format(formatter);
+	testDTO.setDateTime(dateTimeString);
+	return testDTO;
+	}
+	
+	public Test convertDTOToEntity(TestDTO testDTO, boolean toEdit) {
+		Test test=testRepository.getEntity(testDTO.getId());
+		test.setId(testDTO.getId());
+		
+		Set <Questions> questions=new HashSet();
+		for(QuestionDTO elem: testDTO.getQuestions())
+			questions.add(questionBusiness.convertDTOToEntity(elem));
+		
+		test.setQuestions(questions);
+		test.setAuthor(testDTO.getAuthor());
+		test.setTestName(testDTO.getTestName());
+		test.setTimer(testDTO.getTimer());
+		if(toEdit) {
+			test.setAverageScore(0);
+			LocalDateTime newTime=LocalDateTime.now();
+			test.setDateTime(newTime);
+		}
+		return test;
+	}
+	
+	public Test convertDTOToEntity(TestDTO testDTO) {
+		return convertDTOToEntity(testDTO, false);
+	}
+	
+	public Test addDTOAsEntity(TestDTO testDTO) {
+		Test test=new Test();
+		
+		Set <Questions> questions=new HashSet();
+		for(QuestionDTO elem: testDTO.getQuestions())
+			questions.add(questionBusiness.addDTOasEntity(elem));
+		
+		test.setQuestions(questions);
+		test.setAuthor(testDTO.getAuthor());
+		test.setTestName(testDTO.getTestName());
+		test.setTimer(testDTO.getTimer());
+		test.setAverageScore(0);
+		LocalDateTime newTime=LocalDateTime.now();
+		test.setDateTime(newTime);
+		return test;
 	}
 }

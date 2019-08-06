@@ -18,6 +18,7 @@ import javax.persistence.NamedQuery;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import pt.aubay.testesproject.models.entities.Questions;
 
@@ -47,7 +48,8 @@ public class Test extends Models{
 	@ManyToOne
 	RegisteredUser author;
 	
-	private LocalDate date; //auto
+	//private LocalDate date; //auto
+	private LocalDateTime dateTime;//auto
 	private int timer;
 	private int averageScore; //calculated
 	private String testName;//must be unique
@@ -71,13 +73,13 @@ public class Test extends Models{
 		this.author = author;
 	}
 
-	public LocalDate getDate() {
-		return date;
-	}
-
-	public void setDate(LocalDate date) {
-		this.date = date;
-	}
+//	public LocalDate getDate() {
+//		return date;
+//	}
+//
+//	public void setDate(LocalDate date) {
+//		this.date = date;
+//	}
 
 	public int getTimer() {
 		return timer;
@@ -101,6 +103,14 @@ public class Test extends Models{
 
 	public void setTestName(String testName) {
 		this.testName = testName;
+	}
+
+	public LocalDateTime getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(LocalDateTime dateTime) {
+		this.dateTime = dateTime;
 	}
 	
 }
