@@ -1,6 +1,7 @@
 package pt.aubay.testesproject.business;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -32,20 +33,26 @@ public class SolvedTestBusiness {
 	
 	//There is no need for an editable solved test
 	
-	public Response add(SolvedTest test){
+	public Response add(SolvedTestDTO test){
 		//We need to check if SolvedTest object is valid
 		Response response=checkTestValidToAdd(test);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
+		SolvedTest solved=new SolvedTest();
+		solved=addDTOAsEntity(test);
 		//Saves current time;
-		setDate(test);
+		setDate(solved);
 		
-		solvedRepository.addEntity(test);
+		calculateResult(solved);
+		solvedRepository.addEntity(solved);
 		return Response.ok().entity("Success").build();
 	}
 	
 	public Response getAll() {
-		return Response.ok(solvedRepository.getAll(), MediaType.APPLICATION_JSON).build();
+		ArrayList<SolvedTestDTO> allSolved=new ArrayList<SolvedTestDTO>();
+		for(SolvedTest elem:solvedRepository.getAll())
+			allSolved.add(convertEntityToDTO(elem));
+		return Response.ok(allSolved, MediaType.APPLICATION_JSON).build();
 	}
 	
 	public Response remove(SolvedTest test) {
@@ -83,6 +90,10 @@ public class SolvedTestBusiness {
 
 		//Determines percentage (as int)
 		percentage=(int)((double)correctPoints/(totalPoints));
+		
+		//Saves info
+		test.setScore(percentage);
+		
 		return percentage;
 	}
 	
@@ -90,7 +101,7 @@ public class SolvedTestBusiness {
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Response checkTestValidToAdd(SolvedTest test) {
+	public Response checkTestValidToAdd(SolvedTestDTO test) {
 		//First, we need to check if all parameters needed were introduced
 		if(checkIfParametersThere(test).getStatus()!=Response.Status.OK.getStatusCode())
 			return checkIfParametersThere(test);
@@ -100,18 +111,18 @@ public class SolvedTestBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response checkIfParametersThere(SolvedTest test, boolean needID) {
+	public Response checkIfParametersThere(SolvedTestDTO test, boolean needID) {
 		if(needID && test.getId()==0)
 			return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present, including ID.").build();
 		if(	test.getAnswer()!=null &&
 			test.getCandidate()!=null &&
-			test.getTest()!=null &&
+			test.getTestID()!=0 &&
 			test.getTimeSpent()!=null)
 			return Response.ok().entity("Success").build();
 		return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present.").build();
 	}
 	
-	public Response checkIfParametersThere(SolvedTest test) {
+	public Response checkIfParametersThere(SolvedTestDTO test) {
 		return checkIfParametersThere(test, false);
 	}
 	
@@ -140,7 +151,6 @@ public class SolvedTestBusiness {
 		solved.setAnswer(solvedDTO.getAnswer());
 		solved.setCandidate(solvedDTO.getCandidate());
 		solved.setDate(solvedDTO.getDate());
-		solved.setScore(solvedDTO.getScore());
 		solved.setTimeSpent(solvedDTO.getTimeSpent());
 		//Notice that we only send the test ID to the front-end to avoid unnecessary parameters
 		solved.setTest(testRepository.getEntity(solvedDTO.getTestID()));

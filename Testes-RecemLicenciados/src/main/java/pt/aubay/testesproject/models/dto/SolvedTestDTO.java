@@ -6,7 +6,7 @@ import java.util.List;
 import pt.aubay.testesproject.models.entities.Answer;
 import pt.aubay.testesproject.models.entities.Candidate;
 
-public class SolvedTestDTO {
+public class SolvedTestDTO extends ModelsDTO{
 	private List<Answer> answer;
 	private LocalDateTime timeSpent;
 	private Candidate candidate;
