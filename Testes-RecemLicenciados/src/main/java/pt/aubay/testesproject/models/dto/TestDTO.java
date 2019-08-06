@@ -8,7 +8,7 @@ import pt.aubay.testesproject.models.entities.RegisteredUser;
 public class TestDTO extends ModelsDTO{
 	
 	
-	private RegisteredUser author;
+	private RegisteredUserDTO author;
 	private int timer;
 	private int averageScore; //calculated
 	private String testName;//must be unique
@@ -29,10 +29,10 @@ public class TestDTO extends ModelsDTO{
 	public void setDateTime(String dateTime) {
 		this.dateTime = dateTime;
 	}
-	public RegisteredUser getAuthor() {
+	public RegisteredUserDTO getAuthor() {
 		return author;
 	}
-	public void setAuthor(RegisteredUser author) {
+	public void setAuthor(RegisteredUserDTO author) {
 		this.author = author;
 	}
 	public int getTimer() {

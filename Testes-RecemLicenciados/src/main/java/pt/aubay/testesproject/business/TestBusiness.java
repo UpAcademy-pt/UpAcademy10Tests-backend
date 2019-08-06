@@ -16,6 +16,7 @@ import pt.aubay.testesproject.models.dto.TestDTO;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.models.entities.RegisteredUser;
 import pt.aubay.testesproject.models.entities.Test;
+import pt.aubay.testesproject.repositories.RegisteredUserRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 
 public class TestBusiness {
@@ -25,8 +26,11 @@ public class TestBusiness {
 	@Inject
 	QuestionBusiness questionBusiness;
 	
-	/*@Inject
-	RegisteredUserBusiness userBusiness;*/
+	@Inject
+	RegisteredUserRepository userRepository;
+	
+	@Inject
+	RegisteredUserBusiness userBusiness;
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,7 +152,9 @@ public class TestBusiness {
 		questionsDTO.add(questionBusiness.convertEntityToDTO(elem));
 	
 	testDTO.setQuestions(questionsDTO);
-	testDTO.setAuthor(test.getAuthor());
+	
+	//We need to convert user Entity to DTO
+	testDTO.setAuthor(userBusiness.convertEntityToDTO(test.getAuthor()));
 	testDTO.setAverageScore(test.getAverageScore());
 	testDTO.setTestName(test.getTestName());
 	testDTO.setTimer(test.getTimer());
@@ -170,7 +176,7 @@ public class TestBusiness {
 			questions.add(questionBusiness.convertDTOToEntity(elem));
 		
 		test.setQuestions(questions);
-		test.setAuthor(testDTO.getAuthor());
+		test.setAuthor(userBusiness.convertDTOToEntity(testDTO.getAuthor()));
 		test.setTestName(testDTO.getTestName());
 		test.setTimer(testDTO.getTimer());
 	
@@ -196,10 +202,9 @@ public class TestBusiness {
 		test.setQuestions(questions);
 		
 		//We need to convert Author DTO to Entity
+		RegisteredUser author=userRepository.getEntity(testDTO.getAuthor().getId());
 		
-		//RegisteredUser author=
-		
-		test.setAuthor(testDTO.getAuthor());
+		test.setAuthor(author);
 		test.setTestName(testDTO.getTestName());
 		test.setTimer(testDTO.getTimer());
 		test.setAverageScore(0);
