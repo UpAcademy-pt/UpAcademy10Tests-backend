@@ -14,6 +14,7 @@ import javax.ws.rs.core.Response.Status;
 import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.models.dto.TestDTO;
 import pt.aubay.testesproject.models.entities.Questions;
+import pt.aubay.testesproject.models.entities.RegisteredUser;
 import pt.aubay.testesproject.models.entities.Test;
 import pt.aubay.testesproject.repositories.TestRepository;
 
@@ -23,6 +24,9 @@ public class TestBusiness {
 	
 	@Inject
 	QuestionBusiness questionBusiness;
+	
+	/*@Inject
+	RegisteredUserBusiness userBusiness;*/
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -190,6 +194,11 @@ public class TestBusiness {
 			questions.add(questionBusiness.addDTOasEntity(elem));
 		
 		test.setQuestions(questions);
+		
+		//We need to convert Author DTO to Entity
+		
+		//RegisteredUser author=
+		
 		test.setAuthor(testDTO.getAuthor());
 		test.setTestName(testDTO.getTestName());
 		test.setTimer(testDTO.getTimer());
