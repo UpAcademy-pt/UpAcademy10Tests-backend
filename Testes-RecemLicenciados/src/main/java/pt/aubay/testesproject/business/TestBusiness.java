@@ -1,12 +1,17 @@
 package pt.aubay.testesproject.business;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import pt.aubay.testesproject.models.dto.RegisteredUserDTO;
+import pt.aubay.testesproject.models.entities.RegisteredUser;
 import pt.aubay.testesproject.models.entities.Test;
 import pt.aubay.testesproject.repositories.TestRepository;
 
@@ -32,8 +37,14 @@ public class TestBusiness {
 	}
 	
 	public Response getAll() {
+		/*Set<Test> allTest=new HashSet();
+		for(Test elem:testRepository.getAll())
+			allTest.add(convertEntityToDTO(elem));
+		return Response.ok(allTest, MediaType.APPLICATION_JSON).build();*/
+		
 		return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
+	
 	
 	public Response edit(Test newTest) {
 		Response response=checkTestValidToEdit(newTest);

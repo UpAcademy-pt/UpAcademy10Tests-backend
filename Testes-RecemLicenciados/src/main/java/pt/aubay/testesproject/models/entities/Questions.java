@@ -4,11 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import pt.aubay.testesproject.models.entities.Test;
 
 @Entity
 @NamedQueries({
@@ -25,7 +31,8 @@ public class Questions extends Models{
 	@ManyToOne
 	Category category;
 	
-	@ManyToMany(mappedBy="questions")
+	@ManyToMany(cascade = { CascadeType.ALL }, mappedBy="questions", fetch = FetchType.EAGER)
+	@JsonIgnoreProperties("questions")
 	Set <Test> test;
 	
 	private String question;

@@ -15,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.ArrayList;
 import pt.aubay.testesproject.models.entities.Questions;
 
@@ -38,6 +40,7 @@ public class Test extends Models{
 	        joinColumns = { @JoinColumn(name = "test_id") }, 
 	        inverseJoinColumns = { @JoinColumn(name = "question_id") }
 	    )
+	@JsonIgnoreProperties("test")
 	private Set <Questions> questions;
 	
 	@ManyToOne
