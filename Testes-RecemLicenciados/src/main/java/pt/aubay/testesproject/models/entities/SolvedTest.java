@@ -1,5 +1,6 @@
 package pt.aubay.testesproject.models.entities;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +28,7 @@ public class SolvedTest extends Models{
 	//Tentar ver o pq de se tirar isto dar errado
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	List<Answer> answer;
-	private Date timeSpent;
+	private LocalDateTime timeSpent;
 	
 	@ManyToOne
 	Candidate candidate;
@@ -37,7 +38,7 @@ public class SolvedTest extends Models{
 	@ManyToOne
 	Test test;
 	
-	private Date date;
+	private LocalDateTime date;
 	
 	public List<Answer> getAnswer() {
 		return answer;
@@ -45,10 +46,10 @@ public class SolvedTest extends Models{
 	public void setAnswer(List<Answer> answer) {
 		this.answer = answer;
 	}
-	public Date getTimeSpent() {
+	public LocalDateTime getTimeSpent() {
 		return timeSpent;
 	}
-	public void setTimeSpent(Date timeSpent) {
+	public void setTimeSpent(LocalDateTime timeSpent) {
 		this.timeSpent = timeSpent;
 	}
 	public Candidate getCandidate() {
@@ -69,10 +70,10 @@ public class SolvedTest extends Models{
 	public void setTest(Test test) {
 		this.test = test;
 	}
-	public Date getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
-	public void setDate(Date date) {
+	public void setDate(LocalDateTime date) {
 		this.date = date;
 	}
 }

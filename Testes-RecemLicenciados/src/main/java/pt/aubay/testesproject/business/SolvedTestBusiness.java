@@ -1,5 +1,6 @@
 package pt.aubay.testesproject.business;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -84,7 +85,7 @@ public class SolvedTestBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public void setDate(SolvedTest test) {
-		Date date=new Date();
+		LocalDateTime date=LocalDateTime.now();
 		test.setDate(date);
 	}
 	
