@@ -1,8 +1,6 @@
 package pt.aubay.testesproject.models.entities;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -23,11 +21,11 @@ import javax.persistence.OneToMany;
 
 public class SolvedTest extends Models{
 	private static final long serialVersionUID = 1L;
-	
-	
-	//Tentar ver o pq de se tirar isto dar errado
+
+	//Bidirectionallity needed due to need for a List<Answer> answer -> that's what we will send to the front-end
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	List<Answer> answer;
+	
 	private LocalDateTime timeSpent;
 	
 	@ManyToOne
@@ -55,7 +53,7 @@ public class SolvedTest extends Models{
 	public Candidate getCandidate() {
 		return candidate;
 	}
-	public void setUser(Candidate candidate) {
+	public void setCandidate(Candidate candidate) {
 		this.candidate = candidate;
 	}
 	public int getScore() {

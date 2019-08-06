@@ -22,7 +22,7 @@ public class Answer extends Models{
 	
 	@ManyToOne
 	Questions question;
-	private String[] givenAnswer;
+	private int[] givenAnswer;
 	
 	@ManyToOne
 	SolvedTest test;
@@ -47,11 +47,11 @@ public class Answer extends Models{
 		this.question = question;
 	}
 
-	public String[] getGivenAnswer() {
+	public int[] getGivenAnswer() {
 		return givenAnswer;
 	}
 
-	public void setGivenAnswer(String[] givenAnswer) {
+	public void setGivenAnswer(int[] givenAnswer) {
 		this.givenAnswer = givenAnswer;
 	}
 }

@@ -12,7 +12,6 @@ import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.repositories.CategoryRepository;
 import pt.aubay.testesproject.repositories.QuestionRepository;
 
-////NOTES: Edit removes identification (ID) from category - to correct - if category is left as object instead of its string
 
 public class QuestionBusiness {
 	@Inject

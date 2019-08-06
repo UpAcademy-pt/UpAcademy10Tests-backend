@@ -1,21 +1,31 @@
 package pt.aubay.testesproject.business;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.IntStream;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import pt.aubay.testesproject.models.dto.SolvedTestDTO;
+import pt.aubay.testesproject.models.entities.Answer;
+import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.models.entities.SolvedTest;
+import pt.aubay.testesproject.models.entities.Test;
 import pt.aubay.testesproject.repositories.SolvedTestRepository;
+import pt.aubay.testesproject.repositories.TestRepository;
 
 
 public class SolvedTestBusiness {
 	
 	@Inject
 	SolvedTestRepository solvedRepository;
+	
+	@Inject
+	TestRepository testRepository;
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,6 +60,31 @@ public class SolvedTestBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	
 	
+	//change question to questionID;
+	public int calculateResult(SolvedTest test) {
+		int totalPoints=0;
+		int correctPoints=0;
+		int percentage;
+		Test myTest=testRepository.getEntity(test.getId());
+		Set <Questions> questions=myTest.getQuestions();
+		List<Answer> answers=test.getAnswer();
+		
+		//Determines the total number of Points
+		for(Questions elem:questions)
+			totalPoints+=(elem.getSolution()).length;
+		
+		//Determines the number of correct answers
+		//We just need to check if Solution array has each element of the answer array.
+		for(Answer elem:answers) {
+			for(int optionGiven: elem.getGivenAnswer())
+				if(IntStream.of(elem.getQuestion().getSolution()).anyMatch(x->x==optionGiven))
+					correctPoints+=1;
+		}
+
+		//Determines percentage (as int)
+		percentage=(int)((double)correctPoints/(totalPoints));
+		return percentage;
+	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
@@ -79,6 +114,39 @@ public class SolvedTestBusiness {
 	public Response checkIfParametersThere(SolvedTest test) {
 		return checkIfParametersThere(test, false);
 	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////DTO-ENTITY CONVERSION/////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public SolvedTestDTO convertEntityToDTO(SolvedTest solved) {
+		SolvedTestDTO solvedDTO=new SolvedTestDTO();
+		
+		solvedDTO.setAnswer(solved.getAnswer());
+		solvedDTO.setCandidate(solved.getCandidate());
+		solvedDTO.setDate(solved.getDate());
+		solvedDTO.setScore(solved.getScore());
+		solvedDTO.setTimeSpent(solved.getTimeSpent());
+		//Notice that we only send the test ID to the front-end to avoid unnecessary parameters
+		solvedDTO.setTestID(solved.getTest().getId());
+		
+		return solvedDTO;
+	}
+	
+	//We won't need a convertDTOToEntity in edit, due to the fact that the solved test is not editable
+	
+	public SolvedTest addDTOAsEntity(SolvedTestDTO solvedDTO) {
+		SolvedTest solved = new SolvedTest();
+		solved.setAnswer(solvedDTO.getAnswer());
+		solved.setCandidate(solvedDTO.getCandidate());
+		solved.setDate(solvedDTO.getDate());
+		solved.setScore(solvedDTO.getScore());
+		solved.setTimeSpent(solvedDTO.getTimeSpent());
+		//Notice that we only send the test ID to the front-end to avoid unnecessary parameters
+		solved.setTest(testRepository.getEntity(solvedDTO.getTestID()));
+		return solved;
+	}
+	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////Auxiliary-Methods/////////////////////////////////////////////////////
