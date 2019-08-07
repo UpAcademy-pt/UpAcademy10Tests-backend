@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import pt.aubay.testesproject.models.dto.AnswerDTO;
 import pt.aubay.testesproject.models.dto.SolvedTestDTO;
 import pt.aubay.testesproject.models.entities.Answer;
 import pt.aubay.testesproject.models.entities.Questions;
@@ -30,6 +31,9 @@ public class SolvedTestBusiness {
 	
 	@Inject
 	TestBusiness testBusiness;
+	
+	@Inject
+	AnswerBusiness answerBusiness;
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +92,7 @@ public class SolvedTestBusiness {
 			totalPoints+=(elem.getSolution()).length;
 		
 		//Determines the number of correct answers
-		//We just need to check if Solution array has each element of the answer array.
+		//We just need to check if Solution array has each element on the answer array.
 		for(Answer elem:answers) {
 			for(int optionGiven: elem.getGivenAnswer())
 				if(IntStream.of(elem.getQuestion().getSolution()).anyMatch(x->x==optionGiven))
@@ -140,7 +144,13 @@ public class SolvedTestBusiness {
 	public SolvedTestDTO convertEntityToDTO(SolvedTest solved) {
 		SolvedTestDTO solvedDTO=new SolvedTestDTO();
 		
-		solvedDTO.setAnswer(solved.getAnswer());
+		List<Answer> answerList=solved.getAnswer();
+		List<AnswerDTO> answerDTOList=new ArrayList<AnswerDTO>();
+		for(Answer elem:answerList)
+			answerDTOList.add(answerBusiness.convertEntityToDTO(elem));
+		solvedDTO.setAnswer(answerDTOList);
+		
+		
 		solvedDTO.setCandidate(solved.getCandidate());
 		solvedDTO.setDate(solved.getDate());
 		solvedDTO.setScore(solved.getScore());
@@ -155,7 +165,13 @@ public class SolvedTestBusiness {
 	
 	public SolvedTest addDTOAsEntity(SolvedTestDTO solvedDTO) {
 		SolvedTest solved = new SolvedTest();
-		solved.setAnswer(solvedDTO.getAnswer());
+		
+		List<AnswerDTO> answerDTOList=solvedDTO.getAnswer();
+		List<Answer> answerEntityList=new ArrayList<Answer>();
+		for(AnswerDTO elem:answerDTOList)
+			answerEntityList.add(answerBusiness.convertDTOToEntity(elem));
+		solved.setAnswer(answerEntityList);
+		
 		solved.setCandidate(solvedDTO.getCandidate());
 		solved.setDate(solvedDTO.getDate());
 		solved.setTimeSpent(solvedDTO.getTimeSpent());

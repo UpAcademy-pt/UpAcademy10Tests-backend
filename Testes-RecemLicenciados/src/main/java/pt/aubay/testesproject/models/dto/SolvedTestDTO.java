@@ -3,20 +3,19 @@ package pt.aubay.testesproject.models.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import pt.aubay.testesproject.models.entities.Answer;
 import pt.aubay.testesproject.models.entities.Candidate;
 
 public class SolvedTestDTO extends ModelsDTO{
-	private List<Answer> answer;
+	private List<AnswerDTO> answer;
 	private LocalDateTime timeSpent;
 	private Candidate candidate;
 	private int score;
 	private long testID;
 	private LocalDateTime date;
-	public List<Answer> getAnswer() {
+	public List<AnswerDTO> getAnswer() {
 		return answer;
 	}
-	public void setAnswer(List<Answer> answer) {
+	public void setAnswer(List<AnswerDTO> answer) {
 		this.answer = answer;
 	}
 	public LocalDateTime getTimeSpent() {
