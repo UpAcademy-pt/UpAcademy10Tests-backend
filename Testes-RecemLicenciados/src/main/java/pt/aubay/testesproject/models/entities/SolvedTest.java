@@ -10,6 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 @Entity
 @NamedQueries({
@@ -28,7 +29,7 @@ public class SolvedTest extends Models{
 	
 	private LocalDateTime timeSpent;
 	
-	@ManyToOne
+	@OneToOne
 	Candidate candidate;
 	
 	private int score;

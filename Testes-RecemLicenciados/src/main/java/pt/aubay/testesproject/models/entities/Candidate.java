@@ -1,10 +1,10 @@
 package pt.aubay.testesproject.models.entities;
 
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-
-import pt.aubay.testesproject.auxiliary.PersonalData;
+import javax.persistence.OneToOne;
 
 @Entity
 @NamedQueries({
@@ -23,7 +23,12 @@ public class Candidate extends Models{
 	//private PersonalData personalData;//extender para dados pessoais - eventual classe futura
 	private String name;
 	private String email;
-	private String emailRecruiter;//email do recrutador recruiter
+	
+	@ManyToOne
+	RegisteredUser recruiter;//email do recrutador recruiter
+	
+	@OneToOne
+	SolvedTest solvedTest;
 
 	public Candidate() {
 		
@@ -37,20 +42,28 @@ public class Candidate extends Models{
 		this.name = name;
 	}
 
-	public String getEmailRecruiter() {
-		return emailRecruiter;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setEmailRecruiter(String emailRecruiter) {
-		this.emailRecruiter = emailRecruiter;
-	}
-	
-	public String getEmail() {
-		return emailRecruiter;
-	}
-	
 	public void setEmail(String email) {
-		this.emailRecruiter = email;	
+		this.email = email;
+	}
+
+	public RegisteredUser getRecruiter() {
+		return recruiter;
+	}
+
+	public void setRecruiter(RegisteredUser recruiter) {
+		this.recruiter = recruiter;
+	}
+
+	public SolvedTest getSolvedTest() {
+		return solvedTest;
+	}
+
+	public void setSolvedTest(SolvedTest solvedTest) {
+		this.solvedTest = solvedTest;
 	}
 	
 }
