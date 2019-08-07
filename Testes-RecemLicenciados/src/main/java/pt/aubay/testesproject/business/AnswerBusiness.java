@@ -34,7 +34,7 @@ public class AnswerBusiness {
 		
 		long questionID=answer.getQuestion().getId();
 		//long testID=answer.getTest().getId();
-		
+		answerDTO.setId(answer.getId());
 		answerDTO.setQuestionID(questionID);
 		//answerDTO.setSolvedTestID(testID);
 		return answerDTO;

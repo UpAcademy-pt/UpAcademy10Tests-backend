@@ -51,6 +51,12 @@ public class SolvedTestBusiness {
 		setDate(solved);
 		
 		int score=calculateResult(solved);
+		
+		//We need to include test object in answer
+		List<Answer> answerList=solved.getAnswer();
+		for(Answer elem:answerList)
+			elem.setTest(solved);
+		
 		solvedRepository.addEntity(solved);
 		
 		//Update averageScore of Test
@@ -83,7 +89,7 @@ public class SolvedTestBusiness {
 		int totalPoints=0;
 		int correctPoints=0;
 		int percentage;
-		Test myTest=testRepository.getEntity(test.getId());
+		Test myTest=testRepository.getEntity(test.getTest().getId());
 		Set <Questions> questions=myTest.getQuestions();
 		List<Answer> answers=test.getAnswer();
 		
@@ -100,7 +106,7 @@ public class SolvedTestBusiness {
 		}
 
 		//Determines percentage (as int)
-		percentage=(int)((double)correctPoints/(totalPoints));
+		percentage=(int)(100.0*correctPoints/(totalPoints));
 		
 		//Saves info
 		test.setScore(percentage);
@@ -126,9 +132,10 @@ public class SolvedTestBusiness {
 		if(needID && test.getId()==0)
 			return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present, including ID.").build();
 		if(	test.getAnswer()!=null &&
-			test.getCandidate()!=null &&
-			test.getTestID()!=0 &&
-			test.getTimeSpent()!=null)
+			//test.getCandidate()!=null &&
+			test.getTestID()!=0 //&&
+			//test.getTimeSpent()!=null
+			)
 			return Response.ok().entity("Success").build();
 		return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present.").build();
 	}
@@ -155,6 +162,7 @@ public class SolvedTestBusiness {
 		solvedDTO.setDate(solved.getDate());
 		solvedDTO.setScore(solved.getScore());
 		solvedDTO.setTimeSpent(solved.getTimeSpent());
+		solvedDTO.setId(solved.getId());
 		//Notice that we only send the test ID to the front-end to avoid unnecessary parameters
 		solvedDTO.setTestID(solved.getTest().getId());
 		
@@ -168,6 +176,8 @@ public class SolvedTestBusiness {
 		
 		List<AnswerDTO> answerDTOList=solvedDTO.getAnswer();
 		List<Answer> answerEntityList=new ArrayList<Answer>();
+		
+		//We need to convert the answer-DTO list into an answer-Entity list
 		for(AnswerDTO elem:answerDTOList)
 			answerEntityList.add(answerBusiness.convertDTOToEntity(elem));
 		solved.setAnswer(answerEntityList);
@@ -177,6 +187,7 @@ public class SolvedTestBusiness {
 		solved.setTimeSpent(solvedDTO.getTimeSpent());
 		//Notice that we only send the test ID to the front-end to avoid unnecessary parameters
 		solved.setTest(testRepository.getEntity(solvedDTO.getTestID()));
+		
 		return solved;
 	}
 	

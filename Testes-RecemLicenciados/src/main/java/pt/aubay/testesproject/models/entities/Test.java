@@ -53,6 +53,7 @@ public class Test extends Models{
 	private int timer;
 	private int averageScore; //calculated
 	private String testName;//must be unique
+	private long submittedTests;
 	
 	public Test() {
 	}
@@ -111,6 +112,14 @@ public class Test extends Models{
 
 	public void setDateTime(LocalDateTime dateTime) {
 		this.dateTime = dateTime;
+	}
+
+	public long getSubmittedTests() {
+		return submittedTests;
+	}
+
+	public void setSubmittedTests(long submittedTests) {
+		this.submittedTests = submittedTests;
 	}
 	
 }

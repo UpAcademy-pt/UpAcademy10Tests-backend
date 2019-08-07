@@ -31,8 +31,7 @@ public class TestBusiness {
 	
 	@Inject
 	RegisteredUserBusiness userBusiness;
-	
-	private static int sampleCardinality=0;
+
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,7 +90,10 @@ public class TestBusiness {
 		Test test=testRepository.getEntity(idTest);
 		int oldAverage=test.getAverageScore();
 		int newAverage;
+		long sampleCardinality=test.getSubmittedTests();
 		newAverage=(int)((oldAverage*sampleCardinality+scoreToAdd)/(double)(sampleCardinality+1));
+		sampleCardinality++;
+		test.setSubmittedTests(sampleCardinality);
 		test.setAverageScore(newAverage);
 	}
 	
@@ -175,6 +177,7 @@ public class TestBusiness {
 	testDTO.setTestName(test.getTestName());
 	testDTO.setTimer(test.getTimer());
 	testDTO.setId(test.getId());
+	testDTO.setSubmittedTests(test.getSubmittedTests());
 	
 	DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	dateTimeString=test.getDateTime().format(formatter);
@@ -224,6 +227,7 @@ public class TestBusiness {
 		test.setTestName(testDTO.getTestName());
 		test.setTimer(testDTO.getTimer());
 		test.setAverageScore(0);
+		test.setSubmittedTests(0);
 		LocalDateTime newTime=LocalDateTime.now();
 		test.setDateTime(newTime);
 		return test;

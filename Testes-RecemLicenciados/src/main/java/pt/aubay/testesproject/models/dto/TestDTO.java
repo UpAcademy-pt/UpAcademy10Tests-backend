@@ -15,6 +15,7 @@ public class TestDTO extends ModelsDTO{
 	//private String date;
 	private String dateTime;
 	private Set <QuestionDTO> questions;
+	private long submittedTests;
 	
 	
 //	public String getDate() {
@@ -58,5 +59,11 @@ public class TestDTO extends ModelsDTO{
 	}
 	public void setQuestions(Set <QuestionDTO> questions) {
 		this.questions = questions;
+	}
+	public long getSubmittedTests() {
+		return submittedTests;
+	}
+	public void setSubmittedTests(long submittedTests) {
+		this.submittedTests = submittedTests;
 	}
 }
