@@ -1,6 +1,6 @@
 package pt.aubay.testesproject.models.dto;
 
-public class CandidateDTO {
+public class CandidateDTO extends ModelsDTO{
 	private String name;
 	private String email;
 	private String emailRecruiter;//email do recrutador recruiter

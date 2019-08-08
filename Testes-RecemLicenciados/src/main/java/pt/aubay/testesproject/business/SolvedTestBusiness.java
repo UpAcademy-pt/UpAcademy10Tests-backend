@@ -12,6 +12,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import pt.aubay.testesproject.models.dto.AnswerDTO;
+import pt.aubay.testesproject.models.dto.CandidateDTO;
 import pt.aubay.testesproject.models.dto.SolvedTestDTO;
 import pt.aubay.testesproject.models.entities.Answer;
 import pt.aubay.testesproject.models.entities.Candidate;
@@ -144,7 +145,7 @@ public class SolvedTestBusiness {
 			return checkIfParametersThere(test);
 		//We need to check if both candidate and testID are new (the combination must be unique)
 		
-		Candidate candidate=test.getCandidate();
+		CandidateDTO candidate=test.getCandidate();
 		
 		Candidate databaseCandidate;
 		//We check if candidate exists in database
@@ -196,7 +197,7 @@ public class SolvedTestBusiness {
 		solvedDTO.setAnswer(answerDTOList);
 		
 		
-		solvedDTO.setCandidate(solved.getCandidate());
+		solvedDTO.setCandidate(candidateBusiness.convertEntityToDTO(solved.getCandidate()));
 		solvedDTO.setDate(solved.getDate());
 		solvedDTO.setScore(solved.getScore());
 		solvedDTO.setTimeSpent(solved.getTimeSpent());
@@ -220,7 +221,7 @@ public class SolvedTestBusiness {
 			answerEntityList.add(answerBusiness.convertDTOToEntity(elem));
 		solved.setAnswer(answerEntityList);
 		
-		solved.setCandidate(solvedDTO.getCandidate());
+		solved.setCandidate(candidateBusiness.addDTOAsEntity(solvedDTO.getCandidate()));
 		solved.setDate(solvedDTO.getDate());
 		solved.setTimeSpent(solvedDTO.getTimeSpent());
 		//Notice that we only send the test ID to the front-end to avoid unnecessary parameters

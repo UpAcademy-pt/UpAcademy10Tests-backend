@@ -45,7 +45,7 @@ public class CandidateRepository extends Repositories<Candidate>{
 	}
 	
 	public boolean CandidateExists(String email) {
-		Query query = em.createNamedQuery("Candidate.checkIfItExistsByEmail");
+		Query query = em.createNamedQuery("Candidate.checkIfExistsByEmail");
 		query.setParameter("email", email);
 		return (long) query.getSingleResult() == 1;
 	}

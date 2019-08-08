@@ -8,7 +8,7 @@ import pt.aubay.testesproject.models.entities.Candidate;
 public class SolvedTestDTO extends ModelsDTO{
 	private List<AnswerDTO> answer;
 	private LocalDateTime timeSpent;
-	private Candidate candidate;
+	private CandidateDTO candidate;
 	private int score;
 	private long testID;
 	private LocalDateTime date;
@@ -24,10 +24,10 @@ public class SolvedTestDTO extends ModelsDTO{
 	public void setTimeSpent(LocalDateTime timeSpent) {
 		this.timeSpent = timeSpent;
 	}
-	public Candidate getCandidate() {
+	public CandidateDTO getCandidate() {
 		return candidate;
 	}
-	public void setCandidate(Candidate candidate) {
+	public void setCandidate(CandidateDTO candidate) {
 		this.candidate = candidate;
 	}
 	public int getScore() {

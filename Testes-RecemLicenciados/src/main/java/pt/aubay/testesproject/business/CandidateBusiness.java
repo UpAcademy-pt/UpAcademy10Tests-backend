@@ -13,18 +13,21 @@ public class CandidateBusiness {
 	@Inject
 	RegisteredUserRepository userRepository;
 	
+//	@Inject
+//	RegisteredUserBusiness userBusiness;
 	
-	public Response checkIfParametersThere(Candidate candidate, boolean toEdit) {
+	
+	public Response checkIfParametersThere(CandidateDTO candidate, boolean toEdit) {
 		if(toEdit && candidate.getId()==0)
 			Response.status(Status.NOT_ACCEPTABLE).entity("An ID is needed.").build();
 		if( candidate.getEmail()!=null &&
 			candidate.getName()!=null &&
-			candidate.getRecruiter()!=null)
+			candidate.getEmailRecruiter()!=null)
 			return Response.ok().entity("Success").build();
 		return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present, including ID.").build();
 	}
 	
-	public Response checkIfParametersThere(Candidate candidate) {
+	public Response checkIfParametersThere(CandidateDTO candidate) {
 		return checkIfParametersThere(candidate, false);
 	}
 	
