@@ -1,12 +1,19 @@
 package pt.aubay.testesproject.business;
 
+import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import pt.aubay.testesproject.models.dto.CandidateDTO;
 import pt.aubay.testesproject.models.entities.Candidate;
+import pt.aubay.testesproject.repositories.RegisteredUserRepository;
 
 public class CandidateBusiness {
+	
+	@Inject
+	RegisteredUserRepository userRepository;
+	
+	
 	public Response checkIfParametersThere(Candidate candidate, boolean toEdit) {
 		if(toEdit && candidate.getId()==0)
 			Response.status(Status.NOT_ACCEPTABLE).entity("An ID is needed.").build();
@@ -24,6 +31,19 @@ public class CandidateBusiness {
 	public CandidateDTO convertEntityToDTO(Candidate candidate) {
 		CandidateDTO candidateDTO=new CandidateDTO();
 		candidateDTO.setEmail(candidate.getEmail());
-		return null;
+		candidateDTO.setName(candidate.getName());
+		
+		//There should be some confirmation as to the existence of said e-mail in the database
+		candidateDTO.setEmailRecruiter(candidate.getRecruiter().getEmail());
+		return candidateDTO;
+	}
+	
+	public Candidate addDTOAsEntity(CandidateDTO candidateDTO) {
+		Candidate candidate=new Candidate();
+		candidate.setEmail(candidateDTO.getEmail());
+		candidate.setName(candidateDTO.getName());
+		String recruiterName=userRepository.getUsernameByEmail(candidateDTO.getEmailRecruiter());
+		candidate.setRecruiter(userRepository.getUser(recruiterName));
+		return candidate;
 	}
 }

@@ -107,10 +107,22 @@ public class SolvedTestBusiness {
 		
 		//Determines the number of correct answers
 		//We just need to check if Solution array has each element on the answer array.
+//		for(Answer elem:answers) {
+//			for(int optionGiven: elem.getGivenAnswer())
+//				if(IntStream.of(elem.getQuestion().getSolution()).anyMatch(x->x==optionGiven))
+//					correctPoints+=1;
+//		}
+		
 		for(Answer elem:answers) {
-			for(int optionGiven: elem.getGivenAnswer())
+			int addPoints=0;
+			for(int optionGiven: elem.getGivenAnswer()) {
 				if(IntStream.of(elem.getQuestion().getSolution()).anyMatch(x->x==optionGiven))
-					correctPoints+=1;
+					addPoints+=1./elem.getQuestion().getSolution().length;
+				else
+					addPoints=0;
+					break;
+			}
+			correctPoints+=addPoints;
 		}
 
 		//Determines percentage (as int)
