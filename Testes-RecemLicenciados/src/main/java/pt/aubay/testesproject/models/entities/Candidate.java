@@ -1,6 +1,8 @@
 package pt.aubay.testesproject.models.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -9,9 +11,11 @@ import javax.persistence.OneToOne;
 @Entity
 @NamedQueries({
 	 @NamedQuery(name="Candidate.getCandidate", query="SELECT v FROM Candidate v WHERE v.id=:id"),
+	 @NamedQuery(name="Candidate.getCandidateByEmail", query="SELECT v FROM Candidate v WHERE v.email=:email"),
 	 @NamedQuery(name="Candidate.getAll",query="SELECT v FROM Test v"),
 	 @NamedQuery(name="Candidate.count", query = "SELECT COUNT(v.id) FROM Candidate v"),
 	 @NamedQuery(name="Candidate.checkIfExists", query = "SELECT COUNT(v.id) FROM Candidate v WHERE v.id =:id"),
+	 @NamedQuery(name="Candidate.checkIfExistsByEmail", query = "SELECT COUNT(v.id) FROM Candidate v WHERE v.email =:email")
 })
 
 
@@ -27,8 +31,8 @@ public class Candidate extends Models{
 	@ManyToOne
 	RegisteredUser recruiter;//email do recrutador recruiter
 	
-	@OneToOne
-	SolvedTest solvedTest;
+//	@OneToOne(fetch = FetchType.EAGER, mappedBy = "candidate", cascade = CascadeType.ALL)
+//	SolvedTest solvedTest;
 
 	public Candidate() {
 		
@@ -58,12 +62,12 @@ public class Candidate extends Models{
 		this.recruiter = recruiter;
 	}
 
-	public SolvedTest getSolvedTest() {
-		return solvedTest;
-	}
-
-	public void setSolvedTest(SolvedTest solvedTest) {
-		this.solvedTest = solvedTest;
-	}
-	
+//	public SolvedTest getSolvedTest() {
+//		return solvedTest;
+//	}
+//
+//	public void setSolvedTest(SolvedTest solvedTest) {
+//		this.solvedTest = solvedTest;
+//	}
+//	
 }

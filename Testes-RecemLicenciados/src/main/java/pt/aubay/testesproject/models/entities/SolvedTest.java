@@ -18,6 +18,8 @@ import javax.persistence.OneToOne;
 	 @NamedQuery(name="SolvedTest.getAll",query="SELECT s FROM SolvedTest s"),
 	 @NamedQuery(name="SolvedTest.count", query = "SELECT COUNT(s.id) FROM SolvedTest s"),
 	 @NamedQuery(name="SolvedTest.checkIfExists", query = "SELECT COUNT(s.id) FROM SolvedTest s WHERE s.id =:id"),
+	 @NamedQuery(name="SolvedTest.checkUniqueness", query = "SELECT COUNT(s.id) FROM SolvedTest s WHERE candidate_id =:candidateID AND test_id=:testID"),
+	 
 })
 
 public class SolvedTest extends Models{
@@ -29,7 +31,7 @@ public class SolvedTest extends Models{
 	
 	private LocalDateTime timeSpent;
 	
-	@OneToOne
+	@ManyToOne(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	Candidate candidate;
 	
 	private int score;

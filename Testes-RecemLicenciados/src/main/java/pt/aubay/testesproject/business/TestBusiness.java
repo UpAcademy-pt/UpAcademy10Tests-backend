@@ -159,30 +159,30 @@ public class TestBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public TestDTO convertEntityToDTO(Test test) {
-	//String dateString;
-	String dateTimeString;
-	
-	
-	///We need to convert Questions Entity to DTO
-	TestDTO testDTO=new TestDTO();
-	Set <QuestionDTO> questionsDTO=new HashSet();
-	for(Questions elem: test.getQuestions())
-		questionsDTO.add(questionBusiness.convertEntityToDTO(elem));
-	
-	testDTO.setQuestions(questionsDTO);
-	
-	//We need to convert user Entity to DTO
-	testDTO.setAuthor(userBusiness.convertEntityToDTO(test.getAuthor()));
-	testDTO.setAverageScore(test.getAverageScore());
-	testDTO.setTestName(test.getTestName());
-	testDTO.setTimer(test.getTimer());
-	testDTO.setId(test.getId());
-	testDTO.setSubmittedTests(test.getSubmittedTests());
-	
-	DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-	dateTimeString=test.getDateTime().format(formatter);
-	testDTO.setDateTime(dateTimeString);
-	return testDTO;
+		//String dateString;
+		String dateTimeString;
+		
+		
+		///We need to convert Questions Entity to DTO
+		TestDTO testDTO=new TestDTO();
+		Set <QuestionDTO> questionsDTO=new HashSet();
+		for(Questions elem: test.getQuestions())
+			questionsDTO.add(questionBusiness.convertEntityToDTO(elem));
+		
+		testDTO.setQuestions(questionsDTO);
+		
+		//We need to convert user Entity to DTO
+		testDTO.setAuthor(userBusiness.convertEntityToDTO(test.getAuthor()));
+		testDTO.setAverageScore(test.getAverageScore());
+		testDTO.setTestName(test.getTestName());
+		testDTO.setTimer(test.getTimer());
+		testDTO.setId(test.getId());
+		testDTO.setSubmittedTests(test.getSubmittedTests());
+		
+		DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		dateTimeString=test.getDateTime().format(formatter);
+		testDTO.setDateTime(dateTimeString);
+		return testDTO;
 	}
 	
 	public Test convertDTOToEntity(TestDTO testDTO) {

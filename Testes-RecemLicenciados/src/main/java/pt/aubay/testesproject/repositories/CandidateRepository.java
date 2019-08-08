@@ -8,7 +8,7 @@ import javax.persistence.Query;
 import pt.aubay.testesproject.models.entities.Candidate;
 
 @RequestScoped
-public class CandidateRepositories extends Repositories<Candidate>{
+public class CandidateRepository extends Repositories<Candidate>{
 	
 	@Override
 	protected Class<Candidate> getEntityClass() {
@@ -16,10 +16,16 @@ public class CandidateRepositories extends Repositories<Candidate>{
 		return Candidate.class;
 	}
 	
-	public long getCandidate(long id) {
+	public Candidate getCandidate(long id) {
 		Query query = em.createNamedQuery("Candidate.getCandidate", getEntityClass());
 		query.setParameter("id", id);
-		return (long) query.getSingleResult();
+		return (Candidate) query.getSingleResult();
+	}
+	
+	public Candidate getCandidate(String email) {
+		Query query = em.createNamedQuery("Candidate.getCandidateByEmail", getEntityClass());
+		query.setParameter("email", email);
+		return (Candidate) query.getSingleResult();
 	}
 	
 	public List<Candidate> getAll() {
@@ -35,6 +41,12 @@ public class CandidateRepositories extends Repositories<Candidate>{
 	public boolean CandidateExists(long id) {
 		Query query = em.createNamedQuery("Candidate.checkIfItExists");
 		query.setParameter("id", id);
+		return (long) query.getSingleResult() == 1;
+	}
+	
+	public boolean CandidateExists(String email) {
+		Query query = em.createNamedQuery("Candidate.checkIfItExistsByEmail");
+		query.setParameter("email", email);
 		return (long) query.getSingleResult() == 1;
 	}
 }

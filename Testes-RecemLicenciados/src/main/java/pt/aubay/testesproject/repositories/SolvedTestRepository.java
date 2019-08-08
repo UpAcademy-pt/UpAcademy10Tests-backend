@@ -38,4 +38,11 @@ public class SolvedTestRepository extends Repositories<SolvedTest>{
 		return (long) query.getSingleResult() == 1;
 	}
 	
+	public boolean checkUniqueness(long candidateID, long testID) {
+		Query query = em.createNamedQuery("SolvedTest.checkUniqueness");
+		query.setParameter("candidateID", candidateID);
+		query.setParameter("testID", testID);
+		return (long) query.getSingleResult() == 1;
+	}
+	
 }

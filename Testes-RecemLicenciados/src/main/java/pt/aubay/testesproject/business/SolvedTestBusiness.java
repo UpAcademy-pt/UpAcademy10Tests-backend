@@ -14,9 +14,11 @@ import javax.ws.rs.core.Response.Status;
 import pt.aubay.testesproject.models.dto.AnswerDTO;
 import pt.aubay.testesproject.models.dto.SolvedTestDTO;
 import pt.aubay.testesproject.models.entities.Answer;
+import pt.aubay.testesproject.models.entities.Candidate;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.models.entities.SolvedTest;
 import pt.aubay.testesproject.models.entities.Test;
+import pt.aubay.testesproject.repositories.CandidateRepository;
 import pt.aubay.testesproject.repositories.SolvedTestRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 
@@ -34,6 +36,12 @@ public class SolvedTestBusiness {
 	
 	@Inject
 	AnswerBusiness answerBusiness;
+	
+	@Inject
+	CandidateRepository candidateRepository;
+	
+	@Inject
+	CandidateBusiness candidateBusiness;
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -123,6 +131,19 @@ public class SolvedTestBusiness {
 		if(checkIfParametersThere(test).getStatus()!=Response.Status.OK.getStatusCode())
 			return checkIfParametersThere(test);
 		//We need to check if both candidate and testID are new (the combination must be unique)
+		
+		Candidate candidate=test.getCandidate();
+		
+		Candidate databaseCandidate;
+		//We check if candidate exists in database
+		if(	candidateRepository.CandidateExists(candidate.getEmail())) {
+			//Then we get candidate
+			databaseCandidate=candidateRepository.getCandidate(candidate.getEmail());
+			//Next, we check if Candidate_ID and test_ID are both in a solved test belonging to the SolvedTest Repository
+			if(!solvedRepository.checkUniqueness(databaseCandidate.getId(), test.getTestID()))
+				return Response.status(Status.NOT_ACCEPTABLE).entity("Candidate already took this test.").build();
+		}
+		
 		//if(solvedRepository.testExists(test.getTestName()))
 		//	return Response.status(Status.NOT_ACCEPTABLE).entity("SolvedTest Name exists already").build();
 		return Response.ok().entity("Success").build();
@@ -131,13 +152,18 @@ public class SolvedTestBusiness {
 	public Response checkIfParametersThere(SolvedTestDTO test, boolean needID) {
 		if(needID && test.getId()==0)
 			return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present, including ID.").build();
-		if(	test.getAnswer()!=null &&
-			//test.getCandidate()!=null &&
-			test.getTestID()!=0 //&&
+		if(	test.getAnswer()==null ||
+			test.getCandidate()==null ||
+			test.getTestID()==0 //&&
 			//test.getTimeSpent()!=null
 			)
-			return Response.ok().entity("Success").build();
-		return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present.").build();
+			return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present.").build();
+		
+		//We also need to check if candidate has all needed info
+		Response response=candidateBusiness.checkIfParametersThere(test.getCandidate());
+		if(response.getStatus()!=Response.Status.OK.getStatusCode())
+			return response;
+		return Response.ok().entity("Success").build();
 	}
 	
 	public Response checkIfParametersThere(SolvedTestDTO test) {

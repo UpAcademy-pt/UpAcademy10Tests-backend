@@ -79,7 +79,7 @@ public class QuestionBusiness {
 		//First, we need to check if all parameters needed were introduced
 		if(checkIfParametersThere(question).getStatus()!=Response.Status.OK.getStatusCode())
 			return checkIfParametersThere(question);
-		//We need to check if question already exists
+		//We need to check if question already exists in database
 		if(questionRepository.questionExists(question.getQuestion()))
 			return Response.status(Status.FORBIDDEN).entity("This question exists already").build();
 		//We need to check if category is new -> if so, we need to add category.
