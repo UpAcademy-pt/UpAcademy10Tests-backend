@@ -36,10 +36,10 @@ public class CategoryBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response remove(Category category) {
-	if(!categoryRepository.idExists(category))
+	public Response remove(long id) {
+	if(!categoryRepository.idExists(id))
 		return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
-	categoryRepository.deleteEntity(category.getId());
+	categoryRepository.deleteEntity(id);
 	return Response.ok().entity("Success").build();
 	}
 	

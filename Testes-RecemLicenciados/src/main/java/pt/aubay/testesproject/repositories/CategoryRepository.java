@@ -42,4 +42,9 @@ public class CategoryRepository extends Repositories<Category>{
 		return (long) query.getSingleResult() == 1;
 	}
 
+	public boolean idExists(long id) {
+		Query query = em.createNamedQuery("Category.checkIfIdExists");
+		query.setParameter("id",id);
+		return (long) query.getSingleResult() == 1;
+	}
 }

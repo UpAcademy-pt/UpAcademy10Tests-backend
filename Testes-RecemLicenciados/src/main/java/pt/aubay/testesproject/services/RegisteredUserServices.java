@@ -81,7 +81,7 @@ public class RegisteredUserServices {
 	@Path("remove/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteUser(long id) {
+	public Response deleteUser(@PathParam("id") long id) {
 		return userBusiness.remove(id);
 	}
 	

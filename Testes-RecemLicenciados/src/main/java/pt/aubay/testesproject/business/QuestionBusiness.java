@@ -64,10 +64,10 @@ public class QuestionBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response remove(QuestionDTO question) {
-	if(!questionRepository.idExists(question.getId()))
+	public Response remove(long id) {
+	if(!questionRepository.idExists(id))
 		return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
-	questionRepository.deleteEntity(question.getId());
+	questionRepository.deleteEntity(id);
 	return Response.ok().entity("Success").build();
 	}
 	

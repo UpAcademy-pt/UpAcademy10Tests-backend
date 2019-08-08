@@ -7,6 +7,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -48,10 +49,10 @@ public class SolvedTestServices {
 	}
 	
 	@DELETE
-	@Path("remove")
+	@Path("remove/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteSolvedTest(SolvedTestDTO solvedTest) {
-		return solvedBusiness.remove(solvedTest);
+	public Response deleteSolvedTest(@PathParam("id") long id) {
+		return solvedBusiness.remove(id);
 	}
 }

@@ -68,10 +68,10 @@ public class QuestionServices {
 	}
 	
 	@DELETE
-	@Path("remove")
+	@Path("remove/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteQuestion(QuestionDTO question) {
-		return questionBusiness.remove(question);
+	public Response deleteQuestion(@PathParam("id") long id) {
+		return questionBusiness.remove(id);
 	}
 }

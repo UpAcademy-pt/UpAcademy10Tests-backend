@@ -71,10 +71,10 @@ public class TestBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response remove(TestDTO test) {
-		if(!testRepository.idExists(test.getId()))
+	public Response remove(long id) {
+		if(!testRepository.idExists(id))
 			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
-		testRepository.deleteEntity(test.getId());
+		testRepository.deleteEntity(id);
 		return Response.ok().entity("Success").build();
 	}
 	
