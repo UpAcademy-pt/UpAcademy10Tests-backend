@@ -21,6 +21,13 @@ public class PasswordUtils {
 	  private static final int KEY_LENGTH = 50;
 	  private static final String ALGORITHM = "PBKDF2WithHmacSHA512";
 
+	  public static String generateRandomPassword(int length) {
+
+		    byte[] password = new byte[length];
+		    RAND.nextBytes(password);
+		    return Base64.getEncoder().encodeToString(password);
+	  }
+	  
 	  public static Optional<String> generateSalt (final int length) {
 
 	    if (length < 1) {

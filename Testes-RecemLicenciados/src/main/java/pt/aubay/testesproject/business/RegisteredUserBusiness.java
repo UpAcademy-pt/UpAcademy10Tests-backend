@@ -61,6 +61,7 @@ public class RegisteredUserBusiness {
 			user.setSalt(hashCode[1]); user.setEmail(email);
 			user.setAccessType(accessType);
 			setLastLogin(user);
+			user.setAvailable(true);
 			
 			//Adicionar entity ao repositório
 			userRepository.addEntity(user);
@@ -91,6 +92,8 @@ public class RegisteredUserBusiness {
 			return response;
 		//Sets username corresponding to email given
 		RegisteredUser user = userRepository.getUser(userDTO.getUsername());
+		if(!user.isAvailable())
+			return Response.status(Status.NOT_ACCEPTABLE).entity("No user found").build();
 		setLastLogin(user);
 		userRepository.editEntity(user);
 		return Response.ok(convertEntityToDTO(user), MediaType.APPLICATION_JSON).build();
@@ -243,7 +246,8 @@ public class RegisteredUserBusiness {
 	//This function generates a password and sends an e-mail with said password
 	//reset parameters checks if it adds user (reset=false) or resets password(reset=true)
 	public String generatePassword(String sendTo, boolean reset) throws IOException {
-		String password=PasswordUtils.generateSalt(10).get();
+		//String password=PasswordUtils.generateSalt(10).get();
+		String password=PasswordUtils.generateRandomPassword(10);
 		MyEmail myEmail=new MyEmail();
 		if(reset)
 			myEmail.setBody("A nova password é: "+password+"\n Não se esqueça de mudá-la.");
@@ -264,6 +268,7 @@ public class RegisteredUserBusiness {
 		userDTO.setAccessType(user.getAccessType());
 		userDTO.setId(user.getId());
 		userDTO.setUsername(user.getUsername());
+		userDTO.setAvailable(user.isAvailable());
 		
 		
 		DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -278,6 +283,7 @@ public class RegisteredUserBusiness {
 		user.setAccessType(userDTO.getAccessType());
 		user.setEmail(userDTO.getEmail());
 		user.setUsername(userDTO.getUsername());
+		user.setAvailable(userDTO.isAvailable());
 		return user;
 	}
 	

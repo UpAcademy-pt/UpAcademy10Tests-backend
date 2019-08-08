@@ -2,6 +2,7 @@ package pt.aubay.testesproject.business;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -96,18 +97,21 @@ public class SolvedTestBusiness {
 	//change question to questionID;
 	public int calculateResult(SolvedTest test) {
 		int totalPoints=0;
-		int correctPoints=0;
+		double correctPoints=0;
 		int percentage;
 		Test myTest=testRepository.getEntity(test.getTest().getId());
 		Set <Questions> questions=myTest.getQuestions();
 		List<Answer> answers=test.getAnswer();
+	
+		totalPoints=questions.size();
 		
-		//Determines the total number of Points
-		for(Questions elem:questions)
-			totalPoints+=(elem.getSolution()).length;
-		
-		//Determines the number of correct answers
-		//We just need to check if Solution array has each element on the answer array.
+//Old way		
+//		//Determines the total number of Points
+//		for(Questions elem:questions)
+//			totalPoints+=(elem.getSolution()).length;
+//		
+//		//Determines the number of correct answers
+//		//We just need to check if Solution array has each element on the answer array.
 //		for(Answer elem:answers) {
 //			for(int optionGiven: elem.getGivenAnswer())
 //				if(IntStream.of(elem.getQuestion().getSolution()).anyMatch(x->x==optionGiven))
@@ -115,13 +119,16 @@ public class SolvedTestBusiness {
 //		}
 		
 		for(Answer elem:answers) {
-			int addPoints=0;
+			double addPoints=0;
 			for(int optionGiven: elem.getGivenAnswer()) {
-				if(IntStream.of(elem.getQuestion().getSolution()).anyMatch(x->x==optionGiven))
+				List<Integer> answerList=new ArrayList<Integer>();
+				for(int i: elem.getQuestion().getSolution())
+					answerList.add(i);
+				if(answerList.contains(optionGiven))
 					addPoints+=1./elem.getQuestion().getSolution().length;
-				else
-					addPoints=0;
-					break;
+				else {
+					addPoints=0; break;
+				}
 			}
 			correctPoints+=addPoints;
 		}

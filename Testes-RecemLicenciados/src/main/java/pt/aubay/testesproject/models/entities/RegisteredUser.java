@@ -28,6 +28,7 @@ public class RegisteredUser extends Models{
 	private String salt;
 	private String accessType;
 	private LocalDateTime lastLogin;
+	private boolean available;
 
 	public RegisteredUser() {	
 	}
@@ -84,6 +85,18 @@ public class RegisteredUser extends Models{
 
 	public void setLastLogin(LocalDateTime lastLogin) {
 		this.lastLogin = lastLogin;
+	}
+
+
+
+	public boolean isAvailable() {
+		return available;
+	}
+
+
+
+	public void setAvailable(boolean available) {
+		this.available = available;
 	}
 	
 	

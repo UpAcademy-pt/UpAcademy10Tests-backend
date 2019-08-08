@@ -35,6 +35,7 @@ public class CandidateBusiness {
 		CandidateDTO candidateDTO=new CandidateDTO();
 		candidateDTO.setEmail(candidate.getEmail());
 		candidateDTO.setName(candidate.getName());
+		candidateDTO.setId(candidate.getId());
 		
 		//There should be some confirmation as to the existence of said e-mail in the database
 		candidateDTO.setEmailRecruiter(candidate.getRecruiter().getEmail());
