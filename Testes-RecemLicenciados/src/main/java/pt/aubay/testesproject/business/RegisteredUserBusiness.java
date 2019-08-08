@@ -132,13 +132,13 @@ public class RegisteredUserBusiness {
 		return Response.ok(updatedUser, MediaType.APPLICATION_JSON).build();
 	}
 	
-	public Response remove(RegisteredUserDTO userDTO) {
+	public Response remove(long id) {
 		
 		///To do afterwards: when session is achieved -> check if admin is deleting own account (must be avoided)
 		
-		if(userDTO.getId()==0 || !(userRepository.userExists(userDTO.getId())))
+		if(id==0 || !(userRepository.userExists(id)))
 			return Response.status(Status.FORBIDDEN).entity("Invalid ID").build();
-		userRepository.deleteEntity(userDTO.getId());
+		userRepository.deleteEntity(id);
 		return Response.ok().entity("Success").build();
 	}
 	
