@@ -65,7 +65,7 @@ public class RegisteredUserBusiness {
 			
 			//Adicionar entity ao repositório
 			userRepository.addEntity(user);
-			return Response.ok(password, MediaType.APPLICATION_JSON).build();
+			return Response.ok(password, MediaType.TEXT_PLAIN).build();
 			//return Response.ok().entity("Success").build();
 		}
 		return Response.status(Status.FORBIDDEN).entity("This username exists already").build();

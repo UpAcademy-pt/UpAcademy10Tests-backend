@@ -43,7 +43,7 @@ public class RegisteredUserServices {
 	@POST
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response addUser(RegisteredUserDTO user) {
 		return userBusiness.add(user);
 	}
