@@ -114,17 +114,15 @@ public class SolvedTestBusiness {
 //		//We just need to check if Solution array has each element on the answer array.
 //		for(Answer elem:answers) {
 //			for(int optionGiven: elem.getGivenAnswer())
-//				if(IntStream.of(elem.getQuestion().getSolution()).anyMatch(x->x==optionGiven))
+//				if(elementInArray(optionGiven,elem.getQuestion().getSolution())
 //					correctPoints+=1;
 //		}
+		
 		
 		for(Answer elem:answers) {
 			double addPoints=0;
 			for(int optionGiven: elem.getGivenAnswer()) {
-				List<Integer> answerList=new ArrayList<Integer>();
-				for(int i: elem.getQuestion().getSolution())
-					answerList.add(i);
-				if(answerList.contains(optionGiven))
+				if(elementInArray(optionGiven,elem.getQuestion().getSolution()))
 					addPoints+=1./elem.getQuestion().getSolution().length;
 				else {
 					addPoints=0; break;
@@ -245,6 +243,13 @@ public class SolvedTestBusiness {
 	public void setDate(SolvedTest test) {
 		LocalDateTime date=LocalDateTime.now();
 		test.setDate(date);
+	}
+	
+	public boolean elementInArray(int element, int[] array) {
+		for(int i:array)
+			if(element==i)
+				return true;
+		return false;
 	}
 	
 }

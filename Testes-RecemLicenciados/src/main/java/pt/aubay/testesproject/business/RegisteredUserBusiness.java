@@ -129,7 +129,7 @@ public class RegisteredUserBusiness {
 		
 		RegisteredUser updatedUser=convertDTOToEntity(userDTO);
 		userRepository.editEntity(updatedUser);
-		return Response.ok(updatedUser, MediaType.APPLICATION_JSON).build();
+		return Response.ok(convertEntityToDTO(updatedUser), MediaType.APPLICATION_JSON).build();
 	}
 	
 	public Response remove(long id) {
@@ -221,7 +221,8 @@ public class RegisteredUserBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response checkIfChangesValid(RegisteredUserDTO newUser) {
+	public Response checkIfChangesValid(RegisteredUserDTO updatedUser) {
+		RegisteredUser newUser=convertDTOToEntity(updatedUser);
 		RegisteredUser oldUser=userRepository.getEntity(newUser.getId());
 		if(!newUser.getUsername().equals(oldUser.getUsername()))
 			return checkIfUsernameExists(newUser.getUsername());

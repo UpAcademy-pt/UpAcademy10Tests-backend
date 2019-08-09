@@ -29,10 +29,11 @@ public class QuestionBusiness {
 		Response response=checkQuestionValidToAdd(question);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
-		question.setCategory(categoryRepository.getCategory(question.getCategory().getCategory()));
+		
+		//question.setCategory(categoryRepository.getCategory(question.getCategory().getCategory()));
 		
 		
-		//converter DTO para Entity
+		//converts DTO to Entity
 		Questions questionEntity=addDTOasEntity(question);
 		questionRepository.addEntity(questionEntity);
 		return Response.ok().entity("Success").build();
@@ -58,7 +59,7 @@ public class QuestionBusiness {
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
 		
-		//converter DTO para Entity
+		//converts DTO to Entity
 		Questions newQuestionEntity=convertDTOToEntity(newQuestions);
 		questionRepository.editEntity(newQuestionEntity);
 		return Response.ok().entity("Success").build();
@@ -147,6 +148,7 @@ public class QuestionBusiness {
 	
 	public Questions addDTOasEntity(QuestionDTO questionDTO) {
 		Questions question=new Questions();
+		
 		question.setCategory(questionDTO.getCategory());
 		question.setOptions(questionDTO.getOptions());
 		question.setQuestion(questionDTO.getQuestion());
