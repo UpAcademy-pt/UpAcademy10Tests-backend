@@ -29,7 +29,7 @@ public class SolvedTest extends Models{
 	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	List<Answer> answer;
 	
-	private LocalDateTime timeSpent;
+	private long timeSpent;
 	
 	@ManyToOne(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
 	Candidate candidate;
@@ -47,10 +47,10 @@ public class SolvedTest extends Models{
 	public void setAnswer(List<Answer> answer) {
 		this.answer = answer;
 	}
-	public LocalDateTime getTimeSpent() {
+	public long getTimeSpent() {
 		return timeSpent;
 	}
-	public void setTimeSpent(LocalDateTime timeSpent) {
+	public void setTimeSpent(long timeSpent) {
 		this.timeSpent = timeSpent;
 	}
 	public Candidate getCandidate() {
