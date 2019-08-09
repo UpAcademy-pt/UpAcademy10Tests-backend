@@ -1,6 +1,7 @@
 package pt.aubay.testesproject.business;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,8 +58,6 @@ public class SolvedTestBusiness {
 			return response;
 		SolvedTest solved=new SolvedTest();
 		solved=addDTOAsEntity(test);
-		//Saves current time;
-		setDate(solved);
 		
 		int score=calculateResult(solved);
 		
@@ -203,7 +202,12 @@ public class SolvedTestBusiness {
 		
 		
 		solvedDTO.setCandidate(candidateBusiness.convertEntityToDTO(solved.getCandidate()));
-		solvedDTO.setDate(solved.getDate());
+		
+		//When we pass from an Entity to a DTO, we need to set Date as a string with the following format
+		DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		String dateTimeString=solved.getDate().format(formatter);
+		
+		solvedDTO.setDate(dateTimeString);
 		solvedDTO.setScore(solved.getScore());
 		solvedDTO.setTimeSpent(solved.getTimeSpent());
 		solvedDTO.setId(solved.getId());
@@ -227,7 +231,9 @@ public class SolvedTestBusiness {
 		solved.setAnswer(answerEntityList);
 		
 		solved.setCandidate(candidateBusiness.addDTOAsEntity(solvedDTO.getCandidate()));
-		solved.setDate(solvedDTO.getDate());
+		
+		//Saves current time;
+		setDate(solved);
 		solved.setTimeSpent(solvedDTO.getTimeSpent());
 		//Notice that we only send the test ID to the front-end to avoid unnecessary parameters
 		solved.setTest(testRepository.getEntity(solvedDTO.getTestID()));

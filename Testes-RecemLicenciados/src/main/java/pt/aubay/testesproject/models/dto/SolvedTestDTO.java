@@ -11,7 +11,7 @@ public class SolvedTestDTO extends ModelsDTO{
 	private CandidateDTO candidate;
 	private int score;
 	private long testID;
-	private LocalDateTime date;
+	private String date;
 	public List<AnswerDTO> getAnswer() {
 		return answer;
 	}
@@ -42,10 +42,10 @@ public class SolvedTestDTO extends ModelsDTO{
 	public void setTestID(long testID) {
 		this.testID = testID;
 	}
-	public LocalDateTime getDate() {
+	public String getDate() {
 		return date;
 	}
-	public void setDate(LocalDateTime date) {
+	public void setDate(String date) {
 		this.date = date;
 	}
 	
