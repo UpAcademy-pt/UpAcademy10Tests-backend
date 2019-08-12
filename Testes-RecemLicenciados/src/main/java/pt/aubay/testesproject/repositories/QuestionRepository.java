@@ -26,7 +26,20 @@ public class QuestionRepository extends Repositories<Questions>{
 	public List<Questions> getAll() {
 		Query query = em.createNamedQuery("Questions.getAll", getEntityClass());
 		return query.getResultList();
+	}
+	
+	public List<Questions> getRandomQuestions(List<Long> ids) {
+		Query query = em.createNamedQuery("Questions.getRandomQuestionOfCategory", getEntityClass());
+		query.setParameter("ids", ids);
+		return query.getResultList();
 	}	
+	
+	public List<Long> getQuestionIDS(String category){
+		Query query = em.createNamedQuery("Questions.getAllQuestionIDsOfCategory", Long.class);
+		query.setParameter("category", category);
+		return query.getResultList();
+	}
+	
 	public long count() {
 		Query query = em.createNamedQuery("Questions.count");
 		return (long) query.getSingleResult();

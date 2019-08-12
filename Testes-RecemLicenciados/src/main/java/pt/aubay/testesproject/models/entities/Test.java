@@ -1,26 +1,19 @@
 package pt.aubay.testesproject.models.entities;
 
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+
 import javax.persistence.JoinTable;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import pt.aubay.testesproject.models.entities.Questions;
 
 @Entity
 @NamedQueries({
@@ -37,12 +30,7 @@ public class Test extends Models{
 	private static final long serialVersionUID = 1L;
 	
 	//@Column(length=100000)
-	@ManyToMany(cascade = { CascadeType.ALL /*CascadeType.MERGE, CascadeType.PERSIST*/}, fetch = FetchType.EAGER)
-	@JoinTable(
-	        name = "test_question", 
-	        joinColumns = { @JoinColumn(name = "test_id") }, 
-	        inverseJoinColumns = { @JoinColumn(name = "question_id") }
-	    )
+	@ManyToMany(cascade = {CascadeType.ALL/*CascadeType.PERSIST, CascadeType.MERGE*/}, fetch = FetchType.EAGER)
 	@JsonIgnoreProperties("test")
 	private Set <Questions> questions;
 	

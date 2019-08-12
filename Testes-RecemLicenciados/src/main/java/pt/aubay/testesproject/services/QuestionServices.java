@@ -59,6 +59,13 @@ public class QuestionServices {
 		return questionBusiness.getAll();
 	}
 	
+	@GET
+	@Path("questions/{category}/{number}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getRandomQuestions(@PathParam("category") String category, @PathParam("number") long number) {
+		return questionBusiness.getRandomQuestions(category, number);
+	}
+	
 	@PUT
 	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)

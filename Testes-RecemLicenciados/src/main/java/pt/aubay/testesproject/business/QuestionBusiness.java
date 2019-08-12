@@ -1,6 +1,7 @@
 package pt.aubay.testesproject.business;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.ws.rs.core.MediaType;
@@ -12,6 +13,7 @@ import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.repositories.CategoryRepository;
 import pt.aubay.testesproject.repositories.QuestionRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
+import pt.aubay.testesproject.utils.RandomGeneratorUtils;
 
 
 public class QuestionBusiness {
@@ -76,6 +78,20 @@ public class QuestionBusiness {
 		return Response.status(Status.FORBIDDEN).entity("Cannot delete question used in test.").build();
 	questionRepository.deleteEntity(id);
 	return Response.ok().entity("Success").build();
+	}
+	
+	public Response getRandomQuestions(String category, long number) {
+		//We need to get all questions ID's with said category
+		List<Long> questions=questionRepository.getQuestionIDS(category);
+		long maxRange = questions.size();
+		if(number>maxRange)
+			 Response.status(Status.FORBIDDEN).entity("Invalid number of questions.").build();
+		int[] randomIndexes=RandomGeneratorUtils.getRandomNumbers((int)number,(int)maxRange);
+		List<Long> questionsFiltered=new ArrayList<Long>();
+		for(int i : randomIndexes)
+			questionsFiltered.add(questions.get(i));
+		List<Questions> randomQuestions=questionRepository.getRandomQuestions(questionsFiltered);
+		return Response.ok(randomQuestions, MediaType.APPLICATION_JSON).build();
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
