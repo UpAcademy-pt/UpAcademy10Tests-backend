@@ -53,10 +53,10 @@ public class QuestionBusiness {
 	}
 	
 	public Response getAll() {
-		ArrayList<QuestionDTO> allUsers=new ArrayList<QuestionDTO>();
+		ArrayList<QuestionDTO> allQuestions=new ArrayList<QuestionDTO>();
 		for(Questions elem:questionRepository.getAll())
-			allUsers.add(convertEntityToDTO(elem));
-		return Response.ok(allUsers, MediaType.APPLICATION_JSON).build();
+			allQuestions.add(convertEntityToDTO(elem));
+		return Response.ok(allQuestions, MediaType.APPLICATION_JSON).build();
 		//return Response.ok(questionRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
@@ -83,15 +83,26 @@ public class QuestionBusiness {
 	public Response getRandomQuestions(String category, long number) {
 		//We need to get all questions ID's with said category
 		List<Long> questions=questionRepository.getQuestionIDS(category);
+		//the maximum range allowed is the number of questions of said category
 		long maxRange = questions.size();
 		if(number>maxRange)
-			 Response.status(Status.FORBIDDEN).entity("Invalid number of questions.").build();
+			 return Response.status(Status.FORBIDDEN).entity("Invalid number of questions.").build();
+		//we generate randomIndexes
 		int[] randomIndexes=RandomGeneratorUtils.getRandomNumbers((int)number,(int)maxRange);
+		
+		//then, a list with the questions IDs we wanted is created
 		List<Long> questionsFiltered=new ArrayList<Long>();
 		for(int i : randomIndexes)
 			questionsFiltered.add(questions.get(i));
+		
+		//finally, we get the questions corresponding to those ID's
 		List<Questions> randomQuestions=questionRepository.getRandomQuestions(questionsFiltered);
-		return Response.ok(randomQuestions, MediaType.APPLICATION_JSON).build();
+		
+		//we then convert to DTO
+		List<QuestionDTO> randomQuestionsDTO=new ArrayList<QuestionDTO>();
+		for(Questions elem:randomQuestions)
+			randomQuestionsDTO.add(convertEntityToDTO(elem));
+		return Response.ok(randomQuestionsDTO, MediaType.APPLICATION_JSON).build();
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////

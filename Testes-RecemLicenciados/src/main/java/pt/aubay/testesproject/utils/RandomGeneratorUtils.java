@@ -16,7 +16,7 @@ public class RandomGeneratorUtils {
 	          
 	        int newRandom;  
 	        do {  
-	            newRandom = gen.nextInt(maxRange+1);  
+	            newRandom = gen.nextInt(maxRange);  
 	        } while (used.contains(newRandom));  
 	        result[i] = newRandom;  
 	        used.add(newRandom);  
