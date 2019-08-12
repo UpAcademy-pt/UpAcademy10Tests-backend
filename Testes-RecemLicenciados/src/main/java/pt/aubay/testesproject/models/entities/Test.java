@@ -28,7 +28,8 @@ import pt.aubay.testesproject.models.entities.Questions;
 	 @NamedQuery(name="Test.count", query = "SELECT COUNT(t.id) FROM Test t"),
 	 @NamedQuery(name="Test.checkIfExists", query = "SELECT COUNT(t.id) FROM Test t WHERE t.id =:id"),
 	 @NamedQuery(name="Test.checkIfTestNameExists", query = "SELECT COUNT(t.id) FROM Test t WHERE t.testName =:testName"),
-	 @NamedQuery(name="Test.getTest", query="SELECT t FROM Test t WHERE t.id=:id")
+	 @NamedQuery(name="Test.getTest", query="SELECT t FROM Test t WHERE t.id=:id"),
+	 @NamedQuery(name="Test.checkQuestion", query = "SELECT COUNT(t.id) FROM Test t LEFT JOIN t.questions q WHERE q.id =:questionID")
 })
 
 public class Test extends Models{
@@ -36,7 +37,7 @@ public class Test extends Models{
 	private static final long serialVersionUID = 1L;
 	
 	//@Column(length=100000)
-	@ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = { CascadeType.ALL /*CascadeType.MERGE, CascadeType.PERSIST*/}, fetch = FetchType.EAGER)
 	@JoinTable(
 	        name = "test_question", 
 	        joinColumns = { @JoinColumn(name = "test_id") }, 

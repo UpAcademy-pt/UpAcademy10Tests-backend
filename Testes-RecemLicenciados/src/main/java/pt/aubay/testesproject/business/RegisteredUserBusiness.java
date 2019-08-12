@@ -250,6 +250,7 @@ public class RegisteredUserBusiness {
 		//String password=PasswordUtils.generateSalt(10).get();
 		String password=PasswordUtils.generateRandomPassword(10);
 		MyEmail myEmail=new MyEmail();
+		myEmail.setSubject("Password da sua conta - Tester Aubay");
 		if(reset)
 			myEmail.setBody("A nova password é: "+password+"\n Não se esqueça de mudá-la.");
 		else

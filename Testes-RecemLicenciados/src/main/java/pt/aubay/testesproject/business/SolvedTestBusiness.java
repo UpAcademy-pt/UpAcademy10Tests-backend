@@ -1,5 +1,6 @@
 package pt.aubay.testesproject.business;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import pt.aubay.testesproject.auxiliary.MyEmail;
 import pt.aubay.testesproject.models.dto.AnswerDTO;
 import pt.aubay.testesproject.models.dto.CandidateDTO;
 import pt.aubay.testesproject.models.dto.SolvedTestDTO;
@@ -24,6 +26,7 @@ import pt.aubay.testesproject.models.entities.Test;
 import pt.aubay.testesproject.repositories.CandidateRepository;
 import pt.aubay.testesproject.repositories.SolvedTestRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
+import pt.aubay.testesproject.services.EmailServices;
 
 
 public class SolvedTestBusiness {
@@ -45,6 +48,9 @@ public class SolvedTestBusiness {
 	
 	@Inject
 	CandidateBusiness candidateBusiness;
+	
+	@Inject
+	EmailServices emailService;
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,6 +76,7 @@ public class SolvedTestBusiness {
 		
 		//Update averageScore of Test
 		testBusiness.updateAverageScore(test.getTestID(), score);
+		sendEmail(solved);
 		
 		return Response.ok().entity("Success").build();
 	}
@@ -256,6 +263,21 @@ public class SolvedTestBusiness {
 			if(element==i)
 				return true;
 		return false;
+	}
+	
+	public void sendEmail(SolvedTest test) {
+		MyEmail myEmail=new MyEmail();
+		String text="O resultado do aluno "+test.getCandidate().getName()+" foi: "+test.getScore()+"%.\n"+
+		"Consulte a plataforma para mais informações.";
+		myEmail.setSubject("Resultado do aluno "+test.getCandidate().getName());
+		myEmail.setEmailTo(test.getCandidate().getRecruiter().getEmail());
+		myEmail.setBody(text);
+		/*try {
+			emailService.sendEmail(myEmail);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 	}
 	
 }

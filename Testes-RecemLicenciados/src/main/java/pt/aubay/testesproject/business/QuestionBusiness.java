@@ -11,6 +11,7 @@ import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.repositories.CategoryRepository;
 import pt.aubay.testesproject.repositories.QuestionRepository;
+import pt.aubay.testesproject.repositories.TestRepository;
 
 
 public class QuestionBusiness {
@@ -19,6 +20,9 @@ public class QuestionBusiness {
 	
 	@Inject
 	CategoryRepository categoryRepository;
+	
+	@Inject
+	TestRepository testRepository;
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
@@ -68,6 +72,8 @@ public class QuestionBusiness {
 	public Response remove(long id) {
 	if(!questionRepository.idExists(id))
 		return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
+	if(testRepository.questionExists(id))
+		return Response.status(Status.FORBIDDEN).entity("Cannot delete question used in test.").build();
 	questionRepository.deleteEntity(id);
 	return Response.ok().entity("Success").build();
 	}

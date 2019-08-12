@@ -7,10 +7,14 @@ import javax.ws.rs.core.Response.Status;
 
 import pt.aubay.testesproject.models.entities.Category;
 import pt.aubay.testesproject.repositories.CategoryRepository;
+import pt.aubay.testesproject.repositories.QuestionRepository;
 
 public class CategoryBusiness {
 	@Inject
 	CategoryRepository categoryRepository;
+	
+	@Inject
+	QuestionRepository questionRepository;
 
 	public Response add(Category category){
 		if(categoryRepository.categoryExists(category))
@@ -38,7 +42,11 @@ public class CategoryBusiness {
 	
 	public Response remove(long id) {
 	if(!categoryRepository.idExists(id))
-		return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
+		return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
+	
+	//We should not be able to delete a category used in a question already
+	if(questionRepository.categoryExists(id))
+		return Response.status(Status.FORBIDDEN).entity("Cannot delete category used in question.").build();
 	categoryRepository.deleteEntity(id);
 	return Response.ok().entity("Success").build();
 	}

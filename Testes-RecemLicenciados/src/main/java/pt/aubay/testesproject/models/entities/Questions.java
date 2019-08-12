@@ -22,7 +22,8 @@ import pt.aubay.testesproject.models.entities.Test;
 	 @NamedQuery(name="Questions.getAll",query="SELECT q FROM Questions q"),
 	 @NamedQuery(name="Questions.count", query = "SELECT COUNT(q.id) FROM Questions q"),
 	 @NamedQuery(name="Questions.checkIfExists", query = "SELECT COUNT(q.id) FROM Questions q WHERE q.question =:question"),
-	 @NamedQuery(name="Questions.checkIfIdExists", query = "SELECT COUNT(q.id) FROM Questions q WHERE q.id =:id")
+	 @NamedQuery(name="Questions.checkIfIdExists", query = "SELECT COUNT(q.id) FROM Questions q WHERE q.id =:id"),
+	 @NamedQuery(name="Questions.checkCategory", query = "SELECT COUNT(q.id) FROM Questions q WHERE q.category.id =:categoryID")
 })
 public class Questions extends Models{
 

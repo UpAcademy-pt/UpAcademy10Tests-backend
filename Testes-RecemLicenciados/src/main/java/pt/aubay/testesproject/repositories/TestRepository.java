@@ -74,4 +74,10 @@ public class TestRepository extends Repositories<Test> {
 		return (long) query.getSingleResult() == 1;
 	}
 	
+	public boolean questionExists(long questionID) {
+		Query query = em.createNamedQuery("Test.checkQuestion");
+		query.setParameter("questionID", questionID);
+		return (long) query.getSingleResult() == 1;
+	}
+	
 }

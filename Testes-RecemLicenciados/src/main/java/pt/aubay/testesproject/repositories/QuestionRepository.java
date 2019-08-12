@@ -43,4 +43,10 @@ public class QuestionRepository extends Repositories<Questions>{
 		query.setParameter("question", question);
 		return (long) query.getSingleResult() == 1;
 	}
+	
+	public boolean categoryExists(long categoryID) {
+		Query query = em.createNamedQuery("Questions.checkCategory");
+		query.setParameter("categoryID", categoryID);
+		return (long) query.getSingleResult() == 1;
+	}
 }
