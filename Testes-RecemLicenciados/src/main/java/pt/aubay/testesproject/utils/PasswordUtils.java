@@ -10,6 +10,8 @@ import java.util.Optional;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 public class PasswordUtils {
 	/*Must save both Hashcode and salt in database*/
 	/*To consider in the future: adding a pepper to the mix*/
@@ -22,10 +24,7 @@ public class PasswordUtils {
 	  private static final String ALGORITHM = "PBKDF2WithHmacSHA512";
 
 	  public static String generateRandomPassword(int length) {
-
-		    byte[] password = new byte[length];
-		    RAND.nextBytes(password);
-		    return Base64.getEncoder().encodeToString(password);
+		    return RandomStringUtils.random(length, true, true);
 	  }
 	  
 	  public static Optional<String> generateSalt (final int length) {

@@ -20,7 +20,7 @@ public class RandomGeneratorUtils {
 	        } while (used.contains(newRandom));  
 	        result[i] = newRandom;  
 	        used.add(newRandom);  
-	    }  
+	    }
 	    return result;  
 	}  
 }
