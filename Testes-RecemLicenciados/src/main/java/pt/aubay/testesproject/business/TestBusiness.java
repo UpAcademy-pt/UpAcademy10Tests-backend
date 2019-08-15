@@ -73,7 +73,16 @@ public class TestBusiness {
 	
 	public Response remove(long id) {
 		if(!testRepository.idExists(id))
-			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
+			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
+		
+		/*In order to delete a test, we must be cautious -> if we simply delete a test which has questions, the questions will be deleted as well, because
+		the test has been set as the owning side of the bidirectional relationship between test-questions - remember that we specify this relationship in the test DTO and not
+		in the Question DTO. One way to solve this issue is to nullify the questions belonging to the test entity before deleting said test*/
+		Test test=testRepository.getEntity(id);
+		test.setQuestions(null);
+		testRepository.editEntity(test);
+		
+		///
 		testRepository.deleteEntity(id);
 		return Response.ok().entity("Success").build();
 	}
@@ -216,7 +225,7 @@ public class TestBusiness {
 		///We need to convert Questions DTO to Entity
 		Set <Questions> questions=new HashSet();
 		for(QuestionDTO elem: testDTO.getQuestions())
-			questions.add(questionBusiness.addDTOasEntity(elem));
+			questions.add(questionBusiness.addDTOasEntity(elem, true));
 		
 		test.setQuestions(questions);
 		

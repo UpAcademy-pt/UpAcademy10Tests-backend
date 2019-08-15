@@ -30,7 +30,7 @@ public class Test extends Models{
 	private static final long serialVersionUID = 1L;
 	
 	//@Column(length=100000)
-	@ManyToMany(cascade = {CascadeType.ALL/*CascadeType.PERSIST, CascadeType.MERGE*/}, fetch = FetchType.EAGER)
+	@ManyToMany(cascade = {/*CascadeType.ALL*/CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH, CascadeType.REFRESH}, fetch = FetchType.EAGER)
 	@JsonIgnoreProperties("test")
 	private Set <Questions> questions;
 	

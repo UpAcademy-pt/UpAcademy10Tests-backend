@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -47,6 +49,7 @@ public class Questions extends Models{
 	
 	private String question;
 	
+	@Column(length=1000)
 	private String[] options;
 	private int[] solution;
 	

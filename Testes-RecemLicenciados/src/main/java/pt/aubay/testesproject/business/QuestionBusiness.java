@@ -179,14 +179,22 @@ public class QuestionBusiness {
 		return question;
 	}
 	
-	public Questions addDTOasEntity(QuestionDTO questionDTO) {
+	public Questions addDTOasEntity(QuestionDTO questionDTO, boolean needID) {
 		Questions question=new Questions();
+		
+		//used when adding tests
+		if(needID)
+			question.setId(questionDTO.getId());
 		
 		question.setCategory(questionDTO.getCategory());
 		question.setOptions(questionDTO.getOptions());
 		question.setQuestion(questionDTO.getQuestion());
 		question.setSolution(questionDTO.getSolution());
 		return question;
+	}
+	
+	public Questions addDTOasEntity(QuestionDTO questionDTO) {
+		return addDTOasEntity(questionDTO, false);
 	}
 	
 }
