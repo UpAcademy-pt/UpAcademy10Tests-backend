@@ -52,6 +52,13 @@ public class TestServices {
 		return testBusiness.getAll();
 	}
 	
+	@GET
+	@Path("test/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTest(@PathParam("id") long id) {
+		return testBusiness.get(id);
+	}
+	
 	@PUT
 	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)

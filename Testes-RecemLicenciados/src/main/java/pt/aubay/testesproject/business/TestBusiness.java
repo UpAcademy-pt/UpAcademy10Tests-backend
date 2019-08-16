@@ -58,6 +58,16 @@ public class TestBusiness {
 		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
+	public Response getTest(long id) {
+		if(!testRepository.idExists(id))
+			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
+		TestDTO testDTO=new TestDTO();
+		testDTO=convertEntityToDTO(testRepository.getEntity(id));
+		return Response.ok(testDTO, MediaType.APPLICATION_JSON).build();
+		
+		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
+	}
+	
 	
 	public Response edit(TestDTO newTest) {
 		Response response=checkTestValidToEdit(newTest);

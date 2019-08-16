@@ -29,10 +29,10 @@ public class CategoryBusiness {
 	
 	public Response getAll() {
 		List<Category> allCategories=categoryRepository.getAll();
-//		List<AllCategoriesDTO> allCategoriesDTO=new ArrayList<AllCategoriesDTO>();
-//		for(Category category : allCategories)
-//			allCategoriesDTO.add(convertEntityToDTO(category));
-		return Response.ok(allCategories, MediaType.APPLICATION_JSON).build();
+		List<AllCategoriesDTO> allCategoriesDTO=new ArrayList<AllCategoriesDTO>();
+		for(Category category : allCategories)
+			allCategoriesDTO.add(convertEntityToDTO(category));
+		return Response.ok(allCategoriesDTO, MediaType.APPLICATION_JSON).build();
 	}
 	
 	public Response edit(Category newCategory) {
