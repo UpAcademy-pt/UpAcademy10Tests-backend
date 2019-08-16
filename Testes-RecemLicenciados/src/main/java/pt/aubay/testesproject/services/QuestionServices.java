@@ -18,12 +18,16 @@ import javax.ws.rs.core.UriInfo;
 import pt.aubay.testesproject.business.QuestionBusiness;
 import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.models.entities.Questions;
+import pt.aubay.testesproject.repositories.QuestionRepository;
 
 @Transactional
 @Path("question")
 public class QuestionServices {
 	@Inject
 	protected QuestionBusiness questionBusiness;
+	
+	@Inject
+	protected QuestionRepository questionRepository;
 	
 	@Context
 	protected UriInfo context;
@@ -80,5 +84,12 @@ public class QuestionServices {
 	@Produces (MediaType.TEXT_PLAIN)
 	public Response deleteQuestion(@PathParam("id") long id) {
 		return questionBusiness.remove(id);
+	}
+	
+	@GET
+	@Path("getnumber/{category}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Long getRandomQuestions(@PathParam("category") String category) {
+		return questionRepository.count(category);
 	}
 }

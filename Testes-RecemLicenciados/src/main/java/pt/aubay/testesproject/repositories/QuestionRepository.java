@@ -45,6 +45,12 @@ public class QuestionRepository extends Repositories<Questions>{
 		return (long) query.getSingleResult();
 	}
 	
+	public long count(String category) {
+		Query query = em.createNamedQuery("Questions.getQuestionsNumberOfCategory");
+		query.setParameter("category", category);
+		return (long) query.getSingleResult();
+	}
+	
 	public boolean idExists(long id) {
 		Query query = em.createNamedQuery("Questions.checkIfIdExists");
 		query.setParameter("id", id);
