@@ -58,7 +58,7 @@ public class TestBusiness {
 		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
-	public Response getTest(long id) {
+	public Response get(long id) {
 		if(!testRepository.idExists(id))
 			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
 		TestDTO testDTO=new TestDTO();

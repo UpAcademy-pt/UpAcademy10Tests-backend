@@ -53,7 +53,7 @@ public class TestServices {
 	}
 	
 	@GET
-	@Path("test/{id}")
+	@Path("get/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTest(@PathParam("id") long id) {
 		return testBusiness.get(id);
