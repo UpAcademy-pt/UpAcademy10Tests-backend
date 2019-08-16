@@ -77,7 +77,7 @@ public class TestBusiness {
 		
 		/*In order to delete a test, we must be cautious -> if we simply delete a test which has questions, the questions will be deleted as well, because
 		the test has been set as the owning side of the bidirectional relationship between test-questions - remember that we specify this relationship in the test DTO and not
-		in the Question DTO. One way to solve this issue is to nullify the questions belonging to the test entity before deleting said test*/
+		in the Question DTO. One way to solve this issue is to nullify all questions belonging to the test entity before deleting said test*/
 		Test test=testRepository.getEntity(id);
 		test.setQuestions(null);
 		testRepository.editEntity(test);
