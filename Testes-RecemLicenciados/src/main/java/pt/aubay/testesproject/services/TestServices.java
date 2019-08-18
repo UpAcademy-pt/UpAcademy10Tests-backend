@@ -76,7 +76,7 @@ public class TestServices {
 //	@GET
 //	@Path("getCategories/{id}")
 //	@Produces(MediaType.APPLICATION_JSON)
-//	public List<Category> getCategories(@PathParam("id") long id) {
-//		return testRepository.getCategories(id);
+//	public Set<String> getCategories(@PathParam("id") long id) {
+//		return testBusiness.getCategories(id);
 //	}
 }

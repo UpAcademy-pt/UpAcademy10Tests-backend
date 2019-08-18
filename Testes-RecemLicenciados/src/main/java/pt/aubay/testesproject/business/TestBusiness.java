@@ -12,10 +12,13 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import pt.aubay.testesproject.models.dto.QuestionDTO;
+import pt.aubay.testesproject.models.dto.SolvedTestDTO;
 import pt.aubay.testesproject.models.dto.TestDTO;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.models.entities.RegisteredUser;
 import pt.aubay.testesproject.models.entities.Test;
+import pt.aubay.testesproject.models.statistics.SolvedTestStatistics;
+import pt.aubay.testesproject.models.statistics.TestStatistics;
 import pt.aubay.testesproject.repositories.RegisteredUserRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 
@@ -50,10 +53,13 @@ public class TestBusiness {
 	}
 	
 	public Response getAll() {
-		Set<TestDTO> allTest=new HashSet();
+		Set<TestDTO> allTestDTO=new HashSet<TestDTO>();
 		for(Test elem:testRepository.getAll())
-			allTest.add(convertEntityToDTO(elem));
-		return Response.ok(allTest, MediaType.APPLICATION_JSON).build();
+			allTestDTO.add(convertEntityToDTO(elem));
+		Set<TestStatistics> allTests=new HashSet<TestStatistics>();
+		for(TestDTO elem:allTestDTO)
+			allTests.add(convertDTOToStatistics(elem));
+		return Response.ok(allTests, MediaType.APPLICATION_JSON).build();
 		
 		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
@@ -173,6 +179,19 @@ public class TestBusiness {
 		test.setAverageScore(0);
 	}
 	
+	public Set<String> getCategories(long id){
+		
+		Set<String> categories=new HashSet<String>();
+		
+		//next, we retrieve the test from the database, and the set of questions
+		Test test=testRepository.getEntity(id);
+		Set <Questions> questions=test.getQuestions();
+		//then, we run through all questions and gather distinct categories
+		for(Questions question : questions)
+			categories.add(question.getCategory().getCategory());
+		return categories;
+	}
+	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////DTO-ENTITY CONVERSION/////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,5 +269,16 @@ public class TestBusiness {
 		LocalDateTime newTime=LocalDateTime.now();
 		test.setDateTime(newTime);
 		return test;
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////DTO-STATISTICS CONVERSION/////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public TestStatistics convertDTOToStatistics(TestDTO testDTO) {
+		TestStatistics testStatistics=new TestStatistics();
+		testStatistics.setTest(testDTO);
+		testStatistics.setCategories(getCategories(testDTO.getId()));
+		return testStatistics;
 	}
 }
