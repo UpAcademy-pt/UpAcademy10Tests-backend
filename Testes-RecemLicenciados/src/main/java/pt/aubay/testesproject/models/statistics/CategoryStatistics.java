@@ -1,4 +1,4 @@
-package pt.aubay.testesproject.models.dto;
+package pt.aubay.testesproject.models.statistics;
 
 import java.util.List;
 
@@ -8,13 +8,14 @@ import pt.aubay.testesproject.models.entities.Category;
 import pt.aubay.testesproject.repositories.QuestionRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 
-public class AllCategoriesDTO {
+public class CategoryStatistics {
 	
 	@Inject
 	QuestionRepository questionRepository;
 	
 	private Category category;
-	private Long numberOfQuestions;
+	private long numberOfQuestions;
+	private long score;
 	
 //	public AllCategoriesDTO(Category category){
 //		this.category=category;
@@ -27,11 +28,17 @@ public class AllCategoriesDTO {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	public Long getNumberOfQuestions() {
+	public long getNumberOfQuestions() {
 		return numberOfQuestions;
 	}
-	public void setNumberOfQuestions(Long numberOfQuestions) {
+	public void setNumberOfQuestions(long numberOfQuestions) {
 		this.numberOfQuestions = numberOfQuestions;
+	}
+	public long getScore() {
+		return score;
+	}
+	public void setScore(long score) {
+		this.score = score;
 	}
 	
 }

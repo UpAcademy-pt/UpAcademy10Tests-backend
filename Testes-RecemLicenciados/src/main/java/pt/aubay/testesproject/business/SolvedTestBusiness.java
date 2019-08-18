@@ -23,6 +23,7 @@ import pt.aubay.testesproject.models.entities.Candidate;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.models.entities.SolvedTest;
 import pt.aubay.testesproject.models.entities.Test;
+import pt.aubay.testesproject.models.statistics.SolvedTestStatistics;
 import pt.aubay.testesproject.repositories.CandidateRepository;
 import pt.aubay.testesproject.repositories.SolvedTestRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
@@ -248,6 +249,15 @@ public class SolvedTestBusiness {
 		return solved;
 	}
 	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////DTO-STATISTICS CONVERSION/////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public SolvedTestStatistics convertDTOToStatistics(SolvedTestDTO solvedTestDTO) {
+		SolvedTestStatistics solvedStatistics=new SolvedTestStatistics();
+		solvedStatistics.setSolvedTest(solvedTestDTO);
+		return solvedStatistics;
+	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////Auxiliary-Methods/////////////////////////////////////////////////////

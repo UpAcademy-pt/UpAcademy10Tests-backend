@@ -5,6 +5,7 @@ import java.util.List;
 import javax.faces.bean.RequestScoped;
 import javax.persistence.Query;
 
+import pt.aubay.testesproject.models.entities.Category;
 import pt.aubay.testesproject.models.entities.SolvedTest;
 
 

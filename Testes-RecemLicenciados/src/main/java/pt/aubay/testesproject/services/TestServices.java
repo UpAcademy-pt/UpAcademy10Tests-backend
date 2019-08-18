@@ -17,8 +17,6 @@ import javax.ws.rs.core.UriInfo;
 
 import pt.aubay.testesproject.business.TestBusiness;
 import pt.aubay.testesproject.models.dto.TestDTO;
-import pt.aubay.testesproject.models.entities.Questions;
-import pt.aubay.testesproject.models.entities.Test;
 
 @Transactional
 @Path("test")
@@ -74,4 +72,11 @@ public class TestServices {
 	public Response deleteTest(@PathParam("id") long id) {
 		return testBusiness.remove(id);
 	}
+	
+//	@GET
+//	@Path("getCategories/{id}")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public List<Category> getCategories(@PathParam("id") long id) {
+//		return testRepository.getCategories(id);
+//	}
 }

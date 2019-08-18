@@ -8,8 +8,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import pt.aubay.testesproject.models.dto.AllCategoriesDTO;
 import pt.aubay.testesproject.models.entities.Category;
+import pt.aubay.testesproject.models.statistics.CategoryStatistics;
 import pt.aubay.testesproject.repositories.CategoryRepository;
 import pt.aubay.testesproject.repositories.QuestionRepository;
 
@@ -29,9 +29,9 @@ public class CategoryBusiness {
 	
 	public Response getAll() {
 		List<Category> allCategories=categoryRepository.getAll();
-		List<AllCategoriesDTO> allCategoriesDTO=new ArrayList<AllCategoriesDTO>();
+		List<CategoryStatistics> allCategoriesDTO=new ArrayList<CategoryStatistics>();
 		for(Category category : allCategories)
-			allCategoriesDTO.add(convertEntityToDTO(category));
+			allCategoriesDTO.add(convertEntityToStatistics(category));
 		return Response.ok(allCategoriesDTO, MediaType.APPLICATION_JSON).build();
 	}
 	
@@ -64,8 +64,8 @@ public class CategoryBusiness {
 	////////////////////////////////////////Auxiliary DTO Conversion//////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public AllCategoriesDTO convertEntityToDTO(Category category){
-		AllCategoriesDTO allCategoriesDTO= new AllCategoriesDTO();
+	public CategoryStatistics convertEntityToStatistics(Category category){
+		CategoryStatistics allCategoriesDTO= new CategoryStatistics();
 		allCategoriesDTO.setCategory(category);
 		allCategoriesDTO.setNumberOfQuestions(questionRepository.count(category.getCategory()));
 		return allCategoriesDTO;

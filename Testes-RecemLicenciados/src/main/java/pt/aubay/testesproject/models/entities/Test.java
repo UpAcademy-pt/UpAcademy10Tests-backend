@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 	 @NamedQuery(name="Test.checkIfExists", query = "SELECT COUNT(t.id) FROM Test t WHERE t.id =:id"),
 	 @NamedQuery(name="Test.checkIfTestNameExists", query = "SELECT COUNT(t.id) FROM Test t WHERE t.testName =:testName"),
 	 @NamedQuery(name="Test.getTest", query="SELECT t FROM Test t WHERE t.id=:id"),
-	 @NamedQuery(name="Test.checkQuestion", query = "SELECT COUNT(t.id) FROM Test t LEFT JOIN t.questions q WHERE q.id =:questionID")
+	 @NamedQuery(name="Test.checkQuestion", query = "SELECT COUNT(t.id) FROM Test t LEFT JOIN t.questions q WHERE q.id =:questionID"),
 })
 
 public class Test extends Models{
