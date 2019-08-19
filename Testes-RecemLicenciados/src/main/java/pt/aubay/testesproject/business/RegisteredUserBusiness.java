@@ -78,6 +78,18 @@ public class RegisteredUserBusiness {
 		return Response.ok(allUsers, MediaType.APPLICATION_JSON).build();
 	}
 	
+	//to get all Users except for currentUser
+	public Response getAllUsers(long id) {
+		//check if ID exists
+		if(!userRepository.userExists(id))
+			return Response.status(Status.NOT_FOUND).entity("Invalid ID").build();
+		ArrayList<RegisteredUserDTO> allUsers=new ArrayList<RegisteredUserDTO>();
+		for(RegisteredUser elem:userRepository.getAll())
+			if(id!=elem.getId())
+				allUsers.add(convertEntityToDTO(elem));
+		return Response.ok(allUsers, MediaType.APPLICATION_JSON).build();
+	}
+	
 	public Response get(String usernameOrEmail, String password){
 		RegisteredUserDTO userDTO=new RegisteredUserDTO();
 		//type checks if input is username or email - login might be achieved by both username and email

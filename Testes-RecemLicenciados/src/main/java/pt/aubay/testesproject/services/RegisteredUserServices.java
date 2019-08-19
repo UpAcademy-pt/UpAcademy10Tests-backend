@@ -62,6 +62,13 @@ public class RegisteredUserServices {
 		return userBusiness.getAllUsers();
 	}
 	
+	@GET
+	@Path("all/{currentID}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllUsers(@PathParam("currentID") long currentID) {
+		return userBusiness.getAllUsers(currentID);
+	}
+	
 	@PUT
 	@Path("changePassword/{username}/{oldPassword}/{newPassword}")
 	@Produces(MediaType.APPLICATION_JSON)
