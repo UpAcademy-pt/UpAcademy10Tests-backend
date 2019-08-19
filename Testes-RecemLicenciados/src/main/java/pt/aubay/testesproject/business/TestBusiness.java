@@ -69,6 +69,8 @@ public class TestBusiness {
 			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
 		TestDTO testDTO=new TestDTO();
 		testDTO=convertEntityToDTO(testRepository.getEntity(id));
+		for(QuestionDTO question: testDTO.getQuestions())
+			question.setSolution(null);
 		return Response.ok(testDTO, MediaType.APPLICATION_JSON).build();
 		
 		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();

@@ -219,6 +219,7 @@ public class SolvedTestBusiness {
 		solvedDTO.setScore(solved.getScore());
 		solvedDTO.setTimeSpent(solved.getTimeSpent());
 		solvedDTO.setId(solved.getId());
+		solvedDTO.setTestName(solved.getTest().getTestName());
 		//Notice that we only send the test ID to the front-end to avoid unnecessary parameters
 		solvedDTO.setTestID(solved.getTest().getId());
 		
