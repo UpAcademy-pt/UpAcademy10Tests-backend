@@ -43,9 +43,16 @@ public class TestSessionServices {
 	}
 	
 	@GET
-	@Path("begin/{sessionID}")
+	@Path("get/{sessionID}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTest(@PathParam("sessionID") long sessionID) {
 		return sessionBusiness.get(sessionID);
+	}
+	
+	@GET
+	@Path("begin/{sessionID}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response beginTest(@PathParam("sessionID") long testID) {
+		return sessionBusiness.begin(testID);
 	}
 }

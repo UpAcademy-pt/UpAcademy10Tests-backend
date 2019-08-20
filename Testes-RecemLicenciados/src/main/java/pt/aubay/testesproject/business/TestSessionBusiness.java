@@ -55,22 +55,22 @@ public class TestSessionBusiness {
 			return Response.status(Status.REQUEST_TIMEOUT).entity("Session expired").build();
 		TestSession session=sessionRepository.getEntity(sessionID);
 		
+		TestSessionDTO sessionDTO = convertEntityToDTO(session);
+		
+		sessionDTO.setTest(testBusiness.removeSolution(sessionDTO.getTest()));
+		return Response.ok(sessionDTO, MediaType.APPLICATION_JSON).build();
+	}
+	
+	public Response begin(long sessionID) {
+		if(!checkIfSessionValid(sessionID))
+			return Response.status(Status.REQUEST_TIMEOUT).entity("Session expired").build();
+		TestSession session=sessionRepository.getEntity(sessionID);
+		
 		LocalDateTime startingTest=LocalDateTime.now();
 		if(session.getStartingTest()==null)
 			session.setStartingTest(startingTest);
 		sessionRepository.editEntity(session);
-		TestSessionDTO sessionDTO = convertEntityToDTO(session);
-		
-		sessionDTO.setTest(testBusiness.removeSolution(sessionDTO.getTest()));
-		/*Set<Questions> questionsWOSolution=new HashSet<Questions>();
-		for(Questions question: testWOSolution.getQuestions()) {
-			question.setSolution(null);
-			questionsWOSolution.add(question);
-		}
-		testWOSolution.setQuestions(questionsWOSolution);*/
-		//testWOSolution=testBusiness.removeSolution(testBusiness.convertEntityToDTO(testWOSolution));
-		//session.setTest(testWOSolution);
-		return Response.ok(sessionDTO, MediaType.APPLICATION_JSON).build();
+		return Response.ok().entity("Success").build();
 	}
 	
 	public Response remove(long sessionID) {
