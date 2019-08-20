@@ -26,10 +26,17 @@ public class CandidateDTO extends ModelsDTO{
 	}
 	
 	public String getEmail() {
-		return emailRecruiter;
+		return email;
 	}
 	
 	public void setEmail(String email) {
-		this.emailRecruiter = email;	
+		this.email = email;	
 	}
+
+	@Override
+	public String toString() {
+		return "CandidateDTO [name=" + name + ", email=" + email + ", emailRecruiter=" + emailRecruiter + "]";
+	}
+	
+	
 }

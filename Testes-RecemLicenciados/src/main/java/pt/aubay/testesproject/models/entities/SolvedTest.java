@@ -18,7 +18,7 @@ import javax.persistence.OneToOne;
 	 @NamedQuery(name="SolvedTest.getAll",query="SELECT s FROM SolvedTest s"),
 	 @NamedQuery(name="SolvedTest.count", query = "SELECT COUNT(s.id) FROM SolvedTest s"),
 	 @NamedQuery(name="SolvedTest.checkIfExists", query = "SELECT COUNT(s.id) FROM SolvedTest s WHERE s.id =:id"),
-	 @NamedQuery(name="SolvedTest.checkUniqueness", query = "SELECT COUNT(s.id) FROM SolvedTest s WHERE candidate_id =:candidateID AND test_id=:testID"),
+	 @NamedQuery(name="SolvedTest.checkUniqueness", query = "SELECT COUNT(s.id) FROM SolvedTest s WHERE s.candidate.id =:candidateID AND s.test.id=:testID"),
 	 
 })
 

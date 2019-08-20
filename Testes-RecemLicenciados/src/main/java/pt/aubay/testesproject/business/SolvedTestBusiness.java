@@ -158,15 +158,20 @@ public class SolvedTestBusiness {
 		//We need to check if both candidate and testID are new (the combination must be unique)
 		
 		CandidateDTO candidate=test.getCandidate();
+		System.out.println(candidate);
 		
 		Candidate databaseCandidate;
 		//We check if candidate exists in database
+		System.out.println(candidate.getEmail());
 		if(	candidateRepository.CandidateExists(candidate.getEmail())) {
 			//Then we get candidate
 			databaseCandidate=candidateRepository.getCandidate(candidate.getEmail());
 			//Next, we check if Candidate_ID and test_ID are both in a solved test belonging to the SolvedTest Repository
-			if(!solvedRepository.checkUniqueness(databaseCandidate.getId(), test.getTestID()))
+			System.out.println(databaseCandidate.getId());
+			System.out.println(test.getTestID());
+			if(!solvedRepository.checkUniqueness(databaseCandidate.getId(), test.getTestID())) {
 				return Response.status(Status.NOT_ACCEPTABLE).entity("Candidate already took this test.").build();
+			}
 		}
 		
 		//if(solvedRepository.testExists(test.getTestName()))
