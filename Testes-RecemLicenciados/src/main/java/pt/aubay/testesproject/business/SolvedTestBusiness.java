@@ -169,7 +169,7 @@ public class SolvedTestBusiness {
 			//Next, we check if Candidate_ID and test_ID are both in a solved test belonging to the SolvedTest Repository
 			System.out.println(databaseCandidate.getId());
 			System.out.println(test.getTestID());
-			if(!solvedRepository.checkUniqueness(databaseCandidate.getId(), test.getTestID())) {
+			if(solvedRepository.checkUniqueness(databaseCandidate.getId(), test.getTestID())) {
 				return Response.status(Status.NOT_ACCEPTABLE).entity("Candidate already took this test.").build();
 			}
 		}
