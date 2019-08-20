@@ -2,6 +2,9 @@ package pt.aubay.testesproject.services;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -19,10 +22,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
+import org.apache.commons.lang3.StringUtils;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 import javax.ws.rs.QueryParam;
 
 import pt.aubay.testesproject.business.RegisteredUserBusiness;
 import pt.aubay.testesproject.models.dto.RegisteredUserDTO;
+import pt.aubay.testesproject.models.entities.RegisteredUser;
 
 @Transactional
 @Path("user")
@@ -93,6 +102,7 @@ public class RegisteredUserServices {
 	}
 	
 	//temporary
+	//replace the reset password with e-mail - to not forget
 	@PUT
 	@Path("resetPassword")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -106,4 +116,14 @@ public class RegisteredUserServices {
 		}
 		return Response.status(Status.EXPECTATION_FAILED).entity("Some unknown issue occured").build();
 	}
+	
+/*	@GET
+	@Path("filter")
+	@Produces({MediaType.APPLICATION_JSON})
+	public List<RegisteredUser> getFilterRegisteredUsers(
+			@NotNull @Min(0) @QueryParam("page") int page,
+			@NotNull @Min(2) @Max(10) @QueryParam("pageSize") int pageSize) {
+		return userBusiness.getFilterRegisteredUsers(page, pageSize);
+	}
+*/	
 }

@@ -69,8 +69,11 @@ public class TestBusiness {
 			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
 		TestDTO testDTO=new TestDTO();
 		testDTO=convertEntityToDTO(testRepository.getEntity(id));
-		for(QuestionDTO question: testDTO.getQuestions())
-			question.setSolution(null);
+		
+		//remove solution
+		testDTO=removeSolution(testDTO);
+		/*for(QuestionDTO question: testDTO.getQuestions())
+			question.setSolution(null);*/
 		return Response.ok(testDTO, MediaType.APPLICATION_JSON).build();
 		
 		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
@@ -192,6 +195,13 @@ public class TestBusiness {
 		for(Questions question : questions)
 			categories.add(question.getCategory().getCategory());
 		return categories;
+	}
+	
+	public TestDTO removeSolution(TestDTO test) {
+		for(QuestionDTO question: test.getQuestions()) {
+			question.setSolution(null);
+		}
+		return test;
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////

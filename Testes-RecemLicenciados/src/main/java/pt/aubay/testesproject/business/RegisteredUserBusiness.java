@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -171,6 +172,26 @@ public class RegisteredUserBusiness {
 		userRepository.changePassword(myUser.getUsername(), hashPass);
 		return Response.ok().entity("Success").build();
 	}
+	
+/*	public Response getFilterRegisteredUsers(int page, int pageSize) {
+		
+		
+		int fromIndex = page * pageSize;
+		int toIndex = fromIndex + pageSize;
+		int resultSize = result.size();
+		
+		if(fromIndex >= resultSize) {
+			result = Collections.emptyList();
+		}
+		else if(toIndex > resultSize) {
+			result = result.subList(fromIndex, resultSize);
+		}
+		else {
+			result = result.subList(fromIndex, toIndex);
+		}
+	}
+*/	
+
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
