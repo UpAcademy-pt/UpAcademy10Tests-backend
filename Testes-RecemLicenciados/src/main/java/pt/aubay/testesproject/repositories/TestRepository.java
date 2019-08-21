@@ -1,12 +1,11 @@
 package pt.aubay.testesproject.repositories;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.faces.bean.RequestScoped;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
-import pt.aubay.testesproject.models.entities.Category;
 import pt.aubay.testesproject.models.entities.Test;
 
 @RequestScoped
@@ -55,7 +54,7 @@ public class TestRepository extends Repositories<Test> {
 //	}
 	
 	public List<Test> getAll() {
-		Query query = em.createNamedQuery("Test.getAll", getEntityClass());
+		TypedQuery<Test> query = em.createNamedQuery("Test.getAll", getEntityClass());
 		return query.getResultList();
 	}	
 	public long count() {
@@ -80,5 +79,11 @@ public class TestRepository extends Repositories<Test> {
 		query.setParameter("questionID", questionID);
 		return (long) query.getSingleResult() != 0;
 	}
-	
+
+	@Override
+	public void deleteEntity(long id) {
+		em.createQuery("DELETE FROM Test t WHERE t.id = :id")
+			.setParameter("id", id)
+			.executeUpdate();
+	}
 }

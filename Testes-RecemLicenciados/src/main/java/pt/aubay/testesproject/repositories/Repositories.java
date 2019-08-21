@@ -36,6 +36,10 @@ public abstract class Repositories<T extends Models> {
 		T temp = em.find(getEntityClass(), id);
 		em.remove(temp);
 	}
+		
+	public void deleteEntity(T myEntity) {
+		em.remove(em.merge(myEntity));
+	}
 	
 
 }
