@@ -322,16 +322,21 @@ public class SolvedTestBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	public SolvedTestStatistics convertEntityToStatistics(SolvedTest solvedTest) {
+		
 		SolvedTestStatistics solvedStatistics=new SolvedTestStatistics();
 		solvedStatistics.setSolvedTest(convertEntityToDTO(solvedTest));
+		
 		Set<CategoryStatistics> categoryStatisticsSet= new HashSet<CategoryStatistics>();
 		Set<String> testCategories=testBusiness.getCategories(solvedTest.getTest().getId());
+		
+		//get scores for each categories of a solved test
 		for(String category: testCategories) {
 			CategoryStatistics categoryStatistics=new CategoryStatistics();
 			categoryStatistics.setScore(calculateResult(solvedTest,category));
 			categoryStatistics.setCategory(categoryRepository.getCategory(category));
 			categoryStatisticsSet.add(categoryStatistics);
 		}
+		
 		solvedStatistics.setCategoryStatistics(categoryStatisticsSet);
 		
 		return solvedStatistics;

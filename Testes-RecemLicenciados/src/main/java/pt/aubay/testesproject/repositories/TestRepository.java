@@ -78,7 +78,7 @@ public class TestRepository extends Repositories<Test> {
 	public boolean questionExists(long questionID) {
 		Query query = em.createNamedQuery("Test.checkQuestion");
 		query.setParameter("questionID", questionID);
-		return (long) query.getSingleResult() == 1;
+		return (long) query.getSingleResult() != 0;
 	}
 	
 }

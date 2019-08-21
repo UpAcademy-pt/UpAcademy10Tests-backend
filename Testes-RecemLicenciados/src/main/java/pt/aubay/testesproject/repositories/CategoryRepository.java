@@ -33,7 +33,7 @@ public class CategoryRepository extends Repositories<Category>{
 	public boolean categoryExists(Category category) {
 		Query query = em.createNamedQuery("Category.checkIfExists");
 		query.setParameter("category", category.getCategory());
-		return (long) query.getSingleResult() == 1;
+		return (long) query.getSingleResult() != 0;
 	}
 	
 	public boolean idExists(Category category) {

@@ -74,7 +74,7 @@ public class QuestionBusiness {
 	public Response remove(long id) {
 	if(!questionRepository.idExists(id))
 		return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
-	if(testRepository.questionExists(id))
+	if(questionRepository.checkIfQuestionInTest(id))
 		return Response.status(Status.FORBIDDEN).entity("Cannot delete question used in test.").build();
 	questionRepository.deleteEntity(id);
 	return Response.ok().entity("Success").build();
