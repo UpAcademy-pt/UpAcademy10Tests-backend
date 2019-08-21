@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
@@ -23,8 +24,10 @@ import pt.aubay.testesproject.models.entities.Candidate;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.models.entities.SolvedTest;
 import pt.aubay.testesproject.models.entities.Test;
+import pt.aubay.testesproject.models.statistics.CategoryStatistics;
 import pt.aubay.testesproject.models.statistics.SolvedTestStatistics;
 import pt.aubay.testesproject.repositories.CandidateRepository;
+import pt.aubay.testesproject.repositories.CategoryRepository;
 import pt.aubay.testesproject.repositories.SolvedTestRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 import pt.aubay.testesproject.repositories.TestSessionRepository;
@@ -59,6 +62,9 @@ public class SolvedTestBusiness {
 	
 	@Inject
 	TestSessionRepository sessionRepository;
+	
+	@Inject
+	CategoryRepository categoryRepository;
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,9 +114,13 @@ public class SolvedTestBusiness {
 	}
 	
 	public Response getAll() {
-		ArrayList<SolvedTestDTO> allSolved=new ArrayList<SolvedTestDTO>();
+		/*ArrayList<SolvedTestDTO> allSolved=new ArrayList<SolvedTestDTO>();
 		for(SolvedTest elem:solvedRepository.getAll())
 			allSolved.add(convertEntityToDTO(elem));
+		return Response.ok(allSolved, MediaType.APPLICATION_JSON).build();*/
+		List<SolvedTestStatistics> allSolved=new ArrayList<SolvedTestStatistics>();
+		for(SolvedTest elem:solvedRepository.getAll())
+			allSolved.add(convertEntityToStatistics(elem));
 		return Response.ok(allSolved, MediaType.APPLICATION_JSON).build();
 	}
 	
@@ -164,10 +174,37 @@ public class SolvedTestBusiness {
 		}
 
 		//Determines percentage (as int)
-		percentage=(int)(100.0*correctPoints/(totalPoints));
+		percentage=(int)Math.round(100.0*correctPoints/(totalPoints));
 		
 		//Saves info
 		test.setScore(percentage);
+		
+		return percentage;
+	}
+	
+	public int calculateResult(SolvedTest test, String category) {
+		int totalPoints=0;
+		double correctPoints=0;
+		int percentage;
+		List<Answer> answers=test.getAnswer();
+		
+		for(Answer elem:answers) {
+			if(elem.getQuestion().getCategory().getCategory().equals(category)) {
+				double addPoints=0;
+				totalPoints+=1;
+				for(int optionGiven: elem.getGivenAnswer()) {
+					if(elementInArray(optionGiven,elem.getQuestion().getSolution()))
+						addPoints+=1./elem.getQuestion().getSolution().length;
+					else {
+						addPoints=0; break;
+					}
+				}
+				correctPoints+=addPoints;
+			}
+		}
+
+		//Determines percentage (as int)
+		percentage=(int)Math.round(100.0*correctPoints/(totalPoints));
 		
 		return percentage;
 	}
@@ -284,9 +321,19 @@ public class SolvedTestBusiness {
 	//////////////////////////////////////////DTO-STATISTICS CONVERSION/////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public SolvedTestStatistics convertDTOToStatistics(SolvedTestDTO solvedTestDTO) {
+	public SolvedTestStatistics convertEntityToStatistics(SolvedTest solvedTest) {
 		SolvedTestStatistics solvedStatistics=new SolvedTestStatistics();
-		solvedStatistics.setSolvedTest(solvedTestDTO);
+		solvedStatistics.setSolvedTest(convertEntityToDTO(solvedTest));
+		Set<CategoryStatistics> categoryStatisticsSet= new HashSet<CategoryStatistics>();
+		Set<String> testCategories=testBusiness.getCategories(solvedTest.getTest().getId());
+		for(String category: testCategories) {
+			CategoryStatistics categoryStatistics=new CategoryStatistics();
+			categoryStatistics.setScore(calculateResult(solvedTest,category));
+			categoryStatistics.setCategory(categoryRepository.getCategory(category));
+			categoryStatisticsSet.add(categoryStatistics);
+		}
+		solvedStatistics.setCategoryStatistics(categoryStatisticsSet);
+		
 		return solvedStatistics;
 	}
 	

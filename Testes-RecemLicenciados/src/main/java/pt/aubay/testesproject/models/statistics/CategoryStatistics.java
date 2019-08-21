@@ -17,11 +17,6 @@ public class CategoryStatistics {
 	private long numberOfQuestions;
 	private long score;
 	
-//	public AllCategoriesDTO(Category category){
-//		this.category=category;
-//		//this.numberOfQuestions=questionRepository.count("JAVA");
-//	}
-	
 	public Category getCategory() {
 		return category;
 	}

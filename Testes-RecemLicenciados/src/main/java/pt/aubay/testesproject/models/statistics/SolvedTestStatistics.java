@@ -8,6 +8,7 @@ public class SolvedTestStatistics {
 	
 	private SolvedTestDTO solvedTestDTO;
 	private Set<CategoryStatistics> categoryStatistics;
+	
 	public SolvedTestDTO getSolvedTest() {
 		return solvedTestDTO;
 	}
@@ -20,6 +21,4 @@ public class SolvedTestStatistics {
 	public void setCategoryStatistics(Set<CategoryStatistics> categoryStatistics) {
 		this.categoryStatistics = categoryStatistics;
 	}
-	
-	
 }
