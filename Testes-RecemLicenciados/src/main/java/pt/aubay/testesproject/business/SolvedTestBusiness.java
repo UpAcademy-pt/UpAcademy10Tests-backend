@@ -52,11 +52,23 @@ public class SolvedTestBusiness {
 	
 	@Inject
 	EmailServices emailService;
+	
+	@Inject
+	TestSessionBusiness sessionBusiness;
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	//There is no need for an editable solved test
+	
+	
+	///adding solved test from session
+	public Response add(SolvedTestDTO test, long sessionID) {
+		Response response=sessionBusiness.checkIfSessionValid(sessionID, test.getTestID());
+		if(response.getStatus()!=Response.Status.OK.getStatusCode())
+			return response;
+		return add(test);
+	}
 	
 	public Response add(SolvedTestDTO test){
 		//We need to check if SolvedTest object is valid

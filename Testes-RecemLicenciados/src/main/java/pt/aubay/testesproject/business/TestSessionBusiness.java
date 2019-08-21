@@ -33,6 +33,9 @@ public class TestSessionBusiness {
 	@Inject
 	RegisteredUserRepository userRepository;
 	
+	@Inject
+	TestCommonBusiness testCommonBusiness;
+	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +54,7 @@ public class TestSessionBusiness {
 	
 	public Response get(long sessionID) {
 		//check if session is expired
-		if(!checkIfSessionValid(sessionID))
+		if(!testCommonBusiness.checkIfSessionValid(sessionID))
 			return Response.status(Status.REQUEST_TIMEOUT).entity("Session expired").build();
 		TestSession session=sessionRepository.getEntity(sessionID);
 		
@@ -62,7 +65,7 @@ public class TestSessionBusiness {
 	}
 	
 	public Response begin(long sessionID) {
-		if(!checkIfSessionValid(sessionID))
+		if(!testCommonBusiness.checkIfSessionValid(sessionID))
 			return Response.status(Status.REQUEST_TIMEOUT).entity("Session expired").build();
 		TestSession session=sessionRepository.getEntity(sessionID);
 		
@@ -110,20 +113,6 @@ public class TestSessionBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public boolean checkIfSessionValid(long sessionID) {
-		TestSession session=sessionRepository.getEntity(sessionID);
-		LocalDateTime nowInstant = LocalDateTime.now();
-		LocalDateTime startingInstant = session.getStartingToken();
-		long numberOfHours=session.getNumberOfHours();
-		
-		Duration duration= Duration.between(startingInstant, nowInstant);
-		long durationDiff=Math.abs(duration.toMillis());
-		
-		if(durationDiff>numberOfHours*60*60*1000)
-			return false;
-		return true;
-	}
-	
 	
 	//when solvedTest is being submitted, we should first check if session is still valid
 	public Response checkIfSessionValid(long sessionID, long testID) {
@@ -135,7 +124,7 @@ public class TestSessionBusiness {
 		Test test= testRepository.getEntity(testID);
 		TestSession session=sessionRepository.getEntity(sessionID);
 		LocalDateTime nowInstant = LocalDateTime.now();
-		LocalDateTime startingInstant = session.getStartingToken();
+		LocalDateTime startingInstant = session.getStartingTest();
 		
 		Duration duration= Duration.between(startingInstant, nowInstant);
 		long durationDiff=Math.abs(duration.toMillis());

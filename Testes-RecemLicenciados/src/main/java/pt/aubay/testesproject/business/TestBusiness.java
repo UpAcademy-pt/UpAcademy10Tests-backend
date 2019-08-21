@@ -1,9 +1,11 @@
 package pt.aubay.testesproject.business;
 
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -17,14 +19,20 @@ import pt.aubay.testesproject.models.dto.TestDTO;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.models.entities.RegisteredUser;
 import pt.aubay.testesproject.models.entities.Test;
+import pt.aubay.testesproject.models.sessions.TestSession;
 import pt.aubay.testesproject.models.statistics.SolvedTestStatistics;
 import pt.aubay.testesproject.models.statistics.TestStatistics;
 import pt.aubay.testesproject.repositories.RegisteredUserRepository;
+import pt.aubay.testesproject.repositories.SolvedTestRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
+import pt.aubay.testesproject.repositories.TestSessionRepository;
 
 public class TestBusiness {
 	@Inject
 	TestRepository testRepository;
+	
+	@Inject
+	SolvedTestRepository solvedRepository;
 	
 	@Inject
 	QuestionBusiness questionBusiness;
@@ -34,6 +42,12 @@ public class TestBusiness {
 	
 	@Inject
 	RegisteredUserBusiness userBusiness;
+	
+	@Inject
+	TestSessionRepository sessionRepository;
+	
+	@Inject
+	TestCommonBusiness testCommonBusiness;
 
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
@@ -96,6 +110,23 @@ public class TestBusiness {
 		if(!testRepository.idExists(id))
 			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
 		
+		//First, we need to check if test exists in any solved test or test session
+		if(solvedRepository.checkIfTestExists(id))
+			return Response.status(Status.FORBIDDEN).entity("Cannot delete Test used in a solved test present in the database").build();
+		
+		boolean allInvalid=true;
+		if(sessionRepository.checkIfTestExists(id)) {
+			//we need to check if session all sessions involving said test are still valid
+			List<Long> sessionIDs=sessionRepository.getSessionIDsOfTest(id);
+			for(long sessionID: sessionIDs) {
+				if(!testCommonBusiness.checkIfSessionValid(sessionID))
+					sessionRepository.deleteEntity(sessionID);
+				else
+					allInvalid=false;
+			}
+			if(!allInvalid)
+				return Response.status(Status.FORBIDDEN).entity("Cannot delete Test used in an open session").build();
+		}
 		/*In order to delete a test, we must be cautious -> if we simply delete a test which has questions, the questions will be deleted as well, because
 		the test has been set as the owning side of the bidirectional relationship between test-questions - remember that we specify this relationship in the test DTO and not
 		in the Question DTO. One way to solve this issue is to nullify all questions belonging to the test entity before deleting said test*/

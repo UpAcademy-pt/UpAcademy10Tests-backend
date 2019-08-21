@@ -41,6 +41,14 @@ public class SolvedTestServices {
 		return solvedBusiness.add(solvedTest);
 	}
 	
+	@POST
+	@Path("add/{sessionID}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response addSolvedTest(SolvedTestDTO solvedTest, @PathParam("sessionID") long sessionID) {
+		return solvedBusiness.add(solvedTest, sessionID);
+	}
+	
 	@GET
 	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)

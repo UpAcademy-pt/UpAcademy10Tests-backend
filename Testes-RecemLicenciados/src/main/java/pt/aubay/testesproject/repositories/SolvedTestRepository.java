@@ -46,4 +46,10 @@ public class SolvedTestRepository extends Repositories<SolvedTest>{
 		return (long) query.getSingleResult() == 1;
 	}
 	
+	public boolean checkIfTestExists(long testID) {
+		Query query = em.createNamedQuery("SolvedTest.checkIfTestExists");
+		query.setParameter("testID", testID);
+		return (long) query.getSingleResult() == 1;
+	}
+	
 }

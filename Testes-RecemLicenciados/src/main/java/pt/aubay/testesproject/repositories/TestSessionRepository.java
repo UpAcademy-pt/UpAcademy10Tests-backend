@@ -1,5 +1,7 @@
 package pt.aubay.testesproject.repositories;
 
+import java.util.List;
+
 import javax.faces.bean.RequestScoped;
 import javax.persistence.Query;
 
@@ -18,6 +20,18 @@ public class TestSessionRepository extends Repositories<TestSession>{
 		Query query = em.createNamedQuery("TestSession.checkIfItExists");
 		query.setParameter("id", id);
 		return (long) query.getSingleResult() == 1;
+	}
+	
+	public boolean checkIfTestExists(long testID) {
+		Query query = em.createNamedQuery("TestSession.checkIfTestExists");
+		query.setParameter("testID", testID);
+		return (long) query.getSingleResult() == 1;
+	}
+	
+	public List<Long> getSessionIDsOfTest(long testID){
+		Query query = em.createNamedQuery("TestSession.getTestIDs", Long.class);
+		query.setParameter("testID", testID);
+		return query.getResultList();
 	}
 	
 	public TestSession addSession(TestSession session) {
