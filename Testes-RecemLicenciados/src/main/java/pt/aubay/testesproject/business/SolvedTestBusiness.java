@@ -27,6 +27,7 @@ import pt.aubay.testesproject.models.statistics.SolvedTestStatistics;
 import pt.aubay.testesproject.repositories.CandidateRepository;
 import pt.aubay.testesproject.repositories.SolvedTestRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
+import pt.aubay.testesproject.repositories.TestSessionRepository;
 import pt.aubay.testesproject.services.EmailServices;
 
 
@@ -55,6 +56,9 @@ public class SolvedTestBusiness {
 	
 	@Inject
 	TestSessionBusiness sessionBusiness;
+	
+	@Inject
+	TestSessionRepository sessionRepository;
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -64,9 +68,18 @@ public class SolvedTestBusiness {
 	
 	///adding solved test from session
 	public Response add(SolvedTestDTO test, long sessionID) {
+		
+		//we should check if sessionID exists associated with testID
+		if(!sessionRepository.checkIfSessionExistsWithTest(sessionID, test.getTestID()))
+			return Response.status(Status.NOT_FOUND).entity("Session not found").build();	 
 		Response response=sessionBusiness.checkIfSessionValid(sessionID, test.getTestID());
+		
+		//we should remove session -> if valid, remove session and proceed with adding solved test (session no longer needed); if not, just remove session
+		sessionBusiness.remove(sessionID);
+		
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
+		
 		return add(test);
 	}
 	

@@ -28,6 +28,13 @@ public class TestSessionRepository extends Repositories<TestSession>{
 		return (long) query.getSingleResult() == 1;
 	}
 	
+	public boolean checkIfSessionExistsWithTest(long sessionID, long testID) {
+		Query query = em.createNamedQuery("TestSession.checkIfSessionExistsWithTest");
+		query.setParameter("id", sessionID);
+		query.setParameter("testID", testID);
+		return (long) query.getSingleResult() == 1;
+	}
+	
 	public List<Long> getSessionIDsOfTest(long testID){
 		Query query = em.createNamedQuery("TestSession.getTestIDs", Long.class);
 		query.setParameter("testID", testID);
