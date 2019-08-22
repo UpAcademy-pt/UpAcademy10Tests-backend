@@ -10,6 +10,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.TestDTO;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.models.entities.Test;
@@ -40,46 +41,43 @@ public class TestSessionBusiness {
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Response add(TestSession session, long testID){
+	public long add(TestSession session, long testID) throws AppException{
 		//check if e-mail exists and idTest exists
-		Response response=checkParameters(session, testID);
-		if(response.getStatus()!=Response.Status.OK.getStatusCode())
-			return response;
+		checkParameters(session, testID);
 		///set creation instance
 		setDate(session);
 		session.setTest(testRepository.getEntity(testID));
 		session=sessionRepository.addSession(session);
-		return Response.ok(session.getId(), MediaType.APPLICATION_JSON).build();
+		return session.getId();
 	}
 	
-	public Response get(long sessionID) {
+	public TestSessionDTO get(long sessionID) throws AppException {
 		//check if session is expired
 		if(!testCommonBusiness.checkIfSessionValid(sessionID))
-			return Response.status(Status.REQUEST_TIMEOUT).entity("Session expired").build();
+			throw new AppException("Session expired", Status.REQUEST_TIMEOUT.getStatusCode());
 		TestSession session=sessionRepository.getEntity(sessionID);
 		
 		TestSessionDTO sessionDTO = convertEntityToDTO(session);
 		
 		sessionDTO.setTest(testBusiness.removeSolution(sessionDTO.getTest()));
-		return Response.ok(sessionDTO, MediaType.APPLICATION_JSON).build();
+		return sessionDTO;
 	}
 	
-	public Response begin(long sessionID) {
+	public void begin(long sessionID) throws AppException {
 		if(!testCommonBusiness.checkIfSessionValid(sessionID))
-			return Response.status(Status.REQUEST_TIMEOUT).entity("Session expired").build();
+			throw new AppException("Session expired", Status.REQUEST_TIMEOUT.getStatusCode());
 		TestSession session=sessionRepository.getEntity(sessionID);
 		
 		LocalDateTime startingTest=LocalDateTime.now();
 		if(session.getStartingTest()==null)
 			session.setStartingTest(startingTest);
 		sessionRepository.editEntity(session);
-		return Response.ok().entity("Success").build();
 	}
 	
-	public Response remove(long sessionID) {
+	public Response remove(long sessionID) throws AppException {
 		//check if session exists
 		if(!sessionRepository.IDExists(sessionID))
-			return Response.status(Status.NOT_FOUND).entity("Session not found in database").build();
+			throw new AppException("Session not found in database", Status.NOT_FOUND.getStatusCode());
 		sessionRepository.deleteEntity(sessionID);
 		return Response.ok().entity("Success").build();
 	}
@@ -89,37 +87,34 @@ public class TestSessionBusiness {
 	//////////////////////////////////////////////Check-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Response checkParameters(TestSession session, long testID) {
+	public void checkParameters(TestSession session, long testID) throws AppException {
 		
 		///check if all needed parameters are there
 		if(session.getRecruiterEmail()==null)
-			return Response.status(Status.NOT_ACCEPTABLE).entity("Parameters are missing.").build();
+			throw new AppException("Parameters are missing.", Status.NOT_ACCEPTABLE.getStatusCode());
 		
 		///check if parameters are valid
 		if(!testRepository.idExists(testID))
-			return Response.status(Status.NOT_ACCEPTABLE).entity("Test not found in database").build();
+			throw new AppException("Test not found in database", Status.NOT_ACCEPTABLE.getStatusCode());
 		if(!userRepository.emailExists(session.getRecruiterEmail()))
-			return Response.status(Status.NOT_ACCEPTABLE).entity("User not found in database").build();
-		return Response.ok().entity("Success").build();
+			throw new AppException("User not found in database", Status.NOT_ACCEPTABLE.getStatusCode());
 	}
 	
-	public Response checkParameters(long sessionID, long testID) {
+	public void checkParameters(long sessionID, long testID) throws AppException {
 		
 		///check if parameters are valid
 		if(!testRepository.idExists(testID))
-			return Response.status(Status.NOT_ACCEPTABLE).entity("Test not found in database").build();
+			throw new AppException("Test not found in database", Status.NOT_ACCEPTABLE.getStatusCode());
 		if(!userRepository.userExists(sessionID))
-			return Response.status(Status.NOT_ACCEPTABLE).entity("User not found in database").build();
-		return Response.ok().entity("Success").build();
+			throw new AppException("User not found in database", Status.NOT_ACCEPTABLE.getStatusCode());
 	}
 	
 	
 	//when solvedTest is being submitted, we should first check if session is still valid
-	public Response checkIfSessionValid(long sessionID, long testID) {
+	public void checkIfSessionValid(long sessionID, long testID) throws AppException {
 		
-		Response response=checkParameters(sessionID, testID);
-		if(response.getStatus()!=Response.Status.OK.getStatusCode())
-			return response;
+		checkParameters(sessionID, testID);
+		
 		Test test= testRepository.getEntity(testID);
 		TestSession session=sessionRepository.getEntity(sessionID);
 		LocalDateTime nowInstant = LocalDateTime.now();
@@ -128,10 +123,11 @@ public class TestSessionBusiness {
 		Duration duration= Duration.between(startingInstant, nowInstant);
 		long durationDiff=Math.abs(duration.toMillis());
 		
-		///5 min were added to the session, in order to avoid Internet-speed-related issues
-		if(durationDiff>(test.getTimer()+5)*60*1000)
-			Response.status(Status.REQUEST_TIMEOUT).entity("Session expired").build();
-		return Response.ok().entity("Success").build();
+		///10 min were added to the session, in order to avoid Internet-speed-related issues
+		if(durationDiff>(test.getTimer()+10)*60*1000) {
+			remove(sessionID);
+			throw new AppException("Session expired", Status.REQUEST_TIMEOUT.getStatusCode());
+		}
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////

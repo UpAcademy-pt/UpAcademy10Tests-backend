@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import pt.aubay.testesproject.auxiliary.MyEmail;
+import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.AnswerDTO;
 import pt.aubay.testesproject.models.dto.CandidateDTO;
 import pt.aubay.testesproject.models.dto.SolvedTestDTO;
@@ -73,27 +74,23 @@ public class SolvedTestBusiness {
 	
 	
 	///adding solved test from session
-	public Response add(SolvedTestDTO test, long sessionID) {
+	public void add(SolvedTestDTO test, long sessionID) throws AppException {
 		
 		//we should check if sessionID exists associated with testID
 		if(!sessionRepository.checkIfSessionExistsWithTest(sessionID, test.getTestID()))
-			return Response.status(Status.NOT_FOUND).entity("Session not found").build();	 
-		Response response=sessionBusiness.checkIfSessionValid(sessionID, test.getTestID());
+			throw new AppException("Session not found", Status.NOT_FOUND.getStatusCode()); 
+		sessionBusiness.checkIfSessionValid(sessionID, test.getTestID());
 		
-		//we should remove session -> if valid, remove session and proceed with adding solved test (session no longer needed); if not, just remove session
+		//we should remove session -> if valid, remove session and proceed with adding solved test (session no longer needed);
 		sessionBusiness.remove(sessionID);
 		
-		if(response.getStatus()!=Response.Status.OK.getStatusCode())
-			return response;
-		
-		return add(test);
+		add(test);
 	}
 	
-	public Response add(SolvedTestDTO test){
+	public void add(SolvedTestDTO test) throws AppException{
 		//We need to check if SolvedTest object is valid
-		Response response=checkTestValidToAdd(test);
-		if(response.getStatus()!=Response.Status.OK.getStatusCode())
-			return response;
+		checkTestValidToAdd(test);
+
 		SolvedTest solved=new SolvedTest();
 		solved=addDTOAsEntity(test);
 		
@@ -110,10 +107,9 @@ public class SolvedTestBusiness {
 		testBusiness.updateAverageScore(test.getTestID(), score);
 		sendEmail(solved);
 		
-		return Response.ok().entity("Success").build();
 	}
 	
-	public Response getAll() {
+	public List<SolvedTestStatistics> getAll() {
 		/*ArrayList<SolvedTestDTO> allSolved=new ArrayList<SolvedTestDTO>();
 		for(SolvedTest elem:solvedRepository.getAll())
 			allSolved.add(convertEntityToDTO(elem));
@@ -121,14 +117,13 @@ public class SolvedTestBusiness {
 		List<SolvedTestStatistics> allSolved=new ArrayList<SolvedTestStatistics>();
 		for(SolvedTest elem:solvedRepository.getAll())
 			allSolved.add(convertEntityToStatistics(elem));
-		return Response.ok(allSolved, MediaType.APPLICATION_JSON).build();
+		return allSolved;
 	}
 	
-	public Response remove(long id) {
+	public void remove(long id) throws AppException {
 		if(!solvedRepository.idExists(id))
-			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
+			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
 		solvedRepository.deleteEntity(id);
-		return Response.ok().entity("Success").build();
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -213,10 +208,9 @@ public class SolvedTestBusiness {
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Response checkTestValidToAdd(SolvedTestDTO test) {
+	public void checkTestValidToAdd(SolvedTestDTO test) throws AppException {
 		//First, we need to check if all parameters needed were introduced
-		if(checkIfParametersThere(test).getStatus()!=Response.Status.OK.getStatusCode())
-			return checkIfParametersThere(test);
+		checkIfParametersThere(test);
 		//We need to check if both candidate and testID are new (the combination must be unique)
 		
 		CandidateDTO candidate=test.getCandidate();
@@ -232,34 +226,30 @@ public class SolvedTestBusiness {
 			System.out.println(databaseCandidate.getId());
 			System.out.println(test.getTestID());
 			if(solvedRepository.checkUniqueness(databaseCandidate.getId(), test.getTestID())) {
-				return Response.status(Status.NOT_ACCEPTABLE).entity("Candidate already took this test.").build();
+				throw new AppException("Candidate already took this test.", Status.NOT_ACCEPTABLE.getStatusCode());
 			}
 		}
 		
 		//if(solvedRepository.testExists(test.getTestName()))
 		//	return Response.status(Status.NOT_ACCEPTABLE).entity("SolvedTest Name exists already").build();
-		return Response.ok().entity("Success").build();
 	}
 	
-	public Response checkIfParametersThere(SolvedTestDTO test, boolean needID) {
+	public void checkIfParametersThere(SolvedTestDTO test, boolean needID) throws AppException {
 		if(needID && test.getId()==0)
-			return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present, including ID.").build();
+			throw new AppException("Fields must be all present, including ID.", Status.NOT_ACCEPTABLE.getStatusCode());
 		if(	test.getAnswer()==null ||
 			test.getCandidate()==null ||
 			test.getTestID()==0 //&&
 			//test.getTimeSpent()!=null
 			)
-			return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present.").build();
+			throw new AppException("Fields must be all present.", Status.NOT_ACCEPTABLE.getStatusCode());
 		
 		//We also need to check if candidate has all needed info
-		Response response=candidateBusiness.checkIfParametersThere(test.getCandidate());
-		if(response.getStatus()!=Response.Status.OK.getStatusCode())
-			return response;
-		return Response.ok().entity("Success").build();
+		candidateBusiness.checkIfParametersThere(test.getCandidate());
 	}
 	
-	public Response checkIfParametersThere(SolvedTestDTO test) {
-		return checkIfParametersThere(test, false);
+	public void checkIfParametersThere(SolvedTestDTO test) throws AppException {
+		checkIfParametersThere(test, false);
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////

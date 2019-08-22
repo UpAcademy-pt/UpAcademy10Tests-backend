@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import pt.aubay.testesproject.business.SolvedTestBusiness;
+import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.SolvedTestDTO;
 
 @Transactional
@@ -37,30 +38,33 @@ public class SolvedTestServices {
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addSolvedTest(SolvedTestDTO solvedTest) {
-		return solvedBusiness.add(solvedTest);
+	public Response addSolvedTest(SolvedTestDTO solvedTest) throws AppException {
+		solvedBusiness.add(solvedTest);
+		return Response.ok().entity("Success").build();
 	}
 	
 	@POST
 	@Path("add/{sessionID}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addSolvedTest(SolvedTestDTO solvedTest, @PathParam("sessionID") long sessionID) {
-		return solvedBusiness.add(solvedTest, sessionID);
+	public Response addSolvedTest(SolvedTestDTO solvedTest, @PathParam("sessionID") long sessionID) throws AppException {
+		solvedBusiness.add(solvedTest, sessionID);
+		return Response.ok().entity("Success").build();
 	}
 	
 	@GET
 	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllSolvedTests() {
-		return solvedBusiness.getAll();
+		return Response.ok(solvedBusiness.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@DELETE
 	@Path("remove/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteSolvedTest(@PathParam("id") long id) {
-		return solvedBusiness.remove(id);
+	public Response deleteSolvedTest(@PathParam("id") long id) throws AppException {
+		solvedBusiness.remove(id);
+		return Response.ok().entity("Success").build();
 	}
 }

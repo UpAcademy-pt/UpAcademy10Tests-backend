@@ -4,6 +4,7 @@ import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.CandidateDTO;
 import pt.aubay.testesproject.models.entities.Candidate;
 import pt.aubay.testesproject.repositories.RegisteredUserRepository;
@@ -17,18 +18,17 @@ public class CandidateBusiness {
 //	RegisteredUserBusiness userBusiness;
 	
 	
-	public Response checkIfParametersThere(CandidateDTO candidate, boolean toEdit) {
+	public void checkIfParametersThere(CandidateDTO candidate, boolean toEdit) throws AppException {
 		if(toEdit && candidate.getId()==0)
-			Response.status(Status.NOT_ACCEPTABLE).entity("An ID is needed.").build();
-		if( candidate.getEmail()!=null &&
+			throw new AppException("An ID is needed.", Status.NOT_ACCEPTABLE.getStatusCode());
+		if(!(candidate.getEmail()!=null &&
 			candidate.getName()!=null &&
-			candidate.getEmailRecruiter()!=null)
-			return Response.ok().entity("Success").build();
-		return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present, including ID.").build();
+			candidate.getEmailRecruiter()!=null))
+			throw new AppException("Fields must be all present, including ID.", Status.NOT_ACCEPTABLE.getStatusCode());
 	}
 	
-	public Response checkIfParametersThere(CandidateDTO candidate) {
-		return checkIfParametersThere(candidate, false);
+	public void checkIfParametersThere(CandidateDTO candidate) throws AppException {
+		checkIfParametersThere(candidate, false);
 	}
 	
 	public CandidateDTO convertEntityToDTO(Candidate candidate) {

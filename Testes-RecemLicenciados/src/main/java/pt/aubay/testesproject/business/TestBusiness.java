@@ -51,17 +51,14 @@ public class TestBusiness {
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Response add(TestDTO test){
+	public void add(TestDTO test) throws AppException{
 		//We need to check if test object is valid
-		Response response=checkTestValidToAdd(test);
-		if(response.getStatus()!=Response.Status.OK.getStatusCode())
-			return response;
+		checkTestValidToAdd(test);
 		//Saves current time;
 		Test testEntity=new Test();
 		testEntity=addDTOAsEntity(test);
 		setDate(testEntity);
 		testRepository.addEntity(testEntity);
-		return Response.ok().entity("Success").build();
 	}
 	
 	public Response getAll() {
@@ -76,9 +73,9 @@ public class TestBusiness {
 		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
-	public Response get(long id) {
+	public TestDTO get(long id) throws AppException {
 		if(!testRepository.idExists(id))
-			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
+			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
 		TestDTO testDTO=new TestDTO();
 		testDTO=convertEntityToDTO(testRepository.getEntity(id));
 		
@@ -86,32 +83,28 @@ public class TestBusiness {
 		testDTO=removeSolution(testDTO);
 		/*for(QuestionDTO question: testDTO.getQuestions())
 			question.setSolution(null);*/
-		return Response.ok(testDTO, MediaType.APPLICATION_JSON).build();
+		return testDTO;
 		
 		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
 	
-	public Response edit(TestDTO newTest) {
-		Response response=checkTestValidToEdit(newTest);
-		if(response.getStatus()!=Response.Status.OK.getStatusCode())
-			return response;
+	public void edit(TestDTO newTest) throws AppException {
+		checkTestValidToEdit(newTest);
 		//We also need to reset back-end-determined values (Date and Average Score)
 		Test test=new Test();
 		test=convertDTOToEntity(newTest);
 		//resetValues(test);
 		testRepository.editEntity(test);
-		return Response.ok().entity("Success").build();
 	}
 	
-	public Response remove(long id) throws AppException {
+	public void remove(long id) throws AppException {
 		if(!testRepository.idExists(id))
 			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
-			//return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
 		
 		//First, we need to check if test exists in any solved test or test session
 		if(solvedRepository.checkIfTestExists(id))
-			return Response.status(Status.FORBIDDEN).entity("Cannot delete Test used in a solved test present in the database").build();
+			throw new AppException("Cannot delete Test used in a solved test present in the database", Status.BAD_REQUEST.getStatusCode());
 		
 		boolean allInvalid=true;
 		if(sessionRepository.checkIfTestExists(id)) {
@@ -126,12 +119,11 @@ public class TestBusiness {
 				}
 			}
 			if(!allInvalid)
-				return Response.status(Status.FORBIDDEN).entity("Cannot delete Test used in an open session").build();
+				throw new AppException("Cannot delete Test used in an open session", Status.BAD_REQUEST.getStatusCode());
 		}
 
 		//This delete is performed via query
 		testRepository.deleteEntity(id);
-		return Response.ok().entity("Success").build();
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -157,41 +149,36 @@ public class TestBusiness {
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Response checkTestValidToAdd(TestDTO test) {
+	public void checkTestValidToAdd(TestDTO test) throws AppException {
 		//First, we need to check if all parameters needed were introduced
-		if(checkIfParametersThere(test).getStatus()!=Response.Status.OK.getStatusCode())
-			return checkIfParametersThere(test);
+		checkIfParametersThere(test);
 		//We need to check if the test name is new (must be unique)
 		if(testRepository.testExists(test.getTestName()))
-			return Response.status(Status.NOT_ACCEPTABLE).entity("Test Name exists already").build();
-		return Response.ok().entity("Success").build();
+			throw new AppException("Test Name exists already", Status.NOT_ACCEPTABLE.getStatusCode());
 	}
 	
-	public Response checkTestValidToEdit(TestDTO newTest) {
-		//First, we need to check if all parameters needed were introduced
-		if(checkIfParametersThere(newTest,true).getStatus()!=Response.Status.OK.getStatusCode())
-			return checkIfParametersThere(newTest,true);
+	public void checkTestValidToEdit(TestDTO newTest) throws AppException {
+		//First, we need to check if all parameters needed were introduced 
+		checkIfParametersThere(newTest,true);
 		//We then need to check if ID exists in database
 		if(!testRepository.idExists(newTest.getId()))
-			return Response.status(Status.NOT_ACCEPTABLE).entity("There is no such ID in database").build();
+			throw new AppException("There is no such ID in database", Status.NOT_ACCEPTABLE.getStatusCode());
 		//We also need to check if there is any change in testName, author and timer and check the changed fields accordingly
 		//To do so, first we need to retrieve the corresponding entity
-		return null;
 	}
 	
-	public Response checkIfParametersThere(TestDTO test, boolean needID) {
+	public void checkIfParametersThere(TestDTO test, boolean needID) throws AppException {
 		if(needID && test.getId()==0)
-			return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present, including ID.").build();
-		if(	test.getAuthor()!=null &&
+			throw new AppException("Fields must be all present, including ID.", Status.NOT_ACCEPTABLE.getStatusCode());
+		if(!(test.getAuthor()!=null &&
 			test.getQuestions()!=null &&
 			test.getTimer()!=0 &&
-			test.getTestName()!=null)
-			return Response.ok().entity("Success").build();
-		return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present.").build();
+			test.getTestName()!=null))
+			throw new AppException("Fields must be all present.", Status.NOT_ACCEPTABLE.getStatusCode());
 	}
 	
-	public Response checkIfParametersThere(TestDTO test) {
-		return checkIfParametersThere(test, false);
+	public void checkIfParametersThere(TestDTO test) throws AppException {
+		checkIfParametersThere(test, false);
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -200,8 +187,6 @@ public class TestBusiness {
 	
 	public void setDate(Test test) {
 		LocalDateTime dateTime=LocalDateTime.now();
-		//LocalDate date=LocalDate.now();
-		//test.setDate(date);
 		test.setDateTime(dateTime);
 	}
 	

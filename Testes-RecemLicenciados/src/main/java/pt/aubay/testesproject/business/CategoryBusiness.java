@@ -8,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.entities.Category;
 import pt.aubay.testesproject.models.statistics.CategoryStatistics;
 import pt.aubay.testesproject.repositories.CategoryRepository;
@@ -20,43 +21,40 @@ public class CategoryBusiness {
 	@Inject
 	QuestionRepository questionRepository;
 
-	public Response add(Category category){
+	public void add(Category category) throws AppException{
 		if(categoryRepository.categoryExists(category))
-			return Response.status(Status.FORBIDDEN).entity("This category exists already").build();
+			throw new AppException("This category exists already", Status.FORBIDDEN.getStatusCode());
 		categoryRepository.addEntity(category);
-		return Response.ok().entity("Success").build();
 	}
 	
-	public Response getAll() {
+	public List<CategoryStatistics> getAll() {
 		List<Category> allCategories=categoryRepository.getAll();
 		List<CategoryStatistics> allCategoriesDTO=new ArrayList<CategoryStatistics>();
 		for(Category category : allCategories)
 			allCategoriesDTO.add(convertEntityToStatistics(category));
-		return Response.ok(allCategoriesDTO, MediaType.APPLICATION_JSON).build();
+		return allCategoriesDTO;
 	}
 	
-	public Response edit(Category newCategory) {
+	public void edit(Category newCategory) throws AppException {
 		//Verifies if category exists with specified id
 		if(!categoryRepository.idExists(newCategory))
-			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
+			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
 		
 		//If so, gets the old category to verify if a change was made in the category specification
 		Category oldCategory=categoryRepository.getEntity(newCategory.getId());
 		if(!oldCategory.getCategory().equals(newCategory.getCategory()) && categoryRepository.categoryExists(newCategory))
-				return Response.status(Status.FORBIDDEN).entity("Cannot change to already existing category").build();
+			throw new AppException("Cannot change to already existing category", Status.FORBIDDEN.getStatusCode());
 		categoryRepository.editEntity(newCategory);
-		return Response.ok().entity("Success").build();
 	}
 	
-	public Response remove(long id) {
+	public void remove(long id) throws AppException {
 	if(!categoryRepository.idExists(id))
-		return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
+		throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
 	
 	//We should not be able to delete a category used in a question already
 	if(questionRepository.categoryExists(id))
-		return Response.status(Status.FORBIDDEN).entity("Cannot delete category used in question.").build();
+		throw new AppException("Cannot delete category used in question.", Status.BAD_REQUEST.getStatusCode());
 	categoryRepository.deleteEntity(id);
-	return Response.ok().entity("Success").build();
 	}
 	
 	

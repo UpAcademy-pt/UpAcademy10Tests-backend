@@ -40,8 +40,9 @@ public class TestServices {
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addTest(TestDTO test) {
-		return testBusiness.add(test);
+	public Response addTest(TestDTO test) throws AppException {
+		testBusiness.add(test);
+		return Response.ok().entity("Success").build();
 	}
 	
 	@GET
@@ -54,16 +55,17 @@ public class TestServices {
 	@GET
 	@Path("get/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTest(@PathParam("id") long id) {
-		return testBusiness.get(id);
+	public Response getTest(@PathParam("id") long id) throws AppException {
+		return Response.ok(testBusiness.get(id), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@PUT
 	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response editTest(TestDTO test) {
-		return testBusiness.edit(test);
+	public Response editTest(TestDTO test) throws AppException {
+		testBusiness.edit(test);
+		return Response.ok().entity("Success").build();
 	}
 	
 	@DELETE
@@ -71,7 +73,8 @@ public class TestServices {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
 	public Response deleteTest(@PathParam("id") long id) throws AppException {
-		return testBusiness.remove(id);
+		testBusiness.remove(id);
+		return Response.ok().entity("Success").build();
 	}
 	
 //	@GET
