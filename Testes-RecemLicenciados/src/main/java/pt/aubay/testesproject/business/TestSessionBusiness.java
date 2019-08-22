@@ -120,7 +120,6 @@ public class TestSessionBusiness {
 		Response response=checkParameters(sessionID, testID);
 		if(response.getStatus()!=Response.Status.OK.getStatusCode())
 			return response;
-		
 		Test test= testRepository.getEntity(testID);
 		TestSession session=sessionRepository.getEntity(sessionID);
 		LocalDateTime nowInstant = LocalDateTime.now();

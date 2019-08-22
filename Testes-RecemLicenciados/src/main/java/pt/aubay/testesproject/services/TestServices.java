@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import pt.aubay.testesproject.business.TestBusiness;
+import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.TestDTO;
 
 @Transactional
@@ -69,7 +70,7 @@ public class TestServices {
 	@Path("remove/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteTest(@PathParam("id") long id) {
+	public Response deleteTest(@PathParam("id") long id) throws AppException {
 		return testBusiness.remove(id);
 	}
 	

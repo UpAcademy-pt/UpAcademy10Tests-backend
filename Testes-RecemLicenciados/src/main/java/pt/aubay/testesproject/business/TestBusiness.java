@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.models.dto.TestDTO;
 import pt.aubay.testesproject.models.entities.Questions;
@@ -103,10 +104,10 @@ public class TestBusiness {
 		return Response.ok().entity("Success").build();
 	}
 	
-	public Response remove(long id) {
+	public Response remove(long id) throws AppException {
 		if(!testRepository.idExists(id))
-//			throw new NotFoundException();
-			return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
+			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
+			//return Response.status(Status.NOT_FOUND).entity("No such id in database").build();
 		
 		//First, we need to check if test exists in any solved test or test session
 		if(solvedRepository.checkIfTestExists(id))
