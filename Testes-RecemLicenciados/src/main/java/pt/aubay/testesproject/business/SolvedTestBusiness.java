@@ -211,6 +211,10 @@ public class SolvedTestBusiness {
 	public void checkTestValidToAdd(SolvedTestDTO test) throws AppException {
 		//First, we need to check if all parameters needed were introduced
 		checkIfParametersThere(test);
+		//Then, we need to check if test ID related to solved test exists
+		if(!testRepository.idExists(test.getTestID()))
+			throw new AppException("Test ID does not match any test in database", Status.NOT_FOUND.getStatusCode());
+		
 		//We need to check if both candidate and testID are new (the combination must be unique)
 		
 		CandidateDTO candidate=test.getCandidate();

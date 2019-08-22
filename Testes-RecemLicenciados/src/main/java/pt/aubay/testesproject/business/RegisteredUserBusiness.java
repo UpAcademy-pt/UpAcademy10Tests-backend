@@ -44,7 +44,6 @@ public class RegisteredUserBusiness {
 		String email=userDTO.getEmail();
 		String accessType=userDTO.getAccessType();
 		RegisteredUser user=new RegisteredUser();
-		
 		if(!userRepository.userExists(username)) {
 			//password->(hash, salt)
 			String password;
