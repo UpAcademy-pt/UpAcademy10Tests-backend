@@ -17,7 +17,7 @@ public class TestSessionRepository extends Repositories<TestSession>{
 	}
 	
 	public boolean IDExists(long id) {
-		Query query = em.createNamedQuery("TestSession.checkIfItExists");
+		Query query = em.createNamedQuery("TestSession.checkIfExists");
 		query.setParameter("id", id);
 		return (long) query.getSingleResult() == 1;
 	}

@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import pt.aubay.testesproject.business.QuestionBusiness;
+import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.repositories.QuestionRepository;
@@ -43,8 +44,9 @@ public class QuestionServices {
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addQuestion(QuestionDTO question) {
-		return questionBusiness.add(question);
+	public Response addQuestion(QuestionDTO question) throws AppException {
+		questionBusiness.add(question);
+		return Response.ok().entity("Success").build();
 	}
 	
 	
@@ -52,44 +54,47 @@ public class QuestionServices {
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getQuestion(@PathParam("id") long id) {
-		return questionBusiness.get(id);
+	public Response getQuestion(@PathParam("id") long id) throws AppException {
+		return Response.ok(questionBusiness.get(id), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
 	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllQuestions() {
-		return questionBusiness.getAll();
+		return Response.ok(questionBusiness.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
 	@Path("questions/{category}/{number}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getRandomQuestions(@PathParam("category") String category, @PathParam("number") long number) {
-		return questionBusiness.getRandomQuestions(category, number);
+	public Response getRandomQuestions(@PathParam("category") String category, @PathParam("number") long number) throws AppException {
+		return Response.ok(questionBusiness.getRandomQuestions(category, number), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@PUT
 	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response editQuestion(QuestionDTO question) {
-		return questionBusiness.edit(question);
+	public Response editQuestion(QuestionDTO question) throws AppException {
+		questionBusiness.edit(question);
+		return Response.ok().entity("Success").build();
+		
 	}
 	
 	@DELETE
 	@Path("remove/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteQuestion(@PathParam("id") long id) {
-		return questionBusiness.remove(id);
+	public Response deleteQuestion(@PathParam("id") long id) throws AppException {
+		questionBusiness.remove(id);
+		return Response.ok().entity("Success").build();
 	}
 	
-	@GET
-	@Path("getnumber/{category}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Long getRandomQuestions(@PathParam("category") String category) {
-		return questionRepository.count(category);
-	}
+//	@GET
+//	@Path("getnumber/{category}")
+//	@Produces(MediaType.APPLICATION_JSON)
+//	public Long getRandomQuestions(@PathParam("category") String category) {
+//		return questionRepository.count(category);
+//	}
 }

@@ -25,6 +25,7 @@ public class TestSession extends Models{
 	@ManyToOne
 	private Test test;
 	private String recruiterEmail;
+	private String candidateEmail;
 	
 	//to check validity of starting session
 	private LocalDateTime startingToken;
@@ -71,6 +72,12 @@ public class TestSession extends Models{
 	public String toString() {
 		return "TestSession [test=" + test + ", recruiterEmail=" + recruiterEmail + ", startingToken=" + startingToken
 				+ ", startingTest=" + startingTest + ", numberOfHours=" + numberOfHours + ", id=" + id + "]";
+	}
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
 	}
 	
 	

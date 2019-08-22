@@ -52,6 +52,9 @@ public class TestSessionBusiness {
 	}
 	
 	public TestSessionDTO get(long sessionID) throws AppException {
+
+		if(!sessionRepository.IDExists(sessionID))
+			throw new AppException("Session not found in Database", Status.NOT_FOUND.getStatusCode());
 		//check if session is expired
 		if(!testCommonBusiness.checkIfSessionValid(sessionID))
 			throw new AppException("Session expired", Status.REQUEST_TIMEOUT.getStatusCode());
@@ -64,6 +67,8 @@ public class TestSessionBusiness {
 	}
 	
 	public void begin(long sessionID) throws AppException {
+		if(!sessionRepository.IDExists(sessionID))
+			throw new AppException("Session not found in Database", Status.NOT_FOUND.getStatusCode());
 		if(!testCommonBusiness.checkIfSessionValid(sessionID))
 			throw new AppException("Session expired", Status.REQUEST_TIMEOUT.getStatusCode());
 		TestSession session=sessionRepository.getEntity(sessionID);
@@ -74,12 +79,11 @@ public class TestSessionBusiness {
 		sessionRepository.editEntity(session);
 	}
 	
-	public Response remove(long sessionID) throws AppException {
+	public void remove(long sessionID) throws AppException {
 		//check if session exists
 		if(!sessionRepository.IDExists(sessionID))
 			throw new AppException("Session not found in database", Status.NOT_FOUND.getStatusCode());
 		sessionRepository.deleteEntity(sessionID);
-		return Response.ok().entity("Success").build();
 	}
 	
 	
@@ -90,7 +94,7 @@ public class TestSessionBusiness {
 	public void checkParameters(TestSession session, long testID) throws AppException {
 		
 		///check if all needed parameters are there
-		if(session.getRecruiterEmail()==null)
+		if(session.getRecruiterEmail()==null || session.getCandidateEmail()==null)
 			throw new AppException("Parameters are missing.", Status.NOT_ACCEPTABLE.getStatusCode());
 		
 		///check if parameters are valid
@@ -147,6 +151,8 @@ public class TestSessionBusiness {
 		TestSessionDTO sessionDTO = new TestSessionDTO();
 		sessionDTO.setRecruiterEmail(session.getRecruiterEmail());
 		sessionDTO.setTest(testBusiness.convertEntityToDTO(session.getTest()));
+		sessionDTO.setCandidateEmail(session.getCandidateEmail());
+		
 		sessionDTO.getTest().setAuthor(null);
 		return sessionDTO;
 	}

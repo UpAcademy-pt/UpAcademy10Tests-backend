@@ -8,6 +8,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.repositories.CategoryRepository;
@@ -30,11 +31,9 @@ public class QuestionBusiness {
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Response add(QuestionDTO question){
+	public void add(QuestionDTO question) throws AppException{
 		//We need to check if question object is valid
-		Response response=checkQuestionValidToAdd(question);
-		if(response.getStatus()!=Response.Status.OK.getStatusCode())
-			return response;
+		checkQuestionValidToAdd(question);
 		
 		//question.setCategory(categoryRepository.getCategory(question.getCategory().getCategory()));
 		
@@ -42,51 +41,46 @@ public class QuestionBusiness {
 		//converts DTO to Entity
 		Questions questionEntity=addDTOasEntity(question);
 		questionRepository.addEntity(questionEntity);
-		return Response.ok().entity("Success").build();
 	}
 	
-	public Response get(long id) {
+	public QuestionDTO get(long id) throws AppException {
 		if(!questionRepository.idExists(id))
-			return Response.status(Status.NOT_ACCEPTABLE).entity("There is no such ID in database").build();
+			throw new AppException("There is no such ID in database", Status.NOT_ACCEPTABLE.getStatusCode());
 		QuestionDTO questionDTO=convertEntityToDTO(questionRepository.getEntity(id));
-		return Response.ok(questionDTO, MediaType.APPLICATION_JSON).build();
+		return questionDTO;
 	}
 	
-	public Response getAll() {
-		ArrayList<QuestionDTO> allQuestions=new ArrayList<QuestionDTO>();
+	public List<QuestionDTO> getAll() {
+		List<QuestionDTO> allQuestions=new ArrayList<QuestionDTO>();
 		for(Questions elem:questionRepository.getAll())
 			allQuestions.add(convertEntityToDTO(elem));
-		return Response.ok(allQuestions, MediaType.APPLICATION_JSON).build();
+		return allQuestions;
 		//return Response.ok(questionRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
-	public Response edit(QuestionDTO newQuestions) {
-		Response response=checkQuestionValidToEdit(newQuestions);
-		if(response.getStatus()!=Response.Status.OK.getStatusCode())
-			return response;
+	public void edit(QuestionDTO newQuestions) throws AppException {
+		checkQuestionValidToEdit(newQuestions);
 		
 		//converts DTO to Entity
 		Questions newQuestionEntity=convertDTOToEntity(newQuestions);
 		questionRepository.editEntity(newQuestionEntity);
-		return Response.ok().entity("Success").build();
 	}
 	
-	public Response remove(long id) {
+	public void remove(long id) throws AppException {
 	if(!questionRepository.idExists(id))
-		return Response.status(Status.NOT_FOUND).entity("No such id in database").build();	
+		throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
 	if(questionRepository.checkIfQuestionInTest(id))
-		return Response.status(Status.FORBIDDEN).entity("Cannot delete question used in test.").build();
+		throw new AppException("Cannot delete question used in test.", Status.BAD_REQUEST.getStatusCode());
 	questionRepository.deleteEntity(id);
-	return Response.ok().entity("Success").build();
 	}
 	
-	public Response getRandomQuestions(String category, long number) {
+	public List<QuestionDTO> getRandomQuestions(String category, long number) throws AppException {
 		//We need to get all questions ID's with said category
 		List<Long> questions=questionRepository.getQuestionIDS(category);
 		//the maximum range allowed is the number of questions of said category
 		long maxRange = questions.size();
 		if(number>maxRange)
-			 return Response.status(Status.FORBIDDEN).entity("Invalid number of questions.").build();
+			throw new AppException("Invalid number of questions.", Status.BAD_REQUEST.getStatusCode());
 		//we generate randomIndexes
 		int[] randomIndexes=RandomGeneratorUtils.getRandomNumbers((int)number,(int)maxRange);
 		
@@ -102,57 +96,54 @@ public class QuestionBusiness {
 		List<QuestionDTO> randomQuestionsDTO=new ArrayList<QuestionDTO>();
 		for(Questions elem:randomQuestions)
 			randomQuestionsDTO.add(convertEntityToDTO(elem));
-		return Response.ok(randomQuestionsDTO, MediaType.APPLICATION_JSON).build();
+		return randomQuestionsDTO;
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public Response checkQuestionValidToAdd(QuestionDTO question) {
+	public void checkQuestionValidToAdd(QuestionDTO question) throws AppException {
 		//First, we need to check if all parameters needed were introduced
-		if(checkIfParametersThere(question).getStatus()!=Response.Status.OK.getStatusCode())
-			return checkIfParametersThere(question);
+		checkIfParametersThere(question);
 		//We need to check if question already exists in database
 		if(questionRepository.questionExists(question.getQuestion()))
-			return Response.status(Status.FORBIDDEN).entity("This question exists already").build();
+			throw new AppException("This question exists already", Status.BAD_REQUEST.getStatusCode());
 		//We need to check if category is new -> if so, we need to add category.
 		if(!categoryRepository.categoryExists(question.getCategory()))
-			return Response.status(Status.NOT_ACCEPTABLE).entity("This category was not created beforehand").build();
-		return Response.ok().entity("Success").build();
+			throw new AppException("This category was not created beforehand", Status.NOT_ACCEPTABLE.getStatusCode());
 	}
 	
-	public Response checkQuestionValidToEdit(QuestionDTO newQuestion) {
+	public void checkQuestionValidToEdit(QuestionDTO newQuestion) throws AppException {
 		//First, we need to check if all parameters needed were introduced
-		if(checkIfParametersThere(newQuestion,true).getStatus()!=Response.Status.OK.getStatusCode())
-			return checkIfParametersThere(newQuestion,true);
+		checkIfParametersThere(newQuestion,true);
 		//We then need to check if ID exists in database
 		if(!questionRepository.idExists(newQuestion.getId()))
-			return Response.status(Status.NOT_ACCEPTABLE).entity("There is no such ID in database").build();
+			throw new AppException("There is no such ID in database", Status.NOT_FOUND.getStatusCode());
 		//We also need to check if there is a change in both the question and category fields and check the changed fields accordingly
 		//To do so, first we need to retrieve the corresponding entity
 		Questions oldQuestion=questionRepository.getEntity(newQuestion.getId());
 		if(	!oldQuestion.getCategory().equals(newQuestion.getCategory()) && 
 			!categoryRepository.categoryExists(newQuestion.getCategory()))
-			return Response.status(Status.NOT_ACCEPTABLE).entity("This category was not created beforehand").build();
+			throw new AppException("This category was not created beforehand", Status.NOT_ACCEPTABLE.getStatusCode());
 		if( !oldQuestion.getQuestion().equals(newQuestion.getQuestion()) && 
 			questionRepository.questionExists(newQuestion.getQuestion()))
-			return Response.status(Status.FORBIDDEN).entity("This question exists already").build();
-		return Response.ok().entity("Success").build();
+			throw new AppException("This question exists already", Status.BAD_REQUEST.getStatusCode());
 	}
 	
-	public Response checkIfParametersThere(QuestionDTO question, boolean needID) {
+	public void checkIfParametersThere(QuestionDTO question, boolean needID) throws AppException {
 		if(needID && question.getId()==0)
-			return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present, including ID.").build();
-		if(		question.getCategory()!=null && 
+			throw new AppException("Fields must be all present, including ID.", Status.NOT_ACCEPTABLE.getStatusCode());
+		if(!(	question.getCategory()!=null && 
 				question.getOptions()!=null &&
 				question.getQuestion()!=null &&
-				question.getSolution()!=null)
-			return Response.ok().entity("Success").build();
-		return Response.status(Status.NOT_ACCEPTABLE).entity("Fields must be all present.").build();
+				question.getSolution()!=null))
+		throw new AppException("Fields must be all present.", Status.NOT_ACCEPTABLE.getStatusCode());
 	}
-	public Response checkIfParametersThere(QuestionDTO question) {
-		return checkIfParametersThere(question, false);
+	
+	
+	public void checkIfParametersThere(QuestionDTO question) throws AppException {
+		checkIfParametersThere(question, false);
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////

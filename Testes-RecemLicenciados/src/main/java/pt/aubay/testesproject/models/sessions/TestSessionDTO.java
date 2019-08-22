@@ -7,6 +7,7 @@ import pt.aubay.testesproject.models.dto.TestDTO;
 public class TestSessionDTO {
 	private TestDTO test;
 	private String recruiterEmail;
+	private String candidateEmail;
 	public TestDTO getTest() {
 		return test;
 	}
@@ -18,6 +19,12 @@ public class TestSessionDTO {
 	}
 	public void setRecruiterEmail(String recruiterEmail) {
 		this.recruiterEmail = recruiterEmail;
+	}
+	public String getCandidateEmail() {
+		return candidateEmail;
+	}
+	public void setCandidateEmail(String candidateEmail) {
+		this.candidateEmail = candidateEmail;
 	}
 	
 }
