@@ -18,8 +18,8 @@ import javax.persistence.OneToOne;
 	 @NamedQuery(name="SolvedTest.getAll",query="SELECT s FROM SolvedTest s"),
 	 @NamedQuery(name="SolvedTest.count", query = "SELECT COUNT(s.id) FROM SolvedTest s"),
 	 @NamedQuery(name="SolvedTest.checkIfExists", query = "SELECT COUNT(s.id) FROM SolvedTest s WHERE s.id =:id"),
-	 @NamedQuery(name="SolvedTest.checkUniqueness", query = "SELECT COUNT(s.id) FROM SolvedTest s INNER JOIN s.candidate INNER JOIN s.test WHERE s.candidate.id =:candidateID AND s.test.id=:testID"),
-	 @NamedQuery(name="SolvedTest.checkIfTestExists", query = "SELECT COUNT(s.id) FROM SolvedTest s INNER JOIN s.test WHERE s.test.id=:testID")
+	 @NamedQuery(name="SolvedTest.checkUniqueness", query = "SELECT COUNT(s.id) FROM SolvedTest s INNER JOIN s.candidate c INNER JOIN s.test t WHERE s.candidate.id =:candidateID AND s.test.id=:testID"),
+	 @NamedQuery(name="SolvedTest.checkIfTestExists", query = "SELECT COUNT(s.id) FROM SolvedTest s INNER JOIN s.test t WHERE s.test.id=:testID")
 	 
 })
 
@@ -27,12 +27,12 @@ public class SolvedTest extends Models{
 	private static final long serialVersionUID = 1L;
 
 	//Bidirectionallity needed due to need for a List<Answer> answer -> that's what we will send to the front-end
-	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	@OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
 	List<Answer> answer;
 	
 	private long timeSpent;
 	
-	@ManyToOne(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+	@ManyToOne(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
 	Candidate candidate;
 	
 	private int score;

@@ -14,9 +14,9 @@ import pt.aubay.testesproject.models.entities.Test;
 @Entity
 @NamedQueries({
 	 @NamedQuery(name="TestSession.checkIfExists", query = "SELECT COUNT(s.id) FROM TestSession s WHERE s.id =:id"),
-	 @NamedQuery(name="TestSession.checkIfTestExists", query = "SELECT COUNT(s.id) FROM TestSession s INNER JOIN s.test WHERE s.test.id=:testID"),
-	 @NamedQuery(name="TestSession.getTestIDs", query = "SELECT s.id FROM TestSession s INNER JOIN s.test WHERE s.test.id=:testID"),
-	 @NamedQuery(name="TestSession.checkIfSessionExistsWithTest", query = "SELECT COUNT(s.id) FROM TestSession s INNER JOIN s.test WHERE s.test.id=:testID AND s.id=:id"),
+	 @NamedQuery(name="TestSession.checkIfTestExists", query = "SELECT COUNT(s.id) FROM TestSession s INNER JOIN s.test t WHERE s.test.id=:testID"),
+	 @NamedQuery(name="TestSession.getTestIDs", query = "SELECT s.id FROM TestSession s INNER JOIN s.test t WHERE s.test.id=:testID"),
+	 @NamedQuery(name="TestSession.checkIfSessionExistsWithTest", query = "SELECT COUNT(s.id) FROM TestSession s INNER JOIN s.test t WHERE s.test.id=:testID AND s.id=:id"),
 })
 public class TestSession extends Models{
 

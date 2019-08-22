@@ -40,7 +40,7 @@ public class Questions extends Models{
 	@ManyToOne
 	Category category;
 	
-	@ManyToMany(cascade = { CascadeType.ALL}, fetch = FetchType.EAGER, mappedBy="questions")
+	@ManyToMany(cascade = { CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy="questions")
 //	@JoinTable(
 //	        name = "test_question", 
 //	        inverseJoinColumns = { @JoinColumn(name = "test_id") }, 
