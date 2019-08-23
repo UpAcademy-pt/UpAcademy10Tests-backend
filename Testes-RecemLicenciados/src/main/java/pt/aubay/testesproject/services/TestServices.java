@@ -46,10 +46,17 @@ public class TestServices {
 	}
 	
 	@GET
-	@Path("all")
+	@Path("all/allData")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllTests() {
 		return testBusiness.getAll();
+	}
+	
+	@GET
+	@Path("all")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllTestsSimplified() {
+		return testBusiness.getAllSimplified();
 	}
 	
 	@GET

@@ -73,6 +73,16 @@ public class TestBusiness {
 		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
+	public Response getAllSimplified() {
+		Set<TestDTO> allTestDTO=new HashSet<TestDTO>();
+		for(Test elem:testRepository.getAll())
+			allTestDTO.add(convertEntityToDTO(elem,true));
+		Set<TestStatistics> allTests=new HashSet<TestStatistics>();
+		for(TestDTO elem:allTestDTO)
+			allTests.add(convertDTOToStatistics(elem));
+		return Response.ok(allTests, MediaType.APPLICATION_JSON).build();
+	}
+	
 	public TestDTO get(long id) throws AppException {
 		if(!testRepository.idExists(id))
 			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
@@ -219,21 +229,27 @@ public class TestBusiness {
 	//////////////////////////////////////////DTO-ENTITY CONVERSION/////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public TestDTO convertEntityToDTO(Test test) {
+	public TestDTO convertEntityToDTO(Test test, boolean simplified) {
 		//String dateString;
 		String dateTimeString;
 		
 		
-		///We need to convert Questions Entity to DTO
+		
 		TestDTO testDTO=new TestDTO();
-		Set <QuestionDTO> questionsDTO=new HashSet();
-		for(Questions elem: test.getQuestions())
-			questionsDTO.add(questionBusiness.convertEntityToDTO(elem));
 		
-		testDTO.setQuestions(questionsDTO);
-		
+		///This takes into account simplification procedure (optimization) - not all data might be needed for a particular purpose
+		if(!simplified) {
+			///We need to convert Questions Entity to DTO
+			Set <QuestionDTO> questionsDTO=new HashSet();
+			for(Questions elem: test.getQuestions())
+				questionsDTO.add(questionBusiness.convertEntityToDTO(elem));
+			
+			testDTO.setQuestions(questionsDTO);
+			
+		}
 		//We need to convert user Entity to DTO
 		testDTO.setAuthor(userBusiness.convertEntityToDTO(test.getAuthor()));
+		
 		testDTO.setAverageScore(test.getAverageScore());
 		testDTO.setTestName(test.getTestName());
 		testDTO.setTimer(test.getTimer());
@@ -244,6 +260,10 @@ public class TestBusiness {
 		dateTimeString=test.getDateTime().format(formatter);
 		testDTO.setDateTime(dateTimeString);
 		return testDTO;
+	}
+	
+	public TestDTO convertEntityToDTO(Test test) {
+		return convertEntityToDTO(test, false);
 	}
 	
 	public Test convertDTOToEntity(TestDTO testDTO) {
@@ -304,4 +324,5 @@ public class TestBusiness {
 		testStatistics.setCategories(getCategories(testDTO.getId()));
 		return testStatistics;
 	}
+	
 }
