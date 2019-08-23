@@ -71,7 +71,7 @@ public class TestSession extends Models{
 	@Override
 	public String toString() {
 		return "TestSession [test=" + test + ", recruiterEmail=" + recruiterEmail + ", startingToken=" + startingToken
-				+ ", startingTest=" + startingTest + ", numberOfHours=" + numberOfHours + ", id=" + id + "]";
+				+ ", startingTest=" + startingTest + ", numberOfHours=" + numberOfDays + ", id=" + id + "]";
 	}
 	public String getCandidateEmail() {
 		return candidateEmail;

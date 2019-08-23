@@ -8,6 +8,7 @@ public class TestSessionDTO {
 	private TestDTO test;
 	private String recruiterEmail;
 	private String candidateEmail;
+	private long sessionID;
 	public TestDTO getTest() {
 		return test;
 	}
@@ -25,6 +26,12 @@ public class TestSessionDTO {
 	}
 	public void setCandidateEmail(String candidateEmail) {
 		this.candidateEmail = candidateEmail;
+	}
+	public long getSessionID() {
+		return sessionID;
+	}
+	public void setSessionID(long sessionID) {
+		this.sessionID = sessionID;
 	}
 	
 }

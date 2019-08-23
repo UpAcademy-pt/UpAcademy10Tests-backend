@@ -152,8 +152,9 @@ public class TestSessionBusiness {
 		sessionDTO.setRecruiterEmail(session.getRecruiterEmail());
 		sessionDTO.setTest(testBusiness.convertEntityToDTO(session.getTest()));
 		sessionDTO.setCandidateEmail(session.getCandidateEmail());
+		sessionDTO.setSessionID(session.getId());
 				
-		//remove sensitive information
+		//one should remove sensitive information
 		sessionDTO.getTest().setAuthor(null);
 		sessionDTO.getTest().setAverageScore(0);
 		return sessionDTO;
