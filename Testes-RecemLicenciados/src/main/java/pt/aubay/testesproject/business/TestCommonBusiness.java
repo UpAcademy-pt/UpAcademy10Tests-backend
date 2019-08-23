@@ -22,12 +22,12 @@ public class TestCommonBusiness {
 		TestSession session=sessionRepository.getEntity(sessionID);
 		LocalDateTime nowInstant = LocalDateTime.now();
 		LocalDateTime startingInstant = session.getStartingToken();
-		long numberOfHours=session.getNumberOfHours();
+		long numberOfDays=session.getNumberOfDays();
 		
 		Duration duration= Duration.between(startingInstant, nowInstant);
 		long durationDiff=Math.abs(duration.toMillis());
 		
-		if(durationDiff>numberOfHours*60*60*1000)
+		if(durationDiff>numberOfDays*24*60*60*1000)
 			return false;
 		return true;
 	}

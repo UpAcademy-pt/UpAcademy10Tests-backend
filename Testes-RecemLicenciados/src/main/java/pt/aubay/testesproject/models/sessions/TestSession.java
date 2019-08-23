@@ -34,7 +34,7 @@ public class TestSession extends Models{
 	private LocalDateTime startingTest;
 	
 	//number of hours of validity
-	private long numberOfHours;
+	private long numberOfDays;
 	
 
 	public Test getTest() {
@@ -50,11 +50,11 @@ public class TestSession extends Models{
 		this.recruiterEmail = recruiterEmail;
 	}
 
-	public long getNumberOfHours() {
-		return numberOfHours;
+	public long getNumberOfDays() {
+		return numberOfDays;
 	}
-	public void setNumberOfHours(long numberOfHours) {
-		this.numberOfHours = numberOfHours;
+	public void setNumberOfDays(long numberOfDays) {
+		this.numberOfDays = numberOfDays;
 	}
 	public LocalDateTime getStartingToken() {
 		return startingToken;

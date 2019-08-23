@@ -40,8 +40,7 @@ public class TestSessionServices {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addTest(TestSession session, @PathParam("testID") long testID) throws AppException {
-		sessionBusiness.add(session, testID);
-		return Response.ok().entity("Success").build();
+		return Response.ok(sessionBusiness.add(session, testID), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
