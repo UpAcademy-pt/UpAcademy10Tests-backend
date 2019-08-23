@@ -254,7 +254,7 @@ public class TestBusiness {
 		testDTO.setId(test.getId());
 		testDTO.setSubmittedTests(test.getSubmittedTests());
 		
-		DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter formatter =DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 		dateTimeString=test.getDateTime().format(formatter);
 		testDTO.setDateTime(dateTimeString);
 		return testDTO;
