@@ -109,7 +109,7 @@ public class TestSessionBusiness {
 		///check if parameters are valid
 		if(!testRepository.idExists(testID))
 			throw new AppException("Test not found in database", Status.NOT_ACCEPTABLE.getStatusCode());
-		if(!userRepository.userExists(sessionID))
+		if(!userRepository.emailExists(sessionRepository.getEntity(sessionID).getRecruiterEmail()))
 			throw new AppException("User not found in database", Status.NOT_ACCEPTABLE.getStatusCode());
 	}
 	
