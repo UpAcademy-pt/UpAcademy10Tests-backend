@@ -273,7 +273,7 @@ public class SolvedTestBusiness {
 		solvedDTO.setCandidate(candidateBusiness.convertEntityToDTO(solved.getCandidate()));
 		
 		//When we pass from an Entity to a DTO, we need to set Date as a string with the following format
-		DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter formatter =DateTimeFormatter.ofPattern("dd-MM-yyyy");
 		String dateTimeString=solved.getDate().format(formatter);
 		
 		solvedDTO.setDate(dateTimeString);

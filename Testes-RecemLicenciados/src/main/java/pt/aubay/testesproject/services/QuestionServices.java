@@ -1,7 +1,12 @@
 package pt.aubay.testesproject.services;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -10,10 +15,13 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
+import org.apache.commons.lang3.StringUtils;
 
 import pt.aubay.testesproject.business.QuestionBusiness;
 import pt.aubay.testesproject.execptionHandling.AppException;
@@ -89,6 +97,15 @@ public class QuestionServices {
 	public Response deleteQuestion(@PathParam("id") long id) throws AppException {
 		questionBusiness.remove(id);
 		return Response.ok().entity("Success").build();
+	}
+	
+	@GET
+	@Path("filter")
+	@Produces({MediaType.APPLICATION_JSON})
+	public List<QuestionDTO> getFilteredQuestions(@QueryParam("category") String category){
+		List<QuestionDTO> questions=questionBusiness.getAll().stream().filter(question -> 
+		question.getCategory().getCategory().equals(category)).collect(Collectors.toList());
+		return questions;
 	}
 	
 //	@GET
