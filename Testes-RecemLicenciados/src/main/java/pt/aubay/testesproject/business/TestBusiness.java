@@ -232,9 +232,7 @@ public class TestBusiness {
 	public TestDTO convertEntityToDTO(Test test, boolean simplified) {
 		//String dateString;
 		String dateTimeString;
-		
-		
-		
+
 		TestDTO testDTO=new TestDTO();
 		
 		///This takes into account simplification procedure (optimization) - not all data might be needed for a particular purpose
