@@ -1,10 +1,12 @@
 package pt.aubay.testesproject.business;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -118,6 +120,10 @@ public class SolvedTestBusiness {
 	
 	public List<SolvedTestStatistics> getAll(){
 		return getAll(false);
+	}
+	
+	public List<SolvedTest> getAllEntities(){
+		return solvedRepository.getAll();
 	}
 	
 
@@ -387,6 +393,30 @@ public class SolvedTestBusiness {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
+	}
+	
+	public boolean lessOrEqualsNumberOfDays(long numberOfDays, SolvedTest test) {
+		
+		LocalDateTime testDate=test.getDate();
+		LocalDateTime nowInstant = LocalDateTime.now();
+		Duration duration= Duration.between(testDate, nowInstant);
+		long durationDiff=Math.abs(duration.toMillis());
+		
+		return durationDiff<numberOfDays*24*60*60*1000 ? true : false;
+	}
+	
+	public Comparator<SolvedTest> comparator(String comparator){
+		Comparator<SolvedTest> sortingByDate=(SolvedTest s1, SolvedTest s2)->s1.getDate().compareTo(s2.getDate());
+		Comparator<SolvedTest> sortingByScore=(SolvedTest s1, SolvedTest s2)->s2.getScore()-s1.getScore();
+		Comparator<SolvedTest> sortingByTestName=(SolvedTest s1, SolvedTest s2)->s1.getTest().getTestName().compareTo(s2.getTest().getTestName());
+		switch(comparator) {
+			case "date":
+				return sortingByDate;
+			case "score":
+				return sortingByScore;
+			default:
+				return sortingByTestName;
+		}
 	}
 	
 }
