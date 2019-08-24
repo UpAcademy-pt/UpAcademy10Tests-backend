@@ -53,10 +53,24 @@ public class SolvedTestServices {
 	}
 	
 	@GET
-	@Path("all")
+	@Path("all/allData")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllSolvedTests() {
 		return Response.ok(solvedBusiness.getAll(), MediaType.APPLICATION_JSON).build();
+	}
+	
+	@GET
+	@Path("all")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllSolvedTestsSimplified() {
+		return Response.ok(solvedBusiness.getAll(true), MediaType.APPLICATION_JSON).build();
+	}
+	
+	@GET
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getSolvedTest(@PathParam("id") long id) throws AppException {
+		return Response.ok(solvedBusiness.get(id), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@DELETE

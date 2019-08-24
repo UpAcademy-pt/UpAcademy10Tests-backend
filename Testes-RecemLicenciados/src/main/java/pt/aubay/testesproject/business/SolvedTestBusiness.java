@@ -109,21 +109,30 @@ public class SolvedTestBusiness {
 		
 	}
 	
-	public List<SolvedTestStatistics> getAll() {
-		/*ArrayList<SolvedTestDTO> allSolved=new ArrayList<SolvedTestDTO>();
-		for(SolvedTest elem:solvedRepository.getAll())
-			allSolved.add(convertEntityToDTO(elem));
-		return Response.ok(allSolved, MediaType.APPLICATION_JSON).build();*/
+	public List<SolvedTestStatistics> getAll(boolean simplified) {
 		List<SolvedTestStatistics> allSolved=new ArrayList<SolvedTestStatistics>();
 		for(SolvedTest elem:solvedRepository.getAll())
-			allSolved.add(convertEntityToStatistics(elem));
+			allSolved.add(convertEntityToStatistics(elem, simplified));
 		return allSolved;
 	}
+	
+	public List<SolvedTestStatistics> getAll(){
+		return getAll(false);
+	}
+	
+
 	
 	public void remove(long id) throws AppException {
 		if(!solvedRepository.idExists(id))
 			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
 		solvedRepository.deleteEntity(id);
+	}
+	
+	public SolvedTestStatistics get(long id) throws AppException {
+		if(!solvedRepository.idExists(id))
+			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
+		SolvedTest solved=solvedRepository.getEntity(id);
+		return convertEntityToStatistics(solved);
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -260,15 +269,18 @@ public class SolvedTestBusiness {
 	//////////////////////////////////////////DTO-ENTITY CONVERSION/////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public SolvedTestDTO convertEntityToDTO(SolvedTest solved) {
+	public SolvedTestDTO convertEntityToDTO(SolvedTest solved, boolean simplified) {
 		SolvedTestDTO solvedDTO=new SolvedTestDTO();
-		
-		List<Answer> answerList=solved.getAnswer();
-		List<AnswerDTO> answerDTOList=new ArrayList<AnswerDTO>();
-		for(Answer elem:answerList)
-			answerDTOList.add(answerBusiness.convertEntityToDTO(elem));
-		solvedDTO.setAnswer(answerDTOList);
-		
+
+		if(!simplified) {
+			List<Answer> answerList=solved.getAnswer();
+			List<AnswerDTO> answerDTOList=new ArrayList<AnswerDTO>();
+		//we won't need to know the actual answers in the data tables.
+
+			for(Answer elem:answerList)
+				answerDTOList.add(answerBusiness.convertEntityToDTO(elem));
+			solvedDTO.setAnswer(answerDTOList);
+		}
 		
 		solvedDTO.setCandidate(candidateBusiness.convertEntityToDTO(solved.getCandidate()));
 		
@@ -285,6 +297,10 @@ public class SolvedTestBusiness {
 		solvedDTO.setTestID(solved.getTest().getId());
 		
 		return solvedDTO;
+	}
+	
+	public SolvedTestDTO convertEntityToDTO(SolvedTest solved) {
+		return convertEntityToDTO(solved, false);
 	}
 	
 	//We won't need a convertDTOToEntity in edit, due to the fact that the solved test is not editable
@@ -315,25 +331,31 @@ public class SolvedTestBusiness {
 	//////////////////////////////////////////DTO-STATISTICS CONVERSION/////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public SolvedTestStatistics convertEntityToStatistics(SolvedTest solvedTest) {
+	public SolvedTestStatistics convertEntityToStatistics(SolvedTest solvedTest, boolean simplified) {
 		
 		SolvedTestStatistics solvedStatistics=new SolvedTestStatistics();
-		solvedStatistics.setSolvedTest(convertEntityToDTO(solvedTest));
+		solvedStatistics.setSolvedTest(convertEntityToDTO(solvedTest, simplified));
 		
-		Set<CategoryStatistics> categoryStatisticsSet= new HashSet<CategoryStatistics>();
-		Set<String> testCategories=testBusiness.getCategories(solvedTest.getTest().getId());
-		
-		//get scores for each categories of a solved test
-		for(String category: testCategories) {
-			CategoryStatistics categoryStatistics=new CategoryStatistics();
-			categoryStatistics.setScore(calculateResult(solvedTest,category));
-			categoryStatistics.setCategory(categoryRepository.getCategory(category));
-			categoryStatisticsSet.add(categoryStatistics);
+		if(!simplified) {
+			Set<CategoryStatistics> categoryStatisticsSet= new HashSet<CategoryStatistics>();
+			Set<String> testCategories=testBusiness.getCategories(solvedTest.getTest().getId());
+			
+			//get scores for each categories of a solved test
+			for(String category: testCategories) {
+				CategoryStatistics categoryStatistics=new CategoryStatistics();
+				categoryStatistics.setScore(calculateResult(solvedTest,category));
+				categoryStatistics.setCategory(categoryRepository.getCategory(category));
+				categoryStatisticsSet.add(categoryStatistics);
+			}
+			
+			solvedStatistics.setCategoryStatistics(categoryStatisticsSet);
 		}
 		
-		solvedStatistics.setCategoryStatistics(categoryStatisticsSet);
-		
 		return solvedStatistics;
+	}
+	
+	public SolvedTestStatistics convertEntityToStatistics(SolvedTest solvedTest) {
+		return convertEntityToStatistics(solvedTest, false);
 	}
 	
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////

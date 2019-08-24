@@ -61,27 +61,21 @@ public class TestBusiness {
 		testRepository.addEntity(testEntity);
 	}
 	
-	public Response getAll() {
+	//optimization of getAll -> only retrieves what is needed in tables -> lazy fetching (simplified=true)
+	public Set<TestStatistics> getAll(boolean simplified) {
 		Set<TestDTO> allTestDTO=new HashSet<TestDTO>();
 		for(Test elem:testRepository.getAll())
-			allTestDTO.add(convertEntityToDTO(elem));
+			allTestDTO.add(convertEntityToDTO(elem, simplified));
 		Set<TestStatistics> allTests=new HashSet<TestStatistics>();
 		for(TestDTO elem:allTestDTO)
 			allTests.add(convertDTOToStatistics(elem));
-		return Response.ok(allTests, MediaType.APPLICATION_JSON).build();
-		
-		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
+		return allTests;
 	}
 	
-	public Response getAllSimplified() {
-		Set<TestDTO> allTestDTO=new HashSet<TestDTO>();
-		for(Test elem:testRepository.getAll())
-			allTestDTO.add(convertEntityToDTO(elem,true));
-		Set<TestStatistics> allTests=new HashSet<TestStatistics>();
-		for(TestDTO elem:allTestDTO)
-			allTests.add(convertDTOToStatistics(elem));
-		return Response.ok(allTests, MediaType.APPLICATION_JSON).build();
+	public Set<TestStatistics> getAll(){
+		return getAll(false);
 	}
+	
 	
 	public TestDTO get(long id) throws AppException {
 		if(!testRepository.idExists(id))

@@ -49,14 +49,15 @@ public class TestServices {
 	@Path("all/allData")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllTests() {
-		return testBusiness.getAll();
+		return Response.ok(testBusiness.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
 	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllTestsSimplified() {
-		return testBusiness.getAllSimplified();
+		return Response.ok(testBusiness.getAll(true), MediaType.APPLICATION_JSON).build();
+
 	}
 	
 	@GET
