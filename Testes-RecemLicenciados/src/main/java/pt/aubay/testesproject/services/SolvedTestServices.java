@@ -140,7 +140,7 @@ public class SolvedTestServices {
 			solvedTestsStatistics.add(solvedBusiness.convertEntityToStatistics(elem, true));
 		
 		///////////////////////////////////////////////////////////////PAGINATION/////////////////////////////////////////////////////////////////////////////////////
-		if(page!=0 && pageSize!=0) {
+		if(pageSize!=0) {
 			int fromIndex = page * pageSize;
 			int toIndex = fromIndex + pageSize;
 			int resultSize = solvedTestsStatistics.size();

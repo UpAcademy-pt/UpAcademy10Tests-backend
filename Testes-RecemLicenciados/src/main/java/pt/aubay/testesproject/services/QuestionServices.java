@@ -1,5 +1,6 @@
 package pt.aubay.testesproject.services;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,9 +103,34 @@ public class QuestionServices {
 	@GET
 	@Path("filter")
 	@Produces({MediaType.APPLICATION_JSON})
-	public List<QuestionDTO> getFilteredQuestions(@QueryParam("category") String category){
+	public List<QuestionDTO> getFilteredQuestions(
+			@QueryParam("category") String category,
+			@QueryParam("page") int page,
+			@QueryParam("pageSize") int pageSize
+		){
+		
+		///////////////////////////////////////////////////////////FILTERED LIST/////////////////////////////////////////////////////////////////////////////////////
 		List<QuestionDTO> questions=questionBusiness.getAll().stream().filter(question -> 
 		question.getCategory().getCategory().equals(category)).collect(Collectors.toList());
+		
+		
+		///////////////////////////////////////////////////////////////PAGINATION/////////////////////////////////////////////////////////////////////////////////////
+		if(pageSize!=0) {
+			int fromIndex = page * pageSize;
+			int toIndex = fromIndex + pageSize;
+			int resultSize = questions.size();
+			
+			if(fromIndex >= resultSize) {
+				questions = Collections.emptyList();
+			}
+			else if(toIndex > resultSize) {
+				questions = questions.subList(fromIndex, resultSize);
+			}
+			else {
+				questions = questions.subList(fromIndex, toIndex);
+			}
+		}
+		
 		return questions;
 	}
 	
