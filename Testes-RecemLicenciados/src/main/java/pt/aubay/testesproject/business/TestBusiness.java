@@ -278,10 +278,10 @@ public class TestBusiness {
 		test.setTestName(testDTO.getTestName());
 		test.setTimer(testDTO.getTimer());
 	
-		//Need to check if necessary, for it is expected that the averagescore will dynamically determined
+		//Need to check if necessary, for it is expected that the average score be dynamically determined
 		test.setAverageScore(0);
 		
-		//We change the date for each edit (or save its "created in" date?)
+		//We change the date for each edit
 		LocalDateTime newTime=LocalDateTime.now();
 		test.setDateTime(newTime);
 		
