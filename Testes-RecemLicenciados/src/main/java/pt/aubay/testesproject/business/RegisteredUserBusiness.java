@@ -285,7 +285,7 @@ public class RegisteredUserBusiness {
 		userDTO.setAvailable(user.isAvailable());
 		
 		
-		DateTimeFormatter formatter =DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter formatter =DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 		String dateTimeString=user.getLastLogin().format(formatter);
 		userDTO.setLastLogin(dateTimeString);
 		
