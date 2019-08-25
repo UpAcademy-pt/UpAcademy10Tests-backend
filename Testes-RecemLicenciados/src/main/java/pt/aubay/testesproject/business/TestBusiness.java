@@ -77,19 +77,24 @@ public class TestBusiness {
 	}
 	
 	
-	public TestDTO get(long id) throws AppException {
+	public TestDTO get(long id, boolean solutions) throws AppException {
 		if(!testRepository.idExists(id))
 			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
 		TestDTO testDTO=new TestDTO();
 		testDTO=convertEntityToDTO(testRepository.getEntity(id));
 		
 		//remove solution
-		testDTO=removeSolution(testDTO);
+		if(!solutions)
+			testDTO=removeSolution(testDTO);
 		/*for(QuestionDTO question: testDTO.getQuestions())
 			question.setSolution(null);*/
 		return testDTO;
 		
 		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
+	}
+	
+	public TestDTO get(long id) throws AppException {
+		return get(id, false);
 	}
 	
 	

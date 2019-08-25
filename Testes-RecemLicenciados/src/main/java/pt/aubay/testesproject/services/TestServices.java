@@ -67,6 +67,13 @@ public class TestServices {
 		return Response.ok(testBusiness.get(id), MediaType.APPLICATION_JSON).build();
 	}
 	
+	@GET
+	@Path("get/{id}/{solutions}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTest(@PathParam("id") long id, @PathParam("solutions") boolean solutions) throws AppException {
+		return Response.ok(testBusiness.get(id, true), MediaType.APPLICATION_JSON).build();
+	}
+	
 	@PUT
 	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
