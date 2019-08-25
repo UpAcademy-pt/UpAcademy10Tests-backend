@@ -264,9 +264,9 @@ public class RegisteredUserBusiness {
 		MyEmail myEmail=new MyEmail();
 		myEmail.setSubject("Password da sua conta - Tester Aubay");
 		if(reset)
-			myEmail.setBody("A nova password é: "+password+"\n Não se esqueça de mudá-la.");
+			myEmail.setBody("A nova password é: <strong>"+password+"</strong>.<br> Não se esqueça de mudá-la.<br><br>");
 		else
-			myEmail.setBody("A sua password é: "+password+"\n Não se esqueça de mudá-la.");
+			myEmail.setBody("A sua password é:  <strong>"+password+"</strong>.<br> Não se esqueça de mudá-la.<br><br>");
 		myEmail.setEmailTo(sendTo);
 		//emailService.sendEmail(myEmail);
 		return password;
