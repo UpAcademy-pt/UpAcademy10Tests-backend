@@ -6,11 +6,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotAcceptableException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.TestDTO;
 import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.models.entities.Test;
@@ -20,6 +23,7 @@ import pt.aubay.testesproject.repositories.RegisteredUserRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 import pt.aubay.testesproject.repositories.TestSessionRepository;
 
+@Transactional
 public class TestSessionBusiness {
 
 	@Inject
@@ -40,8 +44,8 @@ public class TestSessionBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public long add(TestSession session, long testID) throws AppException{
+
+	public long add(TestSession session, long testID){
 		//check if e-mail exists and idTest exists
 		checkParameters(session, testID);
 		///set creation instance
@@ -51,13 +55,13 @@ public class TestSessionBusiness {
 		return session.getId();
 	}
 	
-	public TestSessionDTO get(long sessionID) throws AppException {
+	public TestSessionDTO get(long sessionID) {
 
 		if(!sessionRepository.IDExists(sessionID))
-			throw new AppException("Session not found in Database", Status.NOT_FOUND.getStatusCode());
+			throw new NotFoundException("Session not found in Database");
 		//check if session is expired
 		if(!testCommonBusiness.checkIfSessionValid(sessionID))
-			throw new AppException("Session expired", Status.REQUEST_TIMEOUT.getStatusCode());
+			throw new BadRequestException("Session expired");
 		TestSession session=sessionRepository.getEntity(sessionID);
 		
 		TestSessionDTO sessionDTO = convertEntityToDTO(session);
@@ -66,11 +70,12 @@ public class TestSessionBusiness {
 		return sessionDTO;
 	}
 	
-	public long begin(long sessionID) throws AppException {
+
+	public void begin(long sessionID) {
 		if(!sessionRepository.IDExists(sessionID))
-			throw new AppException("Session not found in Database", Status.NOT_FOUND.getStatusCode());
+			throw new NotFoundException("Session not found in Database");
 		if(!testCommonBusiness.checkIfSessionValid(sessionID))
-			throw new AppException("Session expired", Status.REQUEST_TIMEOUT.getStatusCode());
+			throw new BadRequestException("Session expired");
 		TestSession session=sessionRepository.getEntity(sessionID);
 		
 		LocalDateTime startingTest=LocalDateTime.now();
@@ -83,11 +88,11 @@ public class TestSessionBusiness {
 		long durationDiff=Math.abs(duration.toMillis());
 		return durationDiff;
 	}
-	
-	public void remove(long sessionID) throws AppException {
+
+	public void remove(long sessionID) {
 		//check if session exists
 		if(!sessionRepository.IDExists(sessionID))
-			throw new AppException("Session not found in database", Status.NOT_FOUND.getStatusCode());
+			throw new NotFoundException("Session not found in database");
 		sessionRepository.deleteEntity(sessionID);
 	}
 	
@@ -96,31 +101,31 @@ public class TestSessionBusiness {
 	//////////////////////////////////////////////Check-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public void checkParameters(TestSession session, long testID) throws AppException {
+	public void checkParameters(TestSession session, long testID) {
 		
 		///check if all needed parameters are there
 		if(session.getRecruiterEmail()==null || session.getCandidateEmail()==null)
-			throw new AppException("Parameters are missing.", Status.NOT_ACCEPTABLE.getStatusCode());
-		
+			throw new NotAcceptableException("Parameters are missing.");
+					
 		///check if parameters are valid
 		if(!testRepository.idExists(testID))
-			throw new AppException("Test not found in database", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("Test not found in database.");
 		if(!userRepository.emailExists(session.getRecruiterEmail()))
-			throw new AppException("User not found in database", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("User not found in database.");
 	}
 	
-	public void checkParameters(long sessionID, long testID) throws AppException {
+	public void checkParameters(long sessionID, long testID) {
 		
 		///check if parameters are valid
 		if(!testRepository.idExists(testID))
-			throw new AppException("Test not found in database", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("Test not found in database.");
 		if(!userRepository.emailExists(sessionRepository.getEntity(sessionID).getRecruiterEmail()))
-			throw new AppException("User not found in database", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("User not found in database.");
 	}
 	
 	
 	//when solvedTest is being submitted, we should first check if session is still valid
-	public void checkIfSessionValid(long sessionID, long testID) throws AppException {
+	public void checkIfSessionValid(long sessionID, long testID){
 		
 		checkParameters(sessionID, testID);
 		
@@ -135,7 +140,7 @@ public class TestSessionBusiness {
 		///10 min were added to the session, in order to avoid Internet-speed-related issues
 		if(durationDiff>(test.getTimer()+10)*60*1000) {
 			remove(sessionID);
-			throw new AppException("Session expired", Status.REQUEST_TIMEOUT.getStatusCode());
+			throw new BadRequestException("Session expired");
 		}
 	}
 	

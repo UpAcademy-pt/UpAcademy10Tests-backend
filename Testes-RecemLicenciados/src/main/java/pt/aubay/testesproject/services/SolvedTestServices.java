@@ -29,13 +29,11 @@ import org.apache.commons.lang3.StringUtils;
 
 import pt.aubay.testesproject.business.SolvedTestBusiness;
 import pt.aubay.testesproject.business.TestBusiness;
-import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.models.dto.SolvedTestDTO;
 import pt.aubay.testesproject.models.entities.SolvedTest;
 import pt.aubay.testesproject.models.statistics.SolvedTestStatistics;
 
-@Transactional
 @Path("solved")
 public class SolvedTestServices {
 	@Inject
@@ -58,7 +56,7 @@ public class SolvedTestServices {
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addSolvedTest(SolvedTestDTO solvedTest) throws AppException {
+	public Response addSolvedTest(SolvedTestDTO solvedTest) {
 		solvedBusiness.add(solvedTest);
 		return Response.ok().entity("Success").build();
 	}
@@ -67,7 +65,7 @@ public class SolvedTestServices {
 	@Path("add/{sessionID}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addSolvedTest(SolvedTestDTO solvedTest, @PathParam("sessionID") long sessionID) throws AppException {
+	public Response addSolvedTest(SolvedTestDTO solvedTest, @PathParam("sessionID") long sessionID){
 		solvedBusiness.add(solvedTest, sessionID);
 		return Response.ok().entity("Success").build();
 	}
@@ -89,7 +87,7 @@ public class SolvedTestServices {
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getSolvedTest(@PathParam("id") long id) throws AppException {
+	public Response getSolvedTest(@PathParam("id") long id) {
 		return Response.ok(solvedBusiness.get(id), MediaType.APPLICATION_JSON).build();
 	}
 	
@@ -97,7 +95,7 @@ public class SolvedTestServices {
 	@Path("remove/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteSolvedTest(@PathParam("id") long id) throws AppException {
+	public Response deleteSolvedTest(@PathParam("id") long id) {
 		solvedBusiness.remove(id);
 		return Response.ok().entity("Success").build();
 	}

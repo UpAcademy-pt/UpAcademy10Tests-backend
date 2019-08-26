@@ -8,12 +8,11 @@ import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 
-import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.models.dto.TestDTO;
 import pt.aubay.testesproject.models.entities.Questions;
@@ -25,6 +24,7 @@ import pt.aubay.testesproject.repositories.SolvedTestRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 import pt.aubay.testesproject.repositories.TestSessionRepository;
 
+@Transactional
 public class TestBusiness {
 	@Inject
 	TestRepository testRepository;
@@ -50,8 +50,8 @@ public class TestBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	public void add(TestDTO test) throws AppException{
+
+	public void add(TestDTO test){
 		//We need to check if test object is valid
 		checkTestValidToAdd(test);
 		//Saves current time;
@@ -77,9 +77,9 @@ public class TestBusiness {
 	}
 	
 	
-	public TestDTO get(long id, boolean solutions) throws AppException {
+	public TestDTO get(long id, boolean solutions) {
 		if(!testRepository.idExists(id))
-			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
+			throw new NotFoundException("No such id in database");
 		TestDTO testDTO=new TestDTO();
 		testDTO=convertEntityToDTO(testRepository.getEntity(id));
 		
@@ -93,12 +93,11 @@ public class TestBusiness {
 		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
-	public TestDTO get(long id) throws AppException {
+	public TestDTO get(long id) {
 		return get(id, false);
 	}
 	
-	
-	public void edit(TestDTO newTest) throws AppException {
+	public void edit(TestDTO newTest) {
 		checkTestValidToEdit(newTest);
 		//We also need to reset back-end-determined values (Date and Average Score)
 		Test test=new Test();
@@ -107,13 +106,13 @@ public class TestBusiness {
 		testRepository.editEntity(test);
 	}
 	
-	public void remove(long id) throws AppException {
+	public void remove(long id) {
 		if(!testRepository.idExists(id))
-			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
+			throw new NotFoundException("No such id in database");
 		
 		//First, we need to check if test exists in any solved test or test session
 		if(solvedRepository.checkIfTestExists(id))
-			throw new AppException("Cannot delete Test used in a solved test present in the database", Status.BAD_REQUEST.getStatusCode());
+			throw new BadRequestException("Cannot delete Test used in a solved test present in the database");
 		
 		boolean allInvalid=true;
 		if(sessionRepository.checkIfTestExists(id)) {
@@ -128,7 +127,7 @@ public class TestBusiness {
 				}
 			}
 			if(!allInvalid)
-				throw new AppException("Cannot delete Test used in an open session", Status.BAD_REQUEST.getStatusCode());
+				throw new BadRequestException("Cannot delete Test used in an open session");
 		}
 
 		//This delete is performed via query
@@ -142,7 +141,6 @@ public class TestBusiness {
 	//idea: jpql -> get all solved tests that have a specified test id -> do the average using
 	//2nd idea: update function gets each time new score and determines new average
 	//2nd idea is best, for it keeps a faithful average score even after deleting a solvedTest
-	
 	public void updateAverageScore(long idTest, int scoreToAdd){
 		Test test=testRepository.getEntity(idTest);
 		int oldAverage=test.getAverageScore();
@@ -158,35 +156,35 @@ public class TestBusiness {
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public void checkTestValidToAdd(TestDTO test) throws AppException {
+	public void checkTestValidToAdd(TestDTO test){
 		//First, we need to check if all parameters needed were introduced
 		checkIfParametersThere(test);
 		//We need to check if the test name is new (must be unique)
 		if(testRepository.testExists(test.getTestName()))
-			throw new AppException("Test Name exists already", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("Test Name exists already");
 	}
 	
-	public void checkTestValidToEdit(TestDTO newTest) throws AppException {
+	public void checkTestValidToEdit(TestDTO newTest) {
 		//First, we need to check if all parameters needed were introduced 
 		checkIfParametersThere(newTest,true);
 		//We then need to check if ID exists in database
 		if(!testRepository.idExists(newTest.getId()))
-			throw new AppException("There is no such ID in database", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("There is no such ID in database");
 		//We also need to check if there is any change in testName, author and timer and check the changed fields accordingly
 		//To do so, first we need to retrieve the corresponding entity
 	}
 	
-	public void checkIfParametersThere(TestDTO test, boolean needID) throws AppException {
+	public void checkIfParametersThere(TestDTO test, boolean needID){
 		if(needID && test.getId()==0)
-			throw new AppException("Fields must be all present, including ID.", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("Fields must be all present, including ID.");
 		if(!(test.getAuthor()!=null &&
 			test.getQuestions()!=null &&
 			test.getTimer()!=0 &&
 			test.getTestName()!=null))
-			throw new AppException("Fields must be all present.", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("Fields must be all present.");
 	}
 	
-	public void checkIfParametersThere(TestDTO test) throws AppException {
+	public void checkIfParametersThere(TestDTO test) {
 		checkIfParametersThere(test, false);
 	}
 	
@@ -227,7 +225,6 @@ public class TestBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////DTO-ENTITY CONVERSION/////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 	public TestDTO convertEntityToDTO(Test test, boolean simplified) {
 		//String dateString;
 		String dateTimeString;

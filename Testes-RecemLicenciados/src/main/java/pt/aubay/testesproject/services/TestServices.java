@@ -16,10 +16,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import pt.aubay.testesproject.business.TestBusiness;
-import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.TestDTO;
 
-@Transactional
 @Path("test")
 public class TestServices {
 	
@@ -40,7 +38,7 @@ public class TestServices {
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addTest(TestDTO test) throws AppException {
+	public Response addTest(TestDTO test){
 		testBusiness.add(test);
 		return Response.ok().entity("Success").build();
 	}
@@ -63,14 +61,14 @@ public class TestServices {
 	@GET
 	@Path("get/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTest(@PathParam("id") long id) throws AppException {
+	public Response getTest(@PathParam("id") long id){
 		return Response.ok(testBusiness.get(id), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
 	@Path("get/{id}/{solutions}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTest(@PathParam("id") long id, @PathParam("solutions") boolean solutions) throws AppException {
+	public Response getTest(@PathParam("id") long id, @PathParam("solutions") boolean solutions) {
 		return Response.ok(testBusiness.get(id, true), MediaType.APPLICATION_JSON).build();
 	}
 	
@@ -78,7 +76,7 @@ public class TestServices {
 	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response editTest(TestDTO test) throws AppException {
+	public Response editTest(TestDTO test) {
 		testBusiness.edit(test);
 		return Response.ok().entity("Success").build();
 	}
@@ -87,7 +85,7 @@ public class TestServices {
 	@Path("remove/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteTest(@PathParam("id") long id) throws AppException {
+	public Response deleteTest(@PathParam("id") long id) {
 		testBusiness.remove(id);
 		return Response.ok().entity("Success").build();
 	}

@@ -1,7 +1,6 @@
 package pt.aubay.testesproject.services;
 
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -16,11 +15,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import pt.aubay.testesproject.business.CategoryBusiness;
-import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.entities.Category;
 
 
-@Transactional
+//@Path("categories")
 @Path("category")
 public class CategoryServices {
 	@Inject
@@ -37,10 +35,10 @@ public class CategoryServices {
 	}
 	
 	@POST
-	@Path("add")
+	@Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addCategory(Category category) throws AppException {
+	public Response addCategory(Category category) {
 		categoryBusiness.add(category);
 		return Response.ok().entity("Success").build();
 	}
@@ -48,26 +46,28 @@ public class CategoryServices {
 	//There is no need for a get category for it owns solely one field (category) apart from own id;
 	
 	@GET
-	@Path("all")
+	@Path("/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllCategories() {
 		return Response.ok(categoryBusiness.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@PUT
+//	@Path("{id}")
 	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response editCategory(Category category) throws AppException {
+	public Response editCategory(Category category) {
 		categoryBusiness.edit(category);
 		return Response.ok().entity("Success").build();
 	}
 	
 	@DELETE
+//	@Path("{id}")
 	@Path("remove/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteCategory(@PathParam("id") long id) throws AppException {
+	public Response deleteCategory(@PathParam("id") long id) {
 		categoryBusiness.remove(id);
 		return Response.ok().entity("Success").build();
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.faces.bean.RequestScoped;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import pt.aubay.testesproject.models.entities.Questions;
 
@@ -17,25 +18,25 @@ public class QuestionRepository extends Repositories<Questions>{
 		return Questions.class;
 	}
 	
-	public long getQuestions(long id) {
-		Query query = em.createNamedQuery("Questions.getQuestions", getEntityClass());
+	public Questions getQuestions(long id) {
+		TypedQuery<Questions> query = em.createNamedQuery("Questions.getQuestions", getEntityClass());
 		query.setParameter("id", id);
-		return (long) query.getSingleResult();
+		return query.getSingleResult();
 	}
 	
 	public List<Questions> getAll() {
-		Query query = em.createNamedQuery("Questions.getAll", getEntityClass());
+		TypedQuery<Questions> query = em.createNamedQuery("Questions.getAll", getEntityClass());
 		return query.getResultList();
 	}
 	
 	public List<Questions> getRandomQuestions(List<Long> ids) {
-		Query query = em.createNamedQuery("Questions.getRandomQuestionOfCategory", getEntityClass());
+		TypedQuery<Questions> query = em.createNamedQuery("Questions.getRandomQuestionOfCategory", getEntityClass());
 		query.setParameter("ids", ids);
 		return query.getResultList();
 	}	
 	
 	public List<Long> getQuestionIDS(String category){
-		Query query = em.createNamedQuery("Questions.getAllQuestionIDsOfCategory", Long.class);
+		TypedQuery<Long> query = em.createNamedQuery("Questions.getAllQuestionIDsOfCategory", Long.class);
 		query.setParameter("category", category);
 		return query.getResultList();
 	}

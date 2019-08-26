@@ -3,12 +3,12 @@ package pt.aubay.testesproject.repositories;
 import java.util.List;
 
 import javax.faces.bean.RequestScoped;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import pt.aubay.testesproject.models.entities.Category;
 
 @RequestScoped
-public class CategoryRepository extends Repositories<Category>{
+public class CategoryRepository extends Repositories<Category> {
 
 	@Override
 	protected Class<Category> getEntityClass() {
@@ -16,35 +16,35 @@ public class CategoryRepository extends Repositories<Category>{
 	}
 	
 	public Category getCategory(String category) {
-		Query query = em.createNamedQuery("Category.getCategory", getEntityClass());
+		TypedQuery<Category> query = em.createNamedQuery("Category.getCategory", getEntityClass());
 		query.setParameter("category", category);
 		return (Category) query.getSingleResult();
 	}
 	
 	public List<Category> getAll() {
-		Query query = em.createNamedQuery("Category.getAll", getEntityClass());
+		TypedQuery<Category> query = em.createNamedQuery("Category.getAll", getEntityClass());
 		return query.getResultList();
 	}	
 	public long count() {
-		Query query = em.createNamedQuery("Category.count");
-		return (long) query.getSingleResult();
+		TypedQuery<Long> query = em.createNamedQuery("Category.count", Long.class);
+		return query.getSingleResult();
 	}
 	
 	public boolean categoryExists(Category category) {
-		Query query = em.createNamedQuery("Category.checkIfExists");
+		TypedQuery<Long> query = em.createNamedQuery("Category.checkIfExists", Long.class);
 		query.setParameter("category", category.getCategory());
-		return (long) query.getSingleResult() != 0;
+		return query.getSingleResult() != 0;
 	}
 	
 	public boolean idExists(Category category) {
-		Query query = em.createNamedQuery("Category.checkIfIdExists");
+		TypedQuery<Long> query = em.createNamedQuery("Category.checkIfIdExists", Long.class);
 		query.setParameter("id", category.getId());
-		return (long) query.getSingleResult() == 1;
+		return query.getSingleResult() == 1;
 	}
 
 	public boolean idExists(long id) {
-		Query query = em.createNamedQuery("Category.checkIfIdExists");
+		TypedQuery<Long> query = em.createNamedQuery("Category.checkIfIdExists", Long.class);
 		query.setParameter("id",id);
-		return (long) query.getSingleResult() == 1;
+		return query.getSingleResult() == 1;
 	}
 }

@@ -14,11 +14,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import pt.aubay.testesproject.business.TestSessionBusiness;
-import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.TestDTO;
 import pt.aubay.testesproject.models.sessions.TestSession;
 
-@Transactional
+
 @Path("test/session")
 public class TestSessionServices {
 	
@@ -39,21 +38,21 @@ public class TestSessionServices {
 	@Path("add/{testID}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addTest(TestSession session, @PathParam("testID") long testID) throws AppException {
+	public Response addTest(TestSession session, @PathParam("testID") long testID) {
 		return Response.ok(sessionBusiness.add(session, testID), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
 	@Path("get/{sessionID}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTest(@PathParam("sessionID") long sessionID) throws AppException {
+	public Response getTest(@PathParam("sessionID") long sessionID) {
 		return Response.ok(sessionBusiness.get(sessionID), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
 	@Path("begin/{sessionID}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response beginTest(@PathParam("sessionID") long testID) throws AppException {
-		return Response.ok(sessionBusiness.begin(testID), MediaType.APPLICATION_JSON).build();
+	public Response beginTest(@PathParam("sessionID") long testID) {
+		return return Response.ok(sessionBusiness.begin(testID), MediaType.APPLICATION_JSON).build();
 	}
 }

@@ -13,12 +13,14 @@ import java.util.Set;
 import java.util.stream.IntStream;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import javax.ws.rs.NotAcceptableException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import pt.aubay.testesproject.auxiliary.MyEmail;
-import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.AnswerDTO;
 import pt.aubay.testesproject.models.dto.CandidateDTO;
 import pt.aubay.testesproject.models.dto.SolvedTestDTO;
@@ -36,7 +38,7 @@ import pt.aubay.testesproject.repositories.TestRepository;
 import pt.aubay.testesproject.repositories.TestSessionRepository;
 import pt.aubay.testesproject.services.EmailServices;
 
-
+@Transactional
 public class SolvedTestBusiness {
 	
 	@Inject
@@ -76,11 +78,11 @@ public class SolvedTestBusiness {
 	
 	
 	///adding solved test from session
-	public void add(SolvedTestDTO test, long sessionID) throws AppException {
+	public void add(SolvedTestDTO test, long sessionID){
 		
 		//we should check if sessionID exists associated with testID
 		if(!sessionRepository.checkIfSessionExistsWithTest(sessionID, test.getTestID()))
-			throw new AppException("Session not found", Status.NOT_FOUND.getStatusCode()); 
+			throw new NotFoundException("Session not found");
 		sessionBusiness.checkIfSessionValid(sessionID, test.getTestID());
 		
 		//we should remove session -> if valid, remove session and proceed with adding solved test (session no longer needed);
@@ -89,7 +91,7 @@ public class SolvedTestBusiness {
 		add(test);
 	}
 	
-	public void add(SolvedTestDTO test) throws AppException{
+	public void add(SolvedTestDTO test){
 		//We need to check if SolvedTest object is valid
 		checkTestValidToAdd(test);
 
@@ -127,16 +129,15 @@ public class SolvedTestBusiness {
 	}
 	
 
-	
-	public void remove(long id) throws AppException {
+	public void remove(long id){
 		if(!solvedRepository.idExists(id))
-			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
+			throw new NotFoundException("No such id in database");
 		solvedRepository.deleteEntity(id);
 	}
 	
-	public SolvedTestStatistics get(long id) throws AppException {
+	public SolvedTestStatistics get(long id){
 		if(!solvedRepository.idExists(id))
-			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
+			throw new NotFoundException("No such id in database");
 		SolvedTest solved=solvedRepository.getEntity(id);
 		return convertEntityToStatistics(solved);
 	}
@@ -223,12 +224,12 @@ public class SolvedTestBusiness {
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public void checkTestValidToAdd(SolvedTestDTO test) throws AppException {
+	public void checkTestValidToAdd(SolvedTestDTO test){
 		//First, we need to check if all parameters needed were introduced
 		checkIfParametersThere(test);
 		//Then, we need to check if test ID related to solved test exists
 		if(!testRepository.idExists(test.getTestID()))
-			throw new AppException("Test ID does not match any test in database", Status.NOT_FOUND.getStatusCode());
+			throw new NotFoundException("Test ID does not match any test in database");
 		
 		//We need to check if both candidate and testID are new (the combination must be unique)
 		
@@ -245,7 +246,7 @@ public class SolvedTestBusiness {
 			System.out.println(databaseCandidate.getId());
 			System.out.println(test.getTestID());
 			if(solvedRepository.checkUniqueness(databaseCandidate.getId(), test.getTestID())) {
-				throw new AppException("Candidate already took this test.", Status.NOT_ACCEPTABLE.getStatusCode());
+				throw new NotAcceptableException("Candidate already took this test.");
 			}
 		}
 		
@@ -253,21 +254,21 @@ public class SolvedTestBusiness {
 		//	return Response.status(Status.NOT_ACCEPTABLE).entity("SolvedTest Name exists already").build();
 	}
 	
-	public void checkIfParametersThere(SolvedTestDTO test, boolean needID) throws AppException {
+	public void checkIfParametersThere(SolvedTestDTO test, boolean needID) {
 		if(needID && test.getId()==0)
-			throw new AppException("Fields must be all present, including ID.", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("Fields must be all present, including ID.");
 		if(	test.getAnswer()==null ||
 			test.getCandidate()==null ||
 			test.getTestID()==0 //&&
 			//test.getTimeSpent()!=null
 			)
-			throw new AppException("Fields must be all present.", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("Fields must be all present.");
 		
 		//We also need to check if candidate has all needed info
 		candidateBusiness.checkIfParametersThere(test.getCandidate());
 	}
 	
-	public void checkIfParametersThere(SolvedTestDTO test) throws AppException {
+	public void checkIfParametersThere(SolvedTestDTO test){
 		checkIfParametersThere(test, false);
 	}
 	

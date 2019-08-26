@@ -4,23 +4,22 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotAcceptableException;
+import javax.ws.rs.NotFoundException;
 
 import pt.aubay.testesproject.auxiliary.MyEmail;
-import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.RegisteredUserDTO;
 import pt.aubay.testesproject.models.entities.RegisteredUser;
 import pt.aubay.testesproject.repositories.RegisteredUserRepository;
 import pt.aubay.testesproject.services.EmailServices;
 import pt.aubay.testesproject.utils.PasswordUtils;
 
+@Transactional
 public class RegisteredUserBusiness {
 	@Inject
 	RegisteredUserRepository userRepository;
@@ -31,8 +30,8 @@ public class RegisteredUserBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		
-	public void add(RegisteredUserDTO userDTO) throws AppException{
+
+	public void add(RegisteredUserDTO userDTO){
 		
 		//First we need to check if parameters there
 		checkParameters(userDTO, false);
@@ -51,7 +50,7 @@ public class RegisteredUserBusiness {
 			try {
 				password = generatePassword(userDTO.getEmail(),false);
 			} catch (IOException e) {
-				throw new AppException("Unknown problem with e-mail");
+				throw new BadRequestException("Unknown problem with e-mail");
 			}
 			String[] hashCode=passwordToHashcode(password);
 			
@@ -67,7 +66,7 @@ public class RegisteredUserBusiness {
 			//return Response.ok(password, MediaType.TEXT_PLAIN).build();
 		}
 		else 
-			throw new AppException("This username exists already", Status.BAD_REQUEST.getStatusCode());
+			throw new BadRequestException("This username exists already");
 	}
 	
 	public List<RegisteredUserDTO> getAllUsers() {
@@ -78,10 +77,10 @@ public class RegisteredUserBusiness {
 	}
 	
 	//to get all Users except for currentUser
-	public List<RegisteredUserDTO> getAllUsers(long id) throws AppException {
+	public List<RegisteredUserDTO> getAllUsers(long id) {
 		//check if ID exists
 		if(!userRepository.userExists(id))
-			throw new AppException("Invalid ID", Status.NOT_FOUND.getStatusCode());
+			throw new NotFoundException("Invalid ID");
 		List<RegisteredUserDTO> allUsers=new ArrayList<RegisteredUserDTO>();
 		for(RegisteredUser elem:userRepository.getAll())
 			if(id!=elem.getId())
@@ -89,7 +88,7 @@ public class RegisteredUserBusiness {
 		return allUsers;
 	}
 	
-	public RegisteredUserDTO get(String usernameOrEmail, String password) throws AppException{
+	public RegisteredUserDTO get(String usernameOrEmail, String password){
 		RegisteredUserDTO userDTO=new RegisteredUserDTO();
 		//type checks if input is username or email - login might be achieved by both username and email
 		String type=isUsernameOrEmail(usernameOrEmail);
@@ -102,13 +101,13 @@ public class RegisteredUserBusiness {
 		//Sets username corresponding to email given
 		RegisteredUser user = userRepository.getUser(userDTO.getUsername());
 		if(!user.isAvailable())
-			throw new AppException("No user found", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("No user found");
 		setLastLogin(user);
 		userRepository.editEntity(user);
 		return convertEntityToDTO(user);
 	}
 	
-	public void changePassword(String username, String oldPassword, String newPassword) throws AppException {
+	public void changePassword(String username, String oldPassword, String newPassword){
 		//Creates DTO with pass e username
 		RegisteredUserDTO userDTO= new RegisteredUserDTO();
 		userDTO.setUsername(username);
@@ -123,7 +122,7 @@ public class RegisteredUserBusiness {
 		userRepository.changePassword(username, newHash);
 	}
 	
-	public RegisteredUserDTO edit(RegisteredUserDTO userDTO) throws AppException {
+	public RegisteredUserDTO edit(RegisteredUserDTO userDTO){
 		
 		checkParameters(userDTO,true);
 		
@@ -135,24 +134,25 @@ public class RegisteredUserBusiness {
 		return convertEntityToDTO(updatedUser);
 	}
 	
-	public void remove(long id) throws AppException {
+
+	public void remove(long id) {
 		
 		///To do afterwards: when session is achieved -> check if admin is deleting own account (must be avoided)
 		
 		if(id==0 || !(userRepository.userExists(id)))
-			throw new AppException("Invalid ID", Status.BAD_REQUEST.getStatusCode());
+			throw new BadRequestException("Invalid ID");
 		userRepository.deleteEntity(id);
 	}
 	
 	//Temporary
-	public void resetPassword(RegisteredUserDTO userDTO) throws IOException, AppException {
+	public void resetPassword(RegisteredUserDTO userDTO) throws IOException {
 		//Check if ID and e-mail there
 		if(userDTO.getEmail()==null || userDTO.getId()==0 || userDTO.getUsername()==null)
-			throw new AppException("ID and e-mail must be present", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("ID and e-mail must be present");
 		RegisteredUser myUser=userRepository.getEntity(userDTO.getId());
 		//Check if emails match
 		if(!userDTO.getEmail().equals(myUser.getEmail()) || !userDTO.getUsername().equals(myUser.getUsername()))
-			throw new AppException("Mismatch between sent data and database", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("Mismatch between sent data and database");
 		//Generate new random string
 		String newPassword=generatePassword(userDTO.getEmail(),true);
 		String[] hashPass;
@@ -185,37 +185,37 @@ public class RegisteredUserBusiness {
 	//////////////////////////////////////////Checking-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	public void checkIfUsernameValid(String username) throws AppException {
+	public void checkIfUsernameValid(String username) {
 		if(!userRepository.userExists(username))
-			throw new AppException("No such user in database", Status.NOT_FOUND.getStatusCode());
+			throw new NotFoundException("No such user in database");
 	}
 	
-	public void checkIfEmailExists(String email) throws AppException {
+	public void checkIfEmailExists(String email) {
 		if(userRepository.emailExists(email))
-			throw new AppException("Email already exists.", Status.BAD_REQUEST.getStatusCode());
+			throw new BadRequestException("Email already exists.");
 	}
 	
-	public void checkIfPasswordValid(RegisteredUserDTO userDTO, String password) throws AppException {
+	public void checkIfPasswordValid(RegisteredUserDTO userDTO, String password) {
 		RegisteredUser myUser=userRepository.getUser(userDTO.getUsername());
 		String key=myUser.getHashcode();
 		String salt=myUser.getSalt();
 		
 		if(!PasswordUtils.verifyPassword(password, key, salt))
-			throw new AppException("Invalid Password", Status.BAD_REQUEST.getStatusCode());
+			throw new BadRequestException("Invalid Password");
 	}
 	
-	public void checkIfUsernameExists(String username) throws AppException {
+	public void checkIfUsernameExists(String username){
 		if(userRepository.userExists(username))
-			throw new AppException("Username already exists.", Status.BAD_REQUEST.getStatusCode());
+			throw new BadRequestException("Username already exists.");
 	}
 	
-	public void checkIfUserValid(RegisteredUserDTO userDTO, String password, String type) throws AppException {
+	public void checkIfUserValid(RegisteredUserDTO userDTO, String password, String type){
 		//User valid if both username and password are valid
 		if(type=="username")
 			checkIfUsernameValid(userDTO.getUsername());
 		if(type=="email") {
 			if(!userRepository.emailExists(userDTO.getEmail()))
-				throw new AppException("No such email in database", Status.NOT_FOUND.getStatusCode());
+				throw new NotFoundException("No such email in database");
 			//our checks use username, so if e-mail exists in database the username is retrieved via the corresponding e-mail
 			else
 				userDTO.setUsername(userRepository.getUsernameByEmail(userDTO.getEmail()));
@@ -223,18 +223,18 @@ public class RegisteredUserBusiness {
 		checkIfPasswordValid(userDTO, password);
 	}
 	
-	public void checkIfUserValid(RegisteredUserDTO userDTO, String password) throws AppException {
+	public void checkIfUserValid(RegisteredUserDTO userDTO, String password) {
 		checkIfUserValid(userDTO, password, "username");
 	}
 	
-	public void checkParameters(RegisteredUserDTO userDTO, boolean needID) throws AppException {
+	public void checkParameters(RegisteredUserDTO userDTO, boolean needID) {
 		if(userDTO.getEmail()==null || userDTO.getUsername()==null ||userDTO.getAccessType()==null)
-			throw new AppException("Invalid User parameters. Check if all parameters were inserted", Status.BAD_REQUEST.getStatusCode());
+			throw new BadRequestException("Invalid User parameters. Check if all parameters were inserted");
 		if(needID==true && !userRepository.userExists(userDTO.getId()))
-			throw new AppException("Invalid ID",Status.BAD_REQUEST.getStatusCode());
+			throw new BadRequestException("Invalid ID");
 	}
 	
-	public void checkIfChangesValid(RegisteredUserDTO updatedUser) throws AppException {
+	public void checkIfChangesValid(RegisteredUserDTO updatedUser){
 		RegisteredUser newUser=convertDTOToEntity(updatedUser);
 		RegisteredUser oldUser=userRepository.getEntity(newUser.getId());
 		if(!newUser.getUsername().equals(oldUser.getUsername()))
@@ -242,7 +242,7 @@ public class RegisteredUserBusiness {
 		if(!newUser.getEmail().equals(oldUser.getEmail()))
 			checkIfEmailExists(newUser.getEmail());
 		if(!newUser.getLastLogin().equals(oldUser.getLastLogin()))
-			throw new AppException("Last Login must not be changed in edit", Status.BAD_REQUEST.getStatusCode());
+			throw new BadRequestException("Last Login must not be changed in edit");
 	}
 
 	

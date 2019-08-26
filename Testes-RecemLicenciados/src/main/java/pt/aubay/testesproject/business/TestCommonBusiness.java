@@ -4,10 +4,12 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import pt.aubay.testesproject.models.sessions.TestSession;
 import pt.aubay.testesproject.repositories.TestSessionRepository;
 
+@Transactional
 public class TestCommonBusiness {
 	///This business was created to avoid circular dependency of injections. The methods here are used by tests, solved tests, and test sessions.
 	

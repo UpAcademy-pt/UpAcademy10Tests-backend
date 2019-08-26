@@ -1,10 +1,9 @@
 package pt.aubay.testesproject.business;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.core.Response.Status;
 
-import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.CandidateDTO;
 import pt.aubay.testesproject.models.entities.Candidate;
 import pt.aubay.testesproject.repositories.RegisteredUserRepository;
@@ -18,16 +17,16 @@ public class CandidateBusiness {
 //	RegisteredUserBusiness userBusiness;
 	
 	
-	public void checkIfParametersThere(CandidateDTO candidate, boolean toEdit) throws AppException {
+	public void checkIfParametersThere(CandidateDTO candidate, boolean toEdit) {
 		if(toEdit && candidate.getId()==0)
-			throw new AppException("An ID is needed.", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("An ID is needed.");
 		if(!(candidate.getEmail()!=null &&
 			candidate.getName()!=null &&
 			candidate.getEmailRecruiter()!=null))
-			throw new AppException("Fields must be all present, including ID.", Status.NOT_ACCEPTABLE.getStatusCode());
+			throw new NotAcceptableException("Fields must be all present, including ID.");
 	}
 	
-	public void checkIfParametersThere(CandidateDTO candidate) throws AppException {
+	public void checkIfParametersThere(CandidateDTO candidate) {
 		checkIfParametersThere(candidate, false);
 	}
 	

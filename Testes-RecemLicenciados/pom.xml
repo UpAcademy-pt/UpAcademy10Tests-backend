@@ -43,7 +43,6 @@
 		    <artifactId>java-http-client</artifactId>
 		    <version>4.2.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/com.sendgrid/sendgrid-java -->
 		<dependency>
 	    	<groupId>com.sendgrid</groupId>
 	    	<artifactId>sendgrid-java</artifactId>
