@@ -53,6 +53,6 @@ public class TestSessionServices {
 	@Path("begin/{sessionID}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response beginTest(@PathParam("sessionID") long testID) {
-		return return Response.ok(sessionBusiness.begin(testID), MediaType.APPLICATION_JSON).build();
+		return Response.ok(sessionBusiness.begin(testID), MediaType.APPLICATION_JSON).build();
 	}
 }

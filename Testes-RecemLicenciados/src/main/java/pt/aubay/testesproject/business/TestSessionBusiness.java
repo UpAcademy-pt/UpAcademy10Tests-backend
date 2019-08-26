@@ -71,7 +71,7 @@ public class TestSessionBusiness {
 	}
 	
 
-	public void begin(long sessionID) {
+	public long begin(long sessionID) {
 		if(!sessionRepository.IDExists(sessionID))
 			throw new NotFoundException("Session not found in Database");
 		if(!testCommonBusiness.checkIfSessionValid(sessionID))
