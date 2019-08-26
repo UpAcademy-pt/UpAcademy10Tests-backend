@@ -30,11 +30,11 @@ import javax.validation.constraints.NotNull;
 import javax.ws.rs.QueryParam;
 
 import pt.aubay.testesproject.business.RegisteredUserBusiness;
-import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.RegisteredUserDTO;
 import pt.aubay.testesproject.models.entities.RegisteredUser;
 
-@Transactional
+
+//@Path("users")
 @Path("user")
 public class RegisteredUserServices {
 	@Inject
@@ -54,7 +54,7 @@ public class RegisteredUserServices {
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addUser(RegisteredUserDTO user) throws AppException {
+	public Response addUser(RegisteredUserDTO user){
 		userBusiness.add(user);
 		return Response.ok().entity("Success").build();
 	}
@@ -62,7 +62,7 @@ public class RegisteredUserServices {
 	@GET
 	@Path("login/{username}/{password}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUser(@PathParam("username") String usernameOrEmail, @PathParam("password") String password) throws AppException {
+	public Response getUser(@PathParam("username") String usernameOrEmail, @PathParam("password") String password) {
 		return Response.ok(userBusiness.get(usernameOrEmail, password), MediaType.APPLICATION_JSON).build();
 	}
 	
@@ -76,14 +76,14 @@ public class RegisteredUserServices {
 	@GET
 	@Path("all/{currentID}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAllUsers(@PathParam("currentID") long currentID) throws AppException {
+	public Response getAllUsers(@PathParam("currentID") long currentID) {
 		return Response.ok(userBusiness.getAllUsers(currentID), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@PUT
 	@Path("changePassword/{username}/{oldPassword}/{newPassword}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response changePassword(@PathParam("username") String username,@PathParam("oldPassword") String oldPassword, @PathParam("newPassword") String newPassword) throws AppException {
+	public Response changePassword(@PathParam("username") String username,@PathParam("oldPassword") String oldPassword, @PathParam("newPassword") String newPassword) {
 		userBusiness.changePassword(username, oldPassword,newPassword);
 		return Response.ok().entity("Success").build();
 	}
@@ -92,15 +92,16 @@ public class RegisteredUserServices {
 	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response editUser(RegisteredUserDTO user) throws AppException {
+	public Response editUser(RegisteredUserDTO user){
 		return Response.ok(userBusiness.edit(user), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@DELETE
+//	@Path("/{id}")
 	@Path("remove/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteUser(@PathParam("id") long id) throws AppException {
+	public Response deleteUser(@PathParam("id") long id) {
 		userBusiness.remove(id);
 		return Response.ok().entity("Success").build();
 	}
@@ -111,7 +112,7 @@ public class RegisteredUserServices {
 	@Path("resetPassword")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response resetPassword(RegisteredUserDTO user) throws AppException {
+	public Response resetPassword(RegisteredUserDTO user) {
 		try {
 			userBusiness.resetPassword(user);
 			return Response.ok().entity("Success").build();

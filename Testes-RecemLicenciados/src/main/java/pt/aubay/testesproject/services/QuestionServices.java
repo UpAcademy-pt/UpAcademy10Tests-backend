@@ -25,12 +25,11 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import pt.aubay.testesproject.business.QuestionBusiness;
-import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.dto.QuestionDTO;
-import pt.aubay.testesproject.models.entities.Questions;
 import pt.aubay.testesproject.repositories.QuestionRepository;
 
-@Transactional
+
+//@Path("questions")
 @Path("question")
 public class QuestionServices {
 	@Inject
@@ -53,7 +52,7 @@ public class QuestionServices {
 	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response addQuestion(QuestionDTO question) throws AppException {
+	public Response addQuestion(QuestionDTO question){
 		questionBusiness.add(question);
 		return Response.ok().entity("Success").build();
 	}
@@ -63,21 +62,21 @@ public class QuestionServices {
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getQuestion(@PathParam("id") long id) throws AppException {
+	public Response getQuestion(@PathParam("id") long id){
 		return Response.ok(questionBusiness.get(id), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
-	@Path("all")
+	@Path("/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllQuestions() {
 		return Response.ok(questionBusiness.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
-	@Path("questions/{category}/{number}")
+	@Path("{category}/{number}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getRandomQuestions(@PathParam("category") String category, @PathParam("number") long number) throws AppException {
+	public Response getRandomQuestions(@PathParam("category") String category, @PathParam("number") long number) {
 		return Response.ok(questionBusiness.getRandomQuestions(category, number), MediaType.APPLICATION_JSON).build();
 	}
 	
@@ -85,17 +84,18 @@ public class QuestionServices {
 	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response editQuestion(QuestionDTO question) throws AppException {
+	public Response editQuestion(QuestionDTO question) {
 		questionBusiness.edit(question);
 		return Response.ok().entity("Success").build();
 		
 	}
 	
 	@DELETE
+//	@Path("/{id}")
 	@Path("remove/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
-	public Response deleteQuestion(@PathParam("id") long id) throws AppException {
+	public Response deleteQuestion(@PathParam("id") long id) {
 		questionBusiness.remove(id);
 		return Response.ok().entity("Success").build();
 	}
