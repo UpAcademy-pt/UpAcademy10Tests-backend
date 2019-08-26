@@ -29,8 +29,7 @@ import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.repositories.QuestionRepository;
 
 
-//@Path("questions")
-@Path("question")
+@Path("questions")
 public class QuestionServices {
 	@Inject
 	protected QuestionBusiness questionBusiness;
@@ -49,7 +48,6 @@ public class QuestionServices {
 	}
 	
 	@POST
-	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response addQuestion(QuestionDTO question){
@@ -67,7 +65,6 @@ public class QuestionServices {
 	}
 	
 	@GET
-	@Path("/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllQuestions() {
 		return Response.ok(questionBusiness.getAll(), MediaType.APPLICATION_JSON).build();
@@ -81,7 +78,6 @@ public class QuestionServices {
 	}
 	
 	@PUT
-	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response editQuestion(QuestionDTO question) {
@@ -91,8 +87,7 @@ public class QuestionServices {
 	}
 	
 	@DELETE
-//	@Path("/{id}")
-	@Path("remove/{id}")
+	@Path("/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
 	public Response deleteQuestion(@PathParam("id") long id) {

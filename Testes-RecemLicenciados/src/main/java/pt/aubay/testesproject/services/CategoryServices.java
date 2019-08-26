@@ -18,8 +18,7 @@ import pt.aubay.testesproject.business.CategoryBusiness;
 import pt.aubay.testesproject.models.entities.Category;
 
 
-//@Path("categories")
-@Path("category")
+@Path("categories")
 public class CategoryServices {
 	@Inject
 	protected CategoryBusiness categoryBusiness;
@@ -35,7 +34,6 @@ public class CategoryServices {
 	}
 	
 	@POST
-	@Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response addCategory(Category category) {
@@ -46,15 +44,12 @@ public class CategoryServices {
 	//There is no need for a get category for it owns solely one field (category) apart from own id;
 	
 	@GET
-	@Path("/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllCategories() {
 		return Response.ok(categoryBusiness.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@PUT
-//	@Path("{id}")
-	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response editCategory(Category category) {
@@ -63,8 +58,7 @@ public class CategoryServices {
 	}
 	
 	@DELETE
-//	@Path("{id}")
-	@Path("remove/{id}")
+	@Path("{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
 	public Response deleteCategory(@PathParam("id") long id) {

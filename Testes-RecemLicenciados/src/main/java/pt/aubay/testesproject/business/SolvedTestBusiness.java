@@ -38,7 +38,7 @@ import pt.aubay.testesproject.repositories.TestRepository;
 import pt.aubay.testesproject.repositories.TestSessionRepository;
 import pt.aubay.testesproject.services.EmailServices;
 
-@Transactional
+
 public class SolvedTestBusiness {
 	
 	@Inject
@@ -78,6 +78,7 @@ public class SolvedTestBusiness {
 	
 	
 	///adding solved test from session
+	@Transactional
 	public void add(SolvedTestDTO test, long sessionID){
 		
 		//we should check if sessionID exists associated with testID
@@ -91,6 +92,7 @@ public class SolvedTestBusiness {
 		add(test);
 	}
 	
+	@Transactional
 	public void add(SolvedTestDTO test){
 		//We need to check if SolvedTest object is valid
 		checkTestValidToAdd(test);
@@ -113,6 +115,7 @@ public class SolvedTestBusiness {
 		
 	}
 	
+	@Transactional
 	public List<SolvedTestStatistics> getAll(boolean simplified) {
 		List<SolvedTestStatistics> allSolved=new ArrayList<SolvedTestStatistics>();
 		for(SolvedTest elem:solvedRepository.getAll())
@@ -120,21 +123,25 @@ public class SolvedTestBusiness {
 		return allSolved;
 	}
 	
+	@Transactional
 	public List<SolvedTestStatistics> getAll(){
 		return getAll(false);
 	}
 	
+	@Transactional
 	public List<SolvedTest> getAllEntities(){
 		return solvedRepository.getAll();
 	}
 	
 
+	@Transactional
 	public void remove(long id){
 		if(!solvedRepository.idExists(id))
 			throw new NotFoundException("No such id in database");
 		solvedRepository.deleteEntity(id);
 	}
 	
+	@Transactional
 	public SolvedTestStatistics get(long id){
 		if(!solvedRepository.idExists(id))
 			throw new NotFoundException("No such id in database");

@@ -24,7 +24,6 @@ import pt.aubay.testesproject.repositories.SolvedTestRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 import pt.aubay.testesproject.repositories.TestSessionRepository;
 
-@Transactional
 public class TestBusiness {
 	@Inject
 	TestRepository testRepository;
@@ -51,6 +50,7 @@ public class TestBusiness {
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	@Transactional
 	public void add(TestDTO test){
 		//We need to check if test object is valid
 		checkTestValidToAdd(test);
@@ -61,6 +61,7 @@ public class TestBusiness {
 		testRepository.addEntity(testEntity);
 	}
 	
+	@Transactional
 	//optimization of getAll -> only retrieves what is needed in tables -> lazy fetching (simplified=true)
 	public Set<TestStatistics> getAll(boolean simplified) {
 		Set<TestDTO> allTestDTO=new HashSet<TestDTO>();
@@ -72,11 +73,12 @@ public class TestBusiness {
 		return allTests;
 	}
 	
+	@Transactional
 	public Set<TestStatistics> getAll(){
 		return getAll(false);
 	}
 	
-	
+	@Transactional
 	public TestDTO get(long id, boolean solutions) {
 		if(!testRepository.idExists(id))
 			throw new NotFoundException("No such id in database");
@@ -93,10 +95,12 @@ public class TestBusiness {
 		//return Response.ok(testRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
+	@Transactional
 	public TestDTO get(long id) {
 		return get(id, false);
 	}
 	
+	@Transactional
 	public void edit(TestDTO newTest) {
 		checkTestValidToEdit(newTest);
 		//We also need to reset back-end-determined values (Date and Average Score)
@@ -106,6 +110,7 @@ public class TestBusiness {
 		testRepository.editEntity(test);
 	}
 	
+	@Transactional
 	public void remove(long id) {
 		if(!testRepository.idExists(id))
 			throw new NotFoundException("No such id in database");
