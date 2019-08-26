@@ -35,7 +35,7 @@ import pt.aubay.testesproject.models.entities.RegisteredUser;
 
 
 //@Path("users")
-@Path("user")
+@Path("users")
 public class RegisteredUserServices {
 	@Inject
 	protected RegisteredUserBusiness userBusiness;
@@ -51,7 +51,6 @@ public class RegisteredUserServices {
 	}
 	
 	@POST
-	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addUser(RegisteredUserDTO user){
@@ -67,14 +66,13 @@ public class RegisteredUserServices {
 	}
 	
 	@GET
-	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllUsers() {
 		return Response.ok(userBusiness.getAllUsers(), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
-	@Path("all/{currentID}")
+	@Path("allBut/{currentID}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllUsers(@PathParam("currentID") long currentID) {
 		return Response.ok(userBusiness.getAllUsers(currentID), MediaType.APPLICATION_JSON).build();
@@ -89,7 +87,6 @@ public class RegisteredUserServices {
 	}
 	
 	@PUT
-	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response editUser(RegisteredUserDTO user){
@@ -97,8 +94,7 @@ public class RegisteredUserServices {
 	}
 	
 	@DELETE
-//	@Path("/{id}")
-	@Path("remove/{id}")
+	@Path("/{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
 	public Response deleteUser(@PathParam("id") long id) {
