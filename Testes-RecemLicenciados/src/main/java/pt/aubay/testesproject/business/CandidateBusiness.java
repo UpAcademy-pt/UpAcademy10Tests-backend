@@ -1,7 +1,6 @@
 package pt.aubay.testesproject.business;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import pt.aubay.testesproject.execptionHandling.AppException;

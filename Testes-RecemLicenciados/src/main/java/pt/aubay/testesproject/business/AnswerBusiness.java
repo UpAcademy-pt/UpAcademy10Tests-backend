@@ -5,16 +5,13 @@ import javax.inject.Inject;
 import pt.aubay.testesproject.models.dto.AnswerDTO;
 import pt.aubay.testesproject.models.entities.Answer;
 import pt.aubay.testesproject.models.entities.Questions;
-import pt.aubay.testesproject.models.entities.SolvedTest;
 import pt.aubay.testesproject.repositories.QuestionRepository;
-import pt.aubay.testesproject.repositories.SolvedTestRepository;
 
 
 public class AnswerBusiness {
 	
 	@Inject
-	QuestionRepository questionRepository;
-	SolvedTestRepository testRepository;
+	private QuestionRepository questionRepository;
 	
 	public Answer convertDTOToEntity(AnswerDTO answerDTO) {
 		Answer answer=new Answer();

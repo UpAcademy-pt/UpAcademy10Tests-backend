@@ -4,11 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotFoundException;
 
-import pt.aubay.testesproject.execptionHandling.AppException;
 import pt.aubay.testesproject.models.entities.Category;
 import pt.aubay.testesproject.models.statistics.CategoryStatistics;
 import pt.aubay.testesproject.repositories.CategoryRepository;
@@ -16,17 +15,18 @@ import pt.aubay.testesproject.repositories.QuestionRepository;
 
 public class CategoryBusiness {
 	@Inject
-	CategoryRepository categoryRepository;
-	
+	private CategoryRepository categoryRepository;
+
 	@Inject
 	QuestionRepository questionRepository;
 
-	public void add(Category category) throws AppException{
+	@Transactional
+	public void add(Category category) {
 		if(categoryRepository.categoryExists(category))
-			throw new AppException("This category exists already", Status.FORBIDDEN.getStatusCode());
+			throw new BadRequestException("This category already exists");
 		categoryRepository.addEntity(category);
 	}
-	
+
 	public List<CategoryStatistics> getAll() {
 		List<Category> allCategories=categoryRepository.getAll();
 		List<CategoryStatistics> allCategoriesDTO=new ArrayList<CategoryStatistics>();
@@ -34,39 +34,40 @@ public class CategoryBusiness {
 			allCategoriesDTO.add(convertEntityToStatistics(category));
 		return allCategoriesDTO;
 	}
-	
-	public void edit(Category newCategory) throws AppException {
+
+	@Transactional
+	public void edit(Category newCategory) {
 		//Verifies if category exists with specified id
 		if(!categoryRepository.idExists(newCategory))
-			throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
-		
+			throw new NotFoundException("No such id in database");
+
 		//If so, gets the old category to verify if a change was made in the category specification
 		Category oldCategory=categoryRepository.getEntity(newCategory.getId());
 		if(!oldCategory.getCategory().equals(newCategory.getCategory()) && categoryRepository.categoryExists(newCategory))
-			throw new AppException("Cannot change to already existing category", Status.FORBIDDEN.getStatusCode());
+			throw new BadRequestException("Cannot change to already existing category");
 		categoryRepository.editEntity(newCategory);
 	}
-	
-	public void remove(long id) throws AppException {
-	if(!categoryRepository.idExists(id))
-		throw new AppException("No such id in database", Status.NOT_FOUND.getStatusCode());
-	
-	//We should not be able to delete a category used in a question already
-	if(questionRepository.categoryExists(id))
-		throw new AppException("Cannot delete category used in question.", Status.BAD_REQUEST.getStatusCode());
-	categoryRepository.deleteEntity(id);
+
+	@Transactional
+	public void remove(long id) {
+		if(!categoryRepository.idExists(id))
+			throw new NotFoundException("No such id in database");
+
+		//We should not be able to delete a category used in a question already
+		if(questionRepository.categoryExists(id))
+			throw new BadRequestException("Cannot delete category used in question.");
+		categoryRepository.deleteEntity(id);
 	}
-	
-	
+
+
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////Auxiliary DTO Conversion//////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	public CategoryStatistics convertEntityToStatistics(Category category){
 		CategoryStatistics allCategoriesDTO= new CategoryStatistics();
 		allCategoriesDTO.setCategory(category);
 		allCategoriesDTO.setNumberOfQuestions(questionRepository.count(category.getCategory()));
 		return allCategoriesDTO;
 	}
-	
 }
