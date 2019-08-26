@@ -66,7 +66,7 @@ public class TestSessionBusiness {
 		return sessionDTO;
 	}
 	
-	public void begin(long sessionID) throws AppException {
+	public long begin(long sessionID) throws AppException {
 		if(!sessionRepository.IDExists(sessionID))
 			throw new AppException("Session not found in Database", Status.NOT_FOUND.getStatusCode());
 		if(!testCommonBusiness.checkIfSessionValid(sessionID))
@@ -77,6 +77,11 @@ public class TestSessionBusiness {
 		if(session.getStartingTest()==null)
 			session.setStartingTest(startingTest);
 		sessionRepository.editEntity(session);
+		
+		//Determines the interval between starting test and now
+		Duration duration=Duration.between(session.getStartingTest(), LocalDateTime.now());
+		long durationDiff=Math.abs(duration.toMillis());
+		return durationDiff;
 	}
 	
 	public void remove(long sessionID) throws AppException {

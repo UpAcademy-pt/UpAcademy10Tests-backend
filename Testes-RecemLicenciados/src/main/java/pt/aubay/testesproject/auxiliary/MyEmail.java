@@ -28,5 +28,10 @@ public class MyEmail {
 	public void setSubject(String subject) {
 		this.subject = subject;
 	}
+
+	@Override
+	public String toString() {
+		return "MyEmail [emailTo=" + emailTo + ", body=" + body + ", subject=" + subject + "]";
+	}
 	
 }

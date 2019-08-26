@@ -51,6 +51,7 @@ public class EmailServices {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public String sendEmail(MyEmail myEmail) throws IOException{
+		System.out.println(myEmail);
 	    Email from = new Email("anthonyduarte@outlook.com");
 	    String subject = myEmail.getSubject();
 	    Email to = new Email(myEmail.getEmailTo());

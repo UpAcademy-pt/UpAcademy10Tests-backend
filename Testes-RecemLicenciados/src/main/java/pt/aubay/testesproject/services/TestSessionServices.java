@@ -54,7 +54,6 @@ public class TestSessionServices {
 	@Path("begin/{sessionID}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response beginTest(@PathParam("sessionID") long testID) throws AppException {
-		sessionBusiness.begin(testID);
-		return Response.ok().entity("Success").build();
+		return Response.ok(sessionBusiness.begin(testID), MediaType.APPLICATION_JSON).build();
 	}
 }
