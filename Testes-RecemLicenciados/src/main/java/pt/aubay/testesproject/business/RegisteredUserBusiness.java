@@ -19,6 +19,7 @@ import pt.aubay.testesproject.repositories.RegisteredUserRepository;
 import pt.aubay.testesproject.services.EmailServices;
 import pt.aubay.testesproject.utils.PasswordUtils;
 
+@Transactional
 public class RegisteredUserBusiness {
 	@Inject
 	RegisteredUserRepository userRepository;
@@ -29,7 +30,7 @@ public class RegisteredUserBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	@Transactional	
+
 	public void add(RegisteredUserDTO userDTO){
 		
 		//First we need to check if parameters there
@@ -87,7 +88,6 @@ public class RegisteredUserBusiness {
 		return allUsers;
 	}
 	
-	@Transactional
 	public RegisteredUserDTO get(String usernameOrEmail, String password){
 		RegisteredUserDTO userDTO=new RegisteredUserDTO();
 		//type checks if input is username or email - login might be achieved by both username and email
@@ -107,7 +107,6 @@ public class RegisteredUserBusiness {
 		return convertEntityToDTO(user);
 	}
 	
-	@Transactional
 	public void changePassword(String username, String oldPassword, String newPassword){
 		//Creates DTO with pass e username
 		RegisteredUserDTO userDTO= new RegisteredUserDTO();
@@ -123,7 +122,6 @@ public class RegisteredUserBusiness {
 		userRepository.changePassword(username, newHash);
 	}
 	
-	@Transactional
 	public RegisteredUserDTO edit(RegisteredUserDTO userDTO){
 		
 		checkParameters(userDTO,true);
@@ -136,7 +134,7 @@ public class RegisteredUserBusiness {
 		return convertEntityToDTO(updatedUser);
 	}
 	
-	@Transactional
+
 	public void remove(long id) {
 		
 		///To do afterwards: when session is achieved -> check if admin is deleting own account (must be avoided)
@@ -147,7 +145,6 @@ public class RegisteredUserBusiness {
 	}
 	
 	//Temporary
-	@Transactional
 	public void resetPassword(RegisteredUserDTO userDTO) throws IOException {
 		//Check if ID and e-mail there
 		if(userDTO.getEmail()==null || userDTO.getId()==0 || userDTO.getUsername()==null)
@@ -279,7 +276,6 @@ public class RegisteredUserBusiness {
 	//////////////////////////////////////////DTO-ENTITY CONVERSION/////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	@Transactional
 	public RegisteredUserDTO convertEntityToDTO(RegisteredUser user) {
 		RegisteredUserDTO userDTO=new RegisteredUserDTO();
 		userDTO.setEmail(user.getEmail());

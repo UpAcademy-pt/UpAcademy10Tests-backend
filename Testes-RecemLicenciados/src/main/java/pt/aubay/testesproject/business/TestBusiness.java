@@ -24,6 +24,7 @@ import pt.aubay.testesproject.repositories.SolvedTestRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 import pt.aubay.testesproject.repositories.TestSessionRepository;
 
+@Transactional
 public class TestBusiness {
 	@Inject
 	TestRepository testRepository;
@@ -50,7 +51,6 @@ public class TestBusiness {
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	@Transactional
 	public void add(TestDTO test){
 		//We need to check if test object is valid
 		checkTestValidToAdd(test);
@@ -97,7 +97,6 @@ public class TestBusiness {
 		return get(id, false);
 	}
 	
-	@Transactional
 	public void edit(TestDTO newTest) {
 		checkTestValidToEdit(newTest);
 		//We also need to reset back-end-determined values (Date and Average Score)
@@ -107,7 +106,6 @@ public class TestBusiness {
 		testRepository.editEntity(test);
 	}
 	
-	@Transactional
 	public void remove(long id) {
 		if(!testRepository.idExists(id))
 			throw new NotFoundException("No such id in database");
@@ -143,7 +141,6 @@ public class TestBusiness {
 	//idea: jpql -> get all solved tests that have a specified test id -> do the average using
 	//2nd idea: update function gets each time new score and determines new average
 	//2nd idea is best, for it keeps a faithful average score even after deleting a solvedTest
-	@Transactional
 	public void updateAverageScore(long idTest, int scoreToAdd){
 		Test test=testRepository.getEntity(idTest);
 		int oldAverage=test.getAverageScore();
@@ -228,7 +225,6 @@ public class TestBusiness {
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////DTO-ENTITY CONVERSION/////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	@Transactional
 	public TestDTO convertEntityToDTO(Test test, boolean simplified) {
 		//String dateString;
 		String dateTimeString;

@@ -19,6 +19,7 @@ import pt.aubay.testesproject.repositories.QuestionRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 import pt.aubay.testesproject.utils.RandomGeneratorUtils;
 
+@Transactional
 public class QuestionBusiness {
 	@Inject
 	QuestionRepository questionRepository;
@@ -33,7 +34,6 @@ public class QuestionBusiness {
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	@Transactional
 	public void add(QuestionDTO question){
 		//We need to check if question object is valid
 		checkQuestionValidToAdd(question);
@@ -61,7 +61,6 @@ public class QuestionBusiness {
 		//return Response.ok(questionRepository.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
-	@Transactional
 	public void edit(QuestionDTO newQuestions) {
 		checkQuestionValidToEdit(newQuestions);
 		
@@ -70,7 +69,6 @@ public class QuestionBusiness {
 		questionRepository.editEntity(newQuestionEntity);
 	}
 	
-	@Transactional
 	public void remove(long id) {
 	if(!questionRepository.idExists(id))
 		throw new NotFoundException("No such id in database");
@@ -155,7 +153,6 @@ public class QuestionBusiness {
 	//////////////////////////////////////////DTO-ENTITY CONVERSION/////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	@Transactional
 	public QuestionDTO convertEntityToDTO(Questions question) {
 		QuestionDTO questionDTO=new QuestionDTO();
 		questionDTO.setCategory(question.getCategory());

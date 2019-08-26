@@ -23,7 +23,7 @@ import pt.aubay.testesproject.repositories.RegisteredUserRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 import pt.aubay.testesproject.repositories.TestSessionRepository;
 
-
+@Transactional
 public class TestSessionBusiness {
 
 	@Inject
@@ -45,7 +45,6 @@ public class TestSessionBusiness {
 	//////////////////////////////////////////////CRUD-Methods//////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	@Transactional
 	public long add(TestSession session, long testID){
 		//check if e-mail exists and idTest exists
 		checkParameters(session, testID);
@@ -83,8 +82,7 @@ public class TestSessionBusiness {
 			session.setStartingTest(startingTest);
 		sessionRepository.editEntity(session);
 	}
-	
-	@Transactional
+
 	public void remove(long sessionID) {
 		//check if session exists
 		if(!sessionRepository.IDExists(sessionID))
@@ -153,7 +151,6 @@ public class TestSessionBusiness {
 	//////////////////////////////////////////////Convert Entity To DTO/////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	@Transactional
 	public TestSessionDTO convertEntityToDTO(TestSession session) {
 		TestSessionDTO sessionDTO = new TestSessionDTO();
 		sessionDTO.setRecruiterEmail(session.getRecruiterEmail());
