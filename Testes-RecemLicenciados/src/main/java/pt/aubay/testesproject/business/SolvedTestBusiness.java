@@ -394,7 +394,7 @@ public class SolvedTestBusiness {
 		MyEmail myEmail=new MyEmail();
 		String text="O resultado do aluno "+test.getCandidate().getName()+" foi: "+test.getScore()+"%.\n"+
 		"Consulte a plataforma para mais informações.";
-		myEmail.setSubject("Resultado do aluno "+test.getCandidate().getName());
+		myEmail.setSubject("Resultado do candidato "+test.getCandidate().getName());
 		myEmail.setEmailTo(test.getCandidate().getRecruiter().getEmail());
 		myEmail.setBody(text);
 		try {
