@@ -1,21 +1,28 @@
 package pt.aubay.testesproject.services;
 
+import java.util.List;
+
+import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import pt.aubay.testesproject.business.QuestionBusiness;
 import pt.aubay.testesproject.business.TestBusiness;
+import pt.aubay.testesproject.models.dto.QuestionDTO;
 import pt.aubay.testesproject.models.dto.TestDTO;
 
 @Path("tests")
@@ -23,6 +30,9 @@ public class TestServices {
 	
 	@Inject
 	protected TestBusiness testBusiness;
+	
+	@Inject
+	protected QuestionBusiness questionBusiness;
 	
 	@Context
 	protected UriInfo context;
@@ -56,18 +66,43 @@ public class TestServices {
 
 	}
 	
-	@GET
+/*	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTest(@PathParam("id") long id){
-		return Response.ok(testBusiness.get(id), MediaType.APPLICATION_JSON).build();
+	public Response getTest(@PathParam("id") long id, @DefaultValue("none") @QueryParam("sortBy") String sort){
+		TestDTO test=testBusiness.get(id);
+		if(!sort.equals("sortBy")) {
+			List<QuestionDTO> questions=test.getQuestions();
+			questions.sort(questionBusiness.comparator(questions, sort));
+			test.setQuestions(questions);
+		}
+		return Response.ok(test, MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
 	@Path("{id}/{solutions}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getTest(@PathParam("id") long id, @PathParam("solutions") boolean solutions) {
-		return Response.ok(testBusiness.get(id, true), MediaType.APPLICATION_JSON).build();
+	public Response getTest(@PathParam("id") long id, @PathParam("solutions") boolean solutions, @DefaultValue("none") @QueryParam("sortBy") String sort) {
+		TestDTO test=testBusiness.get(id,true);
+		if(!sort.equals("sortBy")) {
+			List<QuestionDTO> questions=test.getQuestions();
+			questions.sort(questionBusiness.comparator(questions, sort));
+			test.setQuestions(questions);
+		}
+		return Response.ok(test, MediaType.APPLICATION_JSON).build();
+	}
+*/	
+	@GET
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getTest(@PathParam("id") long id, @DefaultValue("false") @QueryParam("solutions") boolean solutions, @DefaultValue("none") @QueryParam("sortBy") String sort) {
+		TestDTO test=testBusiness.get(id,solutions);
+		if(!sort.equals("sortBy")) {
+			List<QuestionDTO> questions=test.getQuestions();
+			questions.sort(questionBusiness.comparator(questions, sort));
+			test.setQuestions(questions);
+		}
+		return Response.ok(test, MediaType.APPLICATION_JSON).build();
 	}
 	
 	@PUT

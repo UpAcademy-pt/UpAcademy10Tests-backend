@@ -1,6 +1,7 @@
 package pt.aubay.testesproject.business;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -192,6 +193,16 @@ public class QuestionBusiness {
 	
 	public Questions addDTOasEntity(QuestionDTO questionDTO) {
 		return addDTOasEntity(questionDTO, false);
+	}
+	
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////SORTING METHODS///////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	public Comparator<QuestionDTO> comparator(List<QuestionDTO> questions, String sortBy){
+		
+		Comparator<QuestionDTO> sortByCategory =(QuestionDTO q1, QuestionDTO q2)->q1.getCategory().getCategory().compareTo(q2.getCategory().getCategory());
+		return sortByCategory;
 	}
 	
 }

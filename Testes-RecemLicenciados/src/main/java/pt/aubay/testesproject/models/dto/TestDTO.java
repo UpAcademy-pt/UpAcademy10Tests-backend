@@ -1,5 +1,6 @@
 package pt.aubay.testesproject.models.dto;
 
+import java.util.List;
 import java.util.Set;
 
 import pt.aubay.testesproject.models.entities.Questions;
@@ -14,7 +15,7 @@ public class TestDTO extends ModelsDTO{
 	private String testName;//must be unique
 	//private String date;
 	private String dateTime;
-	private Set <QuestionDTO> questions;
+	private List <QuestionDTO> questions;
 	private long submittedTests;
 	
 	
@@ -54,10 +55,10 @@ public class TestDTO extends ModelsDTO{
 	public void setTestName(String testName) {
 		this.testName = testName;
 	}
-	public Set <QuestionDTO> getQuestions() {
+	public List <QuestionDTO> getQuestions() {
 		return questions;
 	}
-	public void setQuestions(Set <QuestionDTO> questions) {
+	public void setQuestions(List <QuestionDTO> questions) {
 		this.questions = questions;
 	}
 	public long getSubmittedTests() {

@@ -4,6 +4,7 @@ public class CandidateDTO extends ModelsDTO{
 	private String name;
 	private String email;
 	private String emailRecruiter;//email do recrutador recruiter
+	private String countryIP;
 
 	public CandidateDTO() {
 		
@@ -36,6 +37,14 @@ public class CandidateDTO extends ModelsDTO{
 	@Override
 	public String toString() {
 		return "CandidateDTO [name=" + name + ", email=" + email + ", emailRecruiter=" + emailRecruiter + "]";
+	}
+
+	public String getCountryIP() {
+		return countryIP;
+	}
+
+	public void setCountryIP(String countryIP) {
+		this.countryIP = countryIP;
 	}
 	
 	

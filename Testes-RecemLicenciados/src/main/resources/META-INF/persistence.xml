@@ -14,8 +14,8 @@
 			<!-- Propriedades JDBC -->
 			 <property name="javax.persistence.schema-generation.database.action" 
 				value="drop-and-create" /> <!--Configurações específicas do Hibernate -->
-			<property name="javax.persistence.schema-generation.create-source" value="metadata"/>
-			<property name="javax.persistence.schema-generation.drop-source" value="metadata"/>
+			<!--<property name="javax.persistence.schema-generation.create-source" value="metadata"/>
+			<property name="javax.persistence.schema-generation.drop-source" value="metadata"/>-->
 			<property name="hibernate.dialect"
 				value="org.hibernate.dialect.MySQL5InnoDBDialect" />
 			<!-- <property name="hibernate.hbm2ddl.auto" value="update" />-->

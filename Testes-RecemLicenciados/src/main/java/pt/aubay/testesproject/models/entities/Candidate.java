@@ -27,6 +27,7 @@ public class Candidate extends Models{
 	//private PersonalData personalData;//extender para dados pessoais - eventual classe futura
 	private String name;
 	private String email;
+	private String countryIP;
 	
 	@ManyToOne
 	RegisteredUser recruiter;//email do recrutador recruiter
@@ -62,12 +63,12 @@ public class Candidate extends Models{
 		this.recruiter = recruiter;
 	}
 
-//	public SolvedTest getSolvedTest() {
-//		return solvedTest;
-//	}
-//
-//	public void setSolvedTest(SolvedTest solvedTest) {
-//		this.solvedTest = solvedTest;
-//	}
-//	
+	public String getCountryIP() {
+		return countryIP;
+	}
+
+	public void setCountryIP(String countryIP) {
+		this.countryIP = countryIP;
+	}
+
 }

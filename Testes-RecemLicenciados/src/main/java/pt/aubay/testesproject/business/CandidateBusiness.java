@@ -1,6 +1,7 @@
 package pt.aubay.testesproject.business;
 
 import javax.inject.Inject;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.core.Response.Status;
 
@@ -23,7 +24,7 @@ public class CandidateBusiness {
 		if(!(candidate.getEmail()!=null &&
 			candidate.getName()!=null &&
 			candidate.getEmailRecruiter()!=null))
-			throw new NotAcceptableException("Fields must be all present, including ID.");
+				throw new NotAcceptableException("Fields must be all present.");
 	}
 	
 	public void checkIfParametersThere(CandidateDTO candidate) {
@@ -35,8 +36,12 @@ public class CandidateBusiness {
 		candidateDTO.setEmail(candidate.getEmail());
 		candidateDTO.setName(candidate.getName());
 		candidateDTO.setId(candidate.getId());
+		if(candidate.getCountryIP()!=null)
+			candidateDTO.setCountryIP(candidate.getCountryIP());
 		
 		//There should be some confirmation as to the existence of said e-mail in the database
+		if(!userRepository.emailExists(candidate.getRecruiter().getEmail()))
+			throw new BadRequestException("Recruiter email does not exist in database");
 		candidateDTO.setEmailRecruiter(candidate.getRecruiter().getEmail());
 		return candidateDTO;
 	}
@@ -45,6 +50,8 @@ public class CandidateBusiness {
 		Candidate candidate=new Candidate();
 		candidate.setEmail(candidateDTO.getEmail());
 		candidate.setName(candidateDTO.getName());
+		if(candidateDTO.getCountryIP()!=null)
+			candidate.setCountryIP(candidateDTO.getCountryIP());
 		String recruiterName=userRepository.getUsernameByEmail(candidateDTO.getEmailRecruiter());
 		candidate.setRecruiter(userRepository.getUser(recruiterName));
 		return candidate;

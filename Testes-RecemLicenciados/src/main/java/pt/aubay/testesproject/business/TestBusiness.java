@@ -3,6 +3,7 @@ package pt.aubay.testesproject.business;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +25,6 @@ import pt.aubay.testesproject.repositories.SolvedTestRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 import pt.aubay.testesproject.repositories.TestSessionRepository;
 
-@Transactional
 public class TestBusiness {
 	@Inject
 	TestRepository testRepository;
@@ -240,7 +240,7 @@ public class TestBusiness {
 		///This takes into account simplification procedure (optimization) - not all data might be needed for a particular purpose
 		if(!simplified) {
 			///We need to convert Questions Entity to DTO
-			Set <QuestionDTO> questionsDTO=new HashSet();
+			List <QuestionDTO> questionsDTO=new ArrayList<QuestionDTO>();
 			for(Questions elem: test.getQuestions())
 				questionsDTO.add(questionBusiness.convertEntityToDTO(elem));
 			
