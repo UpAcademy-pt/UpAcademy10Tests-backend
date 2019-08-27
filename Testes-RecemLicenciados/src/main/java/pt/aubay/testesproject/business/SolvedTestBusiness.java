@@ -397,12 +397,12 @@ public class SolvedTestBusiness {
 		myEmail.setSubject("Resultado do candidato "+test.getCandidate().getName());
 		myEmail.setEmailTo(test.getCandidate().getRecruiter().getEmail());
 		myEmail.setBody(text);
-		try {
+		/*try {
 			emailService.sendEmail(myEmail);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			throw new BadRequestException("Unknown error related to e-mail");
-		}
+		}*/
 	}
 	
 	public boolean lessOrEqualsNumberOfDays(long numberOfDays, SolvedTest test) {
