@@ -24,6 +24,7 @@ import pt.aubay.testesproject.repositories.SolvedTestRepository;
 import pt.aubay.testesproject.repositories.TestRepository;
 import pt.aubay.testesproject.repositories.TestSessionRepository;
 
+@Transactional
 public class TestBusiness {
 	@Inject
 	TestRepository testRepository;

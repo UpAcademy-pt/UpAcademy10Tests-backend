@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
@@ -38,7 +39,7 @@ import pt.aubay.testesproject.repositories.TestRepository;
 import pt.aubay.testesproject.repositories.TestSessionRepository;
 import pt.aubay.testesproject.services.EmailServices;
 
-
+@Transactional
 public class SolvedTestBusiness {
 	
 	@Inject
@@ -345,6 +346,7 @@ public class SolvedTestBusiness {
 	//////////////////////////////////////////DTO-STATISTICS CONVERSION/////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
+	@Transactional
 	public SolvedTestStatistics convertEntityToStatistics(SolvedTest solvedTest, boolean simplified) {
 		
 		SolvedTestStatistics solvedStatistics=new SolvedTestStatistics();
@@ -395,12 +397,12 @@ public class SolvedTestBusiness {
 		myEmail.setSubject("Resultado do aluno "+test.getCandidate().getName());
 		myEmail.setEmailTo(test.getCandidate().getRecruiter().getEmail());
 		myEmail.setBody(text);
-		/*try {
+		try {
 			emailService.sendEmail(myEmail);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+			throw new BadRequestException("Unknown error related to e-mail");
+		}
 	}
 	
 	public boolean lessOrEqualsNumberOfDays(long numberOfDays, SolvedTest test) {

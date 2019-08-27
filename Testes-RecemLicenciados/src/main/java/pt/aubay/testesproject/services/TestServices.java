@@ -18,7 +18,7 @@ import javax.ws.rs.core.UriInfo;
 import pt.aubay.testesproject.business.TestBusiness;
 import pt.aubay.testesproject.models.dto.TestDTO;
 
-@Path("test")
+@Path("tests")
 public class TestServices {
 	
 	@Inject
@@ -35,7 +35,6 @@ public class TestServices {
 	}
 	
 	@POST
-	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response addTest(TestDTO test){
@@ -44,14 +43,13 @@ public class TestServices {
 	}
 	
 	@GET
-	@Path("all/allData")
+	@Path("allData")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllTests() {
 		return Response.ok(testBusiness.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
-	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllTestsSimplified() {
 		return Response.ok(testBusiness.getAll(true), MediaType.APPLICATION_JSON).build();
@@ -59,21 +57,20 @@ public class TestServices {
 	}
 	
 	@GET
-	@Path("get/{id}")
+	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTest(@PathParam("id") long id){
 		return Response.ok(testBusiness.get(id), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
-	@Path("get/{id}/{solutions}")
+	@Path("{id}/{solutions}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getTest(@PathParam("id") long id, @PathParam("solutions") boolean solutions) {
 		return Response.ok(testBusiness.get(id, true), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@PUT
-	@Path("edit")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
 	public Response editTest(TestDTO test) {
@@ -82,7 +79,7 @@ public class TestServices {
 	}
 	
 	@DELETE
-	@Path("remove/{id}")
+	@Path("{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
 	public Response deleteTest(@PathParam("id") long id) {

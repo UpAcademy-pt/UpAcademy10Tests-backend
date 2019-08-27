@@ -53,7 +53,6 @@ public class SolvedTestServices {
 	}
 	
 	@POST
-	@Path("add")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response addSolvedTest(SolvedTestDTO solvedTest) {
@@ -62,7 +61,7 @@ public class SolvedTestServices {
 	}
 	
 	@POST
-	@Path("add/{sessionID}")
+	@Path("{sessionID}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response addSolvedTest(SolvedTestDTO solvedTest, @PathParam("sessionID") long sessionID){
@@ -71,14 +70,13 @@ public class SolvedTestServices {
 	}
 	
 	@GET
-	@Path("all/allData")
+	@Path("allData")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllSolvedTests() {
 		return Response.ok(solvedBusiness.getAll(), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@GET
-	@Path("all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllSolvedTestsSimplified() {
 		return Response.ok(solvedBusiness.getAll(true), MediaType.APPLICATION_JSON).build();
@@ -92,7 +90,7 @@ public class SolvedTestServices {
 	}
 	
 	@DELETE
-	@Path("remove/{id}")
+	@Path("{id}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces (MediaType.TEXT_PLAIN)
 	public Response deleteSolvedTest(@PathParam("id") long id) {
@@ -103,6 +101,7 @@ public class SolvedTestServices {
 	@GET
 	@Path("filter")
 	@Produces({MediaType.APPLICATION_JSON})
+	@Transactional
 	public List<SolvedTestStatistics> getFilteredTests(
 				@DefaultValue("0") @Min(0) @Max(100) @QueryParam("gradeMoreThan") long gradeMoreThan,
 				@DefaultValue("100") @Min(0) @Max(100) @QueryParam("gradeLessThan") long gradeLessThan,

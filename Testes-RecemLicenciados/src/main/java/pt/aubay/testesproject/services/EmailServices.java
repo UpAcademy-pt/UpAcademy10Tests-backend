@@ -85,7 +85,7 @@ public class EmailServices {
 	    		"        </td>\r\n" + 
 	    		"      </tr>\r\n" + 
 	    		"    </table>\r\n" + 
-	    		""
+	    		"<br><br>"
 	    		+ "<table class=\"wrapper\" role=\"module\" data-type=\"image\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" style=\"table-layout: fixed;\">\r\n" + 
 	    		"      <tr>\r\n" + 
 	    		"        <td style=\"font-size:6px;line-height:10px;padding:0px 0px 0px 0px;\" valign=\"top\" align=\"left\">\r\n" + 
@@ -109,7 +109,7 @@ public class EmailServices {
 	    				"      </tr>\r\n" + 
 	    				"    </table>\r\n" + 
 	    				"";
-	    Content content = new Content("text/html", myEmail.getBody()+html);
+	    Content content = new Content("text/html", myEmail.getBody()+"<br><br>"+html);
 	    Mail mail = new Mail(from, subject, to, content);
 	    //mail.setTemplateId("d-fc6db0e66c214696a3d4c4b2efc161ec");
 
