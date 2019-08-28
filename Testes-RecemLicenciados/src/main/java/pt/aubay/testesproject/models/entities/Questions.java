@@ -32,6 +32,7 @@ import pt.aubay.testesproject.models.entities.Test;
 	 @NamedQuery(name="Questions.getRandomQuestionOfCategory", query = "SELECT q FROM Questions q WHERE q.id IN :ids"),
 	 @NamedQuery(name="Questions.getQuestionsNumberOfCategory", query = "SELECT COUNT(q.id) FROM Questions q WHERE q.category.category=:category"),
 	 @NamedQuery(name="Questions.checkTest", query = "SELECT COUNT(t) FROM Questions q INNER JOIN q.test t WHERE q.id=:questionID"),
+	 @NamedQuery(name="Questions.getAllQuestionIDsOfCategoryID", query = "SELECT q.id FROM Questions q WHERE q.category.id =:categoryID"),
 })
 public class Questions extends Models{
 

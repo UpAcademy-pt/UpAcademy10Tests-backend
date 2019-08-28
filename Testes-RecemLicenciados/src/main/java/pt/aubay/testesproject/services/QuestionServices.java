@@ -73,8 +73,8 @@ public class QuestionServices {
 	@GET
 	@Path("{category}/{number}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getRandomQuestions(@PathParam("category") String category, @PathParam("number") long number) {
-		return Response.ok(questionBusiness.getRandomQuestions(category, number), MediaType.APPLICATION_JSON).build();
+	public Response getRandomQuestions(@PathParam("category") long categoryID, @PathParam("number") long number) {
+		return Response.ok(questionBusiness.getRandomQuestions(categoryID, number), MediaType.APPLICATION_JSON).build();
 	}
 	
 	@PUT
@@ -99,15 +99,13 @@ public class QuestionServices {
 	@Path("filter")
 	@Produces({MediaType.APPLICATION_JSON})
 	public List<QuestionDTO> getFilteredQuestions(
-			@QueryParam("category") String category,
+			@QueryParam("category") long category,
 			@QueryParam("page") int page,
 			@QueryParam("pageSize") int pageSize
 		){
-		
 		///////////////////////////////////////////////////////////FILTERED LIST/////////////////////////////////////////////////////////////////////////////////////
 		List<QuestionDTO> questions=questionBusiness.getAll().stream().filter(question -> 
-		question.getCategory().getCategory().equals(category)).collect(Collectors.toList());
-		
+		question.getCategory().getId()==category).collect(Collectors.toList());
 		
 		///////////////////////////////////////////////////////////////PAGINATION/////////////////////////////////////////////////////////////////////////////////////
 		if(pageSize!=0) {
@@ -129,10 +127,4 @@ public class QuestionServices {
 		return questions;
 	}
 	
-//	@GET
-//	@Path("getnumber/{category}")
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public Long getRandomQuestions(@PathParam("category") String category) {
-//		return questionRepository.count(category);
-//	}
 }

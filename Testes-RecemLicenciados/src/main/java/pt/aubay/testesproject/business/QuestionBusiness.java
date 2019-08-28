@@ -81,9 +81,9 @@ public class QuestionBusiness {
 	questionRepository.deleteEntity(id);
 	}
 	
-	public List<QuestionDTO> getRandomQuestions(String category, long number){
+	public List<QuestionDTO> getRandomQuestions(long categoryID, long number){
 		//We need to get all questions ID's with said category
-		List<Long> questions=questionRepository.getQuestionIDS(category);
+		List<Long> questions=questionRepository.getQuestionIDS(categoryID);
 		//the maximum range allowed is the number of questions of said category
 		long maxRange = questions.size();
 		if(number>maxRange)

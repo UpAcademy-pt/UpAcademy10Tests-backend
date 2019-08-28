@@ -166,7 +166,7 @@ public class SolvedTestBusiness {
 	
 		totalPoints=questions.size();
 		
-//Old way		
+//Another method to determine score (for each correct answer, one point is earned		
 //		//Determines the total number of Points
 //		for(Questions elem:questions)
 //			totalPoints+=(elem.getSolution()).length;
@@ -397,12 +397,12 @@ public class SolvedTestBusiness {
 		myEmail.setSubject("Resultado do candidato "+test.getCandidate().getName());
 		myEmail.setEmailTo(test.getCandidate().getRecruiter().getEmail());
 		myEmail.setBody(text);
-		/*try {
+		try {
 			emailService.sendEmail(myEmail);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			throw new BadRequestException("Unknown error related to e-mail");
-		}*/
+		}
 	}
 	
 	public boolean lessOrEqualsNumberOfDays(long numberOfDays, SolvedTest test) {

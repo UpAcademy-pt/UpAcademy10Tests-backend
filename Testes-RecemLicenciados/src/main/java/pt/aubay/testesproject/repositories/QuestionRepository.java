@@ -41,6 +41,12 @@ public class QuestionRepository extends Repositories<Questions>{
 		return query.getResultList();
 	}
 	
+	public List<Long> getQuestionIDS(long categoryID){
+		TypedQuery<Long> query = em.createNamedQuery("Questions.getAllQuestionIDsOfCategoryID", Long.class);
+		query.setParameter("categoryID", categoryID);
+		return query.getResultList();
+	}
+	
 	public long count() {
 		Query query = em.createNamedQuery("Questions.count");
 		return (long) query.getSingleResult();
