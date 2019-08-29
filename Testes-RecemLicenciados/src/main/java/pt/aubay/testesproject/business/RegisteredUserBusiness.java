@@ -268,7 +268,7 @@ public class RegisteredUserBusiness {
 		else
 			myEmail.setBody("A sua password é:  <strong>"+password+"</strong>.<br> Não se esqueça de mudá-la.<br><br>");
 		myEmail.setEmailTo(sendTo);
-		//emailService.sendEmail(myEmail);
+		emailService.sendEmail(myEmail);
 		return password;
 	}
 	

@@ -242,11 +242,9 @@ public class SolvedTestBusiness {
 		//We need to check if both candidate and testID are new (the combination must be unique)
 		
 		CandidateDTO candidate=test.getCandidate();
-		System.out.println(candidate);
 		
 		Candidate databaseCandidate;
 		//We check if candidate exists in database
-		System.out.println(candidate.getEmail());
 		if(	candidateRepository.CandidateExists(candidate.getEmail())) {
 			//Then we get candidate
 			databaseCandidate=candidateRepository.getCandidate(candidate.getEmail());

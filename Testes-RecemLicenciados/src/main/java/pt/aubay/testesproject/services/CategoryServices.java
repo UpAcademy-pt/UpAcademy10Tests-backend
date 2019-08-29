@@ -17,7 +17,6 @@ import javax.ws.rs.core.UriInfo;
 import pt.aubay.testesproject.business.CategoryBusiness;
 import pt.aubay.testesproject.models.entities.Category;
 
-
 @Path("categories")
 public class CategoryServices {
 	@Inject
@@ -33,16 +32,23 @@ public class CategoryServices {
 		return "URI " + context.getRequestUri().toString() + " is OK!";
 	}
 	
+	/**
+	 * @param category		a string specifying the category we want to add (ex: category="JAVA");
+	 * @return				a response message
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
+	
 	public Response addCategory(Category category) {
 		categoryBusiness.add(category);
 		return Response.ok().entity("Success").build();
 	}
 	
-	//There is no need for a get category for it owns solely one field (category) apart from own id;
 	
+	/**
+	 * @return				all categories with respective ID
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllCategories() {
