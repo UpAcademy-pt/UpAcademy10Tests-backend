@@ -390,7 +390,10 @@ public class SolvedTestBusiness {
 	
 	public void sendEmail(SolvedTest test) {
 		MyEmail myEmail=new MyEmail();
-		String text="O resultado do candidato "+test.getCandidate().getName()+"("+test.getCandidate().getEmail()+") "+"foi: "+test.getScore()+"%.\n"+
+		String IPmessage="";
+		if(test.getCandidate().getCountryIP()!=null)
+			IPmessage+="(País onde realizou o teste: "+test.getCandidate().getCountryIP()+").";
+		String text="O resultado do candidato "+test.getCandidate().getName()+"("+test.getCandidate().getEmail()+") "+"foi: "+test.getScore()+"% "+IPmessage+"<br>"+
 		"Consulte a plataforma para mais informações.";
 		myEmail.setSubject("Resultado do candidato "+test.getCandidate().getName());
 		myEmail.setEmailTo(test.getCandidate().getRecruiter().getEmail());
